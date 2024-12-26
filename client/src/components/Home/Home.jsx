@@ -1,12 +1,12 @@
 import React from 'react'
+import Navbar from './Navbar'
 
 const Home = () => {
   return (
     <>
-      <p>Home component</p>
-      <Navbar />
-      <Hero />
-      <Footer />
+      <div className='bg-gray-500'>
+        <h1>This fucking component</h1>
+      </div>
     </>
   )
 }
