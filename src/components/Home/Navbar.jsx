@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white-400 shadow-md h-min w-48 flex flex-col p-4 mt-20 font-archivo items-start">
       <NavLink
-        to="/"
+        to="/home"
         className={({ isActive }) =>
           isActive
             ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
@@ -18,7 +18,7 @@ const Navbar = () => {
         Home
       </NavLink>
       <NavLink
-        to="/todo"
+        to="/reminders"
         className={({ isActive }) =>
           isActive
         ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
@@ -26,35 +26,13 @@ const Navbar = () => {
       }
       >
       <FontAwesomeIcon icon={faCheck} className='mr-4'/>
-        To-Do
-      </NavLink>
-      <NavLink
-        to="/qa"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
-            : "mb-4 hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-        <FontAwesomeIcon icon={faQuestionCircle} className='mr-4'/>
-        Q/A
-      </NavLink>
-      <NavLink
-        to="/assignments"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
-            : "mb-4 hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-      <FontAwesomeIcon icon={faCalculator} className='mr-4'/>
-        Assignments
+        Reminders
       </NavLink>
       <NavLink
         to="/messages"
         className={({ isActive }) =>
           isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
+            ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
             : "mb-4 hover:text-white-600 p-4 rounded-lg"
         }
       >
@@ -73,21 +51,10 @@ const Navbar = () => {
         Calendar
       </NavLink>
       <NavLink
-        to="/meetings"
-        className={({ isActive }) =>
-          isActive
-        ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
-        : "mb-4  hover:text-white-600 p-4 rounded-lg"
-      }
-      >
-      <FontAwesomeIcon icon={faPhone} className='mr-4'/>
-        Meetings
-      </NavLink>
-      <NavLink
         to="/settings"
         className={({ isActive }) =>
           isActive
-        ? "mb-4 bg-blue-950 text-white p-4 pr-4  rounded-lg"
+        ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
         : "mb-4  hover:text-white-600 p-4 rounded-lg"
       }
       >

@@ -6,6 +6,7 @@ import Home from './components/Home/Home';
 import TermsConditions from './components/Terms/TermsConditions';
 import Navbar from './components/Home/Navbar';
 import LandingPage from './components/LandingPage';
+import Profile from './components/Profile/Profile';
 
 const App = () => {
   const AppContent = () => {
@@ -25,6 +26,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/termsandconditions" element={<TermsConditions />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>
@@ -34,7 +36,7 @@ const App = () => {
   return (
     <Router>
       <AppContent />
-    </Router>
+    </Router> 
   );
 };
 

@@ -78,6 +78,7 @@ const Login = () => {
                   </button>
                 </Form>
               </Formik>
+            <p className='pt-4'>Not Registerd Yet? <button onClick={()=>{navigate('/register')}}>Register</button></p>
             </div>
           </div>
   )

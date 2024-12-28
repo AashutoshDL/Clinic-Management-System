@@ -1,8 +1,0 @@
-{
-  "powermode.enabled": true,
-  "powermode.presets": "simple-rift",
-  "powermode.combo.location": "default",
-  "editor.formatOnSave": true,
-  "files.autoSave": "afterDelay",
-  "files.autoSaveWorkspaceFilesOnly": true
-}
