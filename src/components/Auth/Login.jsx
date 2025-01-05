@@ -3,6 +3,8 @@ import {Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import {useNavigate} from 'react-router-dom'
 import {PasswordInput, TextInput , MySelect} from '../Auth/FormElements'
+import  axios  from 'axios';
+
 
 const Login = () => {
     const [showPassword, setShowPassword] = React.useState(false);
@@ -25,7 +27,7 @@ const Login = () => {
                 //making api calls to the backend for registration
                 onSubmit={async(values, { setSubmitting }) => {
                     try{
-                      const response= await fetch('backendapi/login',{
+                      const response= await axios.post('http://localhost:5173/auth/login',{
                         method: 'POST',
                         headers:{
                           'Content-Type':'application/json',
@@ -45,6 +47,7 @@ const Login = () => {
                     }
                 }}
               >
+              {({ isSubmitting }) => (
                 <Form>
                   <TextInput label="Username" name="userName" type="text" placeholder="Enter your username" />
                   <PasswordInput
@@ -73,10 +76,12 @@ const Login = () => {
                   <button
                     type="submit"
                     className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded mt-4 hover:bg-blue-600 transition"
+                    disabled={isSubmitting}
                   >
                     Submit
                   </button>
                 </Form>
+              )}
               </Formik>
             <p className='pt-4'>Not Registerd Yet? <button onClick={()=>{navigate('/register')}}>Register</button></p>
             </div>

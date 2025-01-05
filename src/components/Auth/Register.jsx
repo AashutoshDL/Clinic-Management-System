@@ -3,12 +3,12 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox, PasswordInput, TextInput } from './FormElements';
+import axios from 'axios'
 
 const Register = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const navigate=useNavigate();
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
@@ -53,7 +53,7 @@ const Register = () => {
           //making api calls to the backend for registration
           onSubmit={async(values, { setSubmitting }) => {
               try{
-                const response= await fetch('backendapi/signup',{
+                const response= await axios.post('http://localhost:5173/auth/register',{
                   method: 'POST',
                   headers:{
                     'Content-Type':'application/json',
@@ -73,10 +73,11 @@ const Register = () => {
               }
           }}
         >
+          {({ isSubmitting }) => (
           <Form>
             <TextInput label="First Name" name="firstName" type="text" placeholder="Your First Name" />
             <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
-            <TextInput label="userName" name="userName" type="text" placeholder="Enter your username" />
+            <TextInput label="User Name" name="userName" type="text" placeholder="Enter your username" />
             <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
             <PasswordInput
               label="Password"
@@ -113,10 +114,12 @@ const Register = () => {
             <button
               type="submit"
               className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded mt-4 hover:bg-blue-600 transition"
+              disabled={isSubmitting}
             >
               Submit
             </button>
           </Form>
+          )}
         </Formik>
         <p className='pt-4'>Already Registered ? <button onClick={()=>{navigate('/login')}}>Login</button></p>
       </div>
