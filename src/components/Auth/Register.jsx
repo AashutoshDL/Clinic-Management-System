@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { Checkbox, PasswordInput, TextInput } from './FormElements';
 import axios from 'axios'
 
+
 const Register = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const navigate=useNavigate();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
@@ -53,21 +55,22 @@ const Register = () => {
           //making api calls to the backend for registration
           onSubmit={async(values, { setSubmitting }) => {
               try{
-                const response= await axios.post('http://localhost:5173/auth/register',{
-                  method: 'POST',
+                const response= await axios.post(`http://localhost:3001/auth/register`,values,{
                   headers:{
                     'Content-Type':'application/json',
-                    body:JSON.stringify(values),
                   }
                 })
-                if(!response.ok){
-                  console.log(response);
-                  console.log("Error while submitting");
-                }
-                const data=await response.json();
-                alert(`Registration Successful. Welcome, ${data.firstName}`)
+
+                const data=response.data;
+                alert(`Registration Completed. Please Verify your Email`)
+                sessionStorage.setItem('email', values.email);
+                navigate('/verifyEmail')
               }catch(error){
+                console.log(values)
                 console.error("Error during signup",error);
+                if (error.response) {
+                  console.log("Response error data:", error.response.data);
+                }
               }finally{
                 setSubmitting(false);
               }
@@ -75,7 +78,7 @@ const Register = () => {
         >
           {({ isSubmitting }) => (
           <Form>
-            <TextInput label="First Name" name="firstName" type="text" placeholder="Your First Name" />
+            <TextInput label="First Name" name="firstName" type="text" placeholder="Your Name" />
             <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
             <TextInput label="User Name" name="userName" type="text" placeholder="Enter your username" />
             <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />

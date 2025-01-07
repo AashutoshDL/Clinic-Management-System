@@ -8,6 +8,7 @@ import Navbar from './components/Home/Navbar';
 import LandingPage from './components/LandingPage';
 import Profile from './components/Profile/Profile';
 import Reminders from './components/Reminders/Reminders';
+import VerifyEmail from './components/Auth/VerifyEmail';
 
 const App = () => {
   const AppContent = () => {
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/termsandconditions" element={<TermsConditions />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/reminders" element={<Reminders />} />
+            <Route path="/verifyEmail" element={<VerifyEmail />} />
           </Routes>
         </div>
       </div>
