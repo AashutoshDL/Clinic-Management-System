@@ -8,7 +8,7 @@ const Navbar = () => {
   const { isLoggedIn, user } = useAuth(); // Get the login status and user from context
 
   return (
-    <nav className="bg-white-400 shadow-md h-min w-48 flex flex-col p-4 mt-20 font-archivo items-start">
+    <nav className="bg-white-400 h-min w-48 flex flex-col p-4 mt-20 font-archivo items-start">
       <NavLink
         to="/home"
         className={({ isActive }) =>

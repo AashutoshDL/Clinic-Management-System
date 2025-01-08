@@ -9,6 +9,7 @@ import LandingPage from './components/LandingPage';
 import Profile from './components/Profile/Profile';
 import Reminders from './components/Reminders/Reminders';
 import VerifyEmail from './components/Auth/VerifyEmail';
+import Admin from './components/Admin/Admin';
 import { AuthProvider } from './components/context/AuthContext';
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/reminders" element={<Reminders />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
+            <Route path='/admin' element={<Admin />} />
           </Routes>
         </div>
       </div>

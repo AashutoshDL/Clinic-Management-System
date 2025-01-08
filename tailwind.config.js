@@ -5,8 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        figtree: ['FigTree'],
+      },
+      colors: {
+        buttonGray: '#575757', // Add custom color
+      },
+    },
   },
   plugins: [],
 }
-
