@@ -9,6 +9,7 @@ import LandingPage from './components/LandingPage';
 import Profile from './components/Profile/Profile';
 import Reminders from './components/Reminders/Reminders';
 import VerifyEmail from './components/Auth/VerifyEmail';
+import { AuthProvider } from './components/context/AuthContext';
 
 const App = () => {
   const AppContent = () => {
@@ -38,9 +39,11 @@ const App = () => {
   };
 
   return (
+    <AuthProvider>
     <Router>
       <AppContent />
     </Router> 
+    </AuthProvider>
   );
 };
 
