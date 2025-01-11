@@ -8,7 +8,10 @@ const Navbar = () => {
   const { isLoggedIn, user } = useAuth(); // Get the login status and user from context
 
   return (
-    <nav className="bg-white-400 h-min w-48 flex flex-col p-4 mt-20 font-archivo items-start">
+    <nav className="bg-white-400 border-r-2 h-min w-48 flex flex-col p-4 mt-20 font-archivo items-start">
+      <div>
+        <img src='/images/1-nobg1.png' alt='logo' />
+      </div>
       <NavLink
         to="/home"
         className={({ isActive }) =>
@@ -92,7 +95,7 @@ const Navbar = () => {
               : "mb-4 hover:text-white-600 p-4 rounded-lg"
           }
         >
-          <FontAwesomeIcon icon={faUser} className='mr-4'/> Login/User
+          <FontAwesomeIcon icon={faUser} className='mr-4'/> Login/Register
         </NavLink>
       )}
     </nav>

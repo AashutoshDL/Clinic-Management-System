@@ -32,6 +32,7 @@ const Login = () => {
                     const response = await axios.post('http://localhost:3001/auth/login', values, {
                       headers: {
                         'Content-Type': 'application/json',
+                        withCredentials:true,
                       },
                     }); 
                     // Extract response data

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import TimePicker from 'react-time-picker';
+import 'react-time-picker/dist/TimePicker.css'; // Importing styles for better UI
 
 const Reminders = () => {
-  const [reminderTime, setReminderTime] = useState(0); // Time in minutes
+  const [reminderTime, setReminderTime] = useState('12:00'); // Default time (hh:mm format)
   const [isReminderSet, setIsReminderSet] = useState(false);
 
   // Request Notification permission on mount
-  React.useEffect(() => {
+  useEffect(() => {
     if (Notification.permission !== 'granted') {
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
@@ -15,18 +17,36 @@ const Reminders = () => {
     }
   }, []);
 
+  // Function to calculate the time difference
+  const calculateTimeDifference = (time) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const now = new Date();
+    const reminderDate = new Date(now);
+
+    reminderDate.setHours(hours, minutes, 0, 0); // Set the selected time
+
+    // If the reminder time is in the past for today, set it for the next day
+    if (reminderDate <= now) {
+      reminderDate.setDate(reminderDate.getDate() + 1);
+    }
+
+    return reminderDate.getTime() - now.getTime(); // Time difference in milliseconds
+  };
+
   // Function to set reminder
   const setReminder = () => {
-    if (reminderTime > 0 && Notification.permission === 'granted') {
+    const timeDifference = calculateTimeDifference(reminderTime);
+
+    if (timeDifference > 0 && Notification.permission === 'granted') {
       setIsReminderSet(true);
-      const timeInMs = reminderTime * 10 * 1000; // Convert minutes to milliseconds
 
       setTimeout(() => {
         new Notification('Reminder', {
-          body: 'This is your reminder!',
-          icon: 'https://via.placeholder.com/48', // Optional: You can set an icon here
+          body: 'This is your reminder to have the medicine',
+          icon: '/images/2-nobg.png', // Optional: Set an icon here
         });
-      }, timeInMs);
+        setIsReminderSet(false); // Reset the reminder state
+      }, timeDifference);
     } else {
       alert('Please set a valid reminder time and allow notifications.');
     }
@@ -34,30 +54,26 @@ const Reminders = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-80">
-        <h1 className="text-2xl font-semibold text-center text-gray-800 mb-4">Set a Reminder</h1>
-        <p className="text-gray-600 text-center mb-6">Enter a time in minutes for your reminder.</p>
-
-        <input
-          type="number"
+      <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">Set a Reminder</h2>
+        
+        {/* TimePicker component */}
+        <TimePicker
+          onChange={setReminderTime}
           value={reminderTime}
-          onChange={(e) => setReminderTime(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-          placeholder="Reminder time in minutes"
+          disableClock={true} // Enabling the clock to be displayed
+          hourPlaceholder="hh" // Placeholder for the hour input
+          minutePlaceholder="mm" // Placeholder for the minute input
         />
-
+        
         <button
           onClick={setReminder}
-          disabled={isReminderSet}
-          className={`w-full p-3 text-white font-semibold rounded-lg transition-colors duration-300 
-            ${isReminderSet ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
         >
-          {isReminderSet ? 'Reminder Set' : 'Set Reminder'}
+          Set Reminder
         </button>
-
-        {isReminderSet && (
-          <p className="text-green-500 text-center mt-4">Your reminder is set!</p>
-        )}
+        
+        {isReminderSet && <p className="mt-4 text-green-500">Reminder is set for {reminderTime}!</p>}
       </div>
     </div>
   );

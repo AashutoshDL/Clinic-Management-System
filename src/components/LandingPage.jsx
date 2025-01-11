@@ -12,7 +12,7 @@ const LandingPage = () => {
         muted
         className="absolute inset-0 w-full h-full object-cover z-0"
       >
-        <source src="/video.mp4" type="video/mp4" />
+        <source src="/videos/video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
