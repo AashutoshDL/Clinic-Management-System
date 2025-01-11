@@ -58,6 +58,7 @@ const Register = () => {
                 const response= await axios.post(`http://localhost:3001/auth/register`,values,{
                   headers:{
                     'Content-Type':'application/json',
+                    withCredentials:true,
                   }
                 })
 

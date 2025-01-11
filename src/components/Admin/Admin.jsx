@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import AdminCard from './AdminCard';
 import AdminTable from './AdminTable';
+import UserForm from './UserForm';
 
 const Admin = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [alertMessage, setAlertMessage] = useState('');
+
   const cardData = [
     {
       title: 'Patients',
@@ -21,35 +28,46 @@ const Admin = () => {
     },
   ];
 
-  const tableData=[
-    {
-        name:"Aashutosh",
-        imgSrc:'/images/pic1.jpg',
-        role:'Patient',
-        date:'1/08/2025'
-    },
-    {
-        name:"Aadarsan",
-        imgSrc:'/images/pic2.jpg',
-        role:'Patient',
-        date:'1/10/2022'
-    },
-    {
-        name:"Kripa",
-        imgSrc:'/images/pic3.jpg',
-        role:'Patient',
-        date:'12/08/2024'
-    },
-  ]
+  // Fetching table data from the backend
+  const fetchTableData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:3001/user/profiles'); // Replace with your backend endpoint
+      console.log("Fetched Data:", response.data); // Debug API response
+      setTableData(Array.isArray(response.data.users) ? response.data.users : []);
+    } catch (error) {
+      console.error('Error fetching table data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Call fetchTableData once on component mount
+  useEffect(() => {
+    fetchTableData();
+  }, []);
+
+  // Function to handle the new user addition
+  const handleUserSubmit = (newUser) => {
+    // Assuming newUser is returned from the backend and has the same structure
+    setAlertMessage('User added successfully');
+    setTimeout(() => setAlertMessage(''), 5000); // Clear the alert after 5 seconds
+
+    // Refetch table data after adding the user
+    fetchTableData(); // Trigger the refetch
+  };
 
   return (
     <div className="p-5">
-        <div className="flex justify-between items-center mb-5">
-            <p className="font-figtree text-4xl">ADMIN PANEL</p>
-            <button className="bg-buttonGray text-white px-7 py-3 rounded-lg">
-            Create User
-            </button>
-        </div>
+      <div className="flex justify-between items-center mb-5">
+        <p className="text-4xl">ADMIN PANEL</p>
+        <button
+          onClick={() => setShowForm(true)}
+          className="bg-buttonGray text-white px-7 py-3 rounded-lg"
+        >
+          Create User
+        </button>
+      </div>
       <div className="flex gap-4">
         {cardData.map((data, index) => (
           <AdminCard
@@ -60,9 +78,29 @@ const Admin = () => {
           />
         ))}
       </div>
-      <div className='mt-10'>
-      <AdminTable tableData={tableData}/>
+      <div className="mt-10">
+        {loading ? (
+          <p>Loading table data...</p>
+        ) : tableData.length > 0 ? (
+          <AdminTable tableData={tableData} setTableData={setTableData} />
+        ) : (
+          <p>No data to display</p>
+        )}
       </div>
+
+      {/* Display alert message */}
+      {alertMessage && (
+        <div className="bg-green-100 text-green-700 p-4 mt-4 rounded">
+          {alertMessage}
+        </div>
+      )}
+
+      {showForm && (
+        <UserForm
+          onClose={() => setShowForm(false)}
+          onSubmit={handleUserSubmit} // Pass the function to handle user creation
+        />
+      )}
     </div>
   );
 };
