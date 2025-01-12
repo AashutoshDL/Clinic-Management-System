@@ -20,7 +20,7 @@ const App = () => {
     const isLandingPage = location.pathname === '/';
 
     return (
-      <div className="flex">
+      <div className="flex font-figtree">
         {/* Conditionally render Navbar */}
         {!isLandingPage && <Navbar />}
         <div className="flex-1 mt-0"> {/* Content area */}

@@ -16,11 +16,15 @@ const AdminCard = ({ title, count, images }) => {
             key={index}
             className="w-14 h-14 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-gray-700"
           >
-            <img
-              src={image}
-              alt={`profile-pic-${index}`}
-              className="w-14 h-14 rounded-full object-cover"
-            />
+            {image ? (
+              <img
+                src={image}
+                alt={`profile-pic-${index}`}
+                className="w-14 h-14 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-gray-500">N/A</span>
+            )}
           </div>
         ))}
       </div>
