@@ -11,6 +11,8 @@ export default {
       },
       colors: {
         buttonGray: '#575757', // Add custom color
+        buttonGrayDark: '#3d3d3d',  // Darker shade
+
       },
     },
   },

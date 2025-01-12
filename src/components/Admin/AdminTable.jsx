@@ -8,6 +8,15 @@ const AdminTable = ({ tableData, setTableData }) => {
   const [formData, setFormData] = React.useState({});
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/user/profiles');
+      setTableData(response.data); // Update table data with the latest fetched data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   const handleDelete = async (userId) => {
     try {
       const response = await axios.delete(`http://localhost:3001/user/profiles/${userId}`);
@@ -20,11 +29,12 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   const handleEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:3001/user/profiles/${userId}`, formData);
+      const response = await axios.put(`http://localhost:3001/user/profiles/${editingUser.id}`, formData);
       console.log("Updated user:", response.data);
-      setTableData((prevData) =>
-        prevData.map((user) => (user.id === editingUser.id ? response.data : user))
-      );
+
+      // Refetch the data to ensure the table has the latest information
+      await fetchData();
+
       setIsModalOpen(false); // Close the modal after saving
       setEditingUser(null); // Clear the current editing user
     } catch (error) {
