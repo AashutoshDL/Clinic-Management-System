@@ -1,14 +1,18 @@
-import React from 'react'
-import Navbar from './Navbar'
+import React from 'react';
+import { useAuth } from '../context/AuthContext';  // Import the useAuth hook
 
 const Home = () => {
-  return (
-    <>
-      <div className='bg-gray-500'>
-        <h1>This fucking component</h1>
-      </div>
-    </>
-  )
-}
+  const { isLoggedIn, user } = useAuth();  // Access authentication state from context
 
-export default Home
+  return (
+    <div className='bg-buttonGray min-h-screen flex flex-col items-center justify-center'>
+      {isLoggedIn ? (
+        <h1 className="text-white text-3xl">Welcome, {user?.name}!</h1>
+      ) : (
+        <h1 className="text-white text-3xl">Please log in to continue.</h1>
+      )}
+    </div>
+  );
+};
+
+export default Home;

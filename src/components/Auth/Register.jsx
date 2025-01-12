@@ -3,29 +3,38 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox, PasswordInput, TextInput } from './FormElements';
-import axios from 'axios'
-
+import axios from 'axios';
 
 const Register = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const navigate=useNavigate();
+  const [currentStep, setCurrentStep] = React.useState(1); // Tracks the current step (page)
+  const navigate = useNavigate();
+
+  const nextStep = () => {
+    setCurrentStep((prevStep) => prevStep + 1);
+  };
+
+  const prevStep = () => {
+    setCurrentStep((prevStep) => prevStep - 1);
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-center text-2xl font-bold text-gray-800 mb-6">Signup</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 to-pink-200 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-xl space-y-6">
+        <h1 className="text-center text-3xl font-semibold text-gray-800 mb-6">Signup</h1>
+        <p className="text-center text-gray-600 mb-4">Create a new account to get started.</p>
+
         <Formik
           initialValues={{
             firstName: '',
             lastName: '',
-            userName:'',
+            userName: '',
             email: '',
             password: '',
             confirmPassword: '',
             acceptedTerms: false,
           }}
-          //validation using Yup a library
           validationSchema={Yup.object({
             firstName: Yup.string()
               .max(15, 'Must be 15 characters or less')
@@ -33,9 +42,9 @@ const Register = () => {
             lastName: Yup.string()
               .max(20, 'Must be 20 characters or less')
               .required('Required'),
-              userName: Yup.string()
+            userName: Yup.string()
               .max(20, 'Must be 20 characters or less')
-              .matches(/[0-9]/, 'Password must contain at least one number')
+              .matches(/[0-9]/, 'Username must contain at least one number')
               .required('Required'),
             email: Yup.string().email('Invalid email address').required('Required'),
             password: Yup.string()
@@ -52,79 +61,117 @@ const Register = () => {
               .required('Required')
               .oneOf([true], 'Please accept the terms and conditions before continuing.'),
           })}
-          //making api calls to the backend for registration
-          onSubmit={async(values, { setSubmitting }) => {
-              try{
-                const response= await axios.post(`http://localhost:3001/auth/register`,values,{
-                  headers:{
-                    'Content-Type':'application/json',
-                  }
-                })
-
-                const data=response.data;
-                alert(`Registration Completed. Please Verify your Email`)
-                sessionStorage.setItem('email', values.email);
-                navigate('/verifyEmail')
-              }catch(error){
-                console.log(values)
-                console.error("Error during signup",error);
-                if (error.response) {
-                  console.log("Response error data:", error.response.data);
-                }
-              }finally{
-                setSubmitting(false);
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              const response = await axios.post('http://localhost:3001/auth/register', values, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  withCredentials: true,
+                },
+              });
+              const data = response.data;
+              alert(`Registration Completed. Please Verify your Email`);
+              sessionStorage.setItem('email', values.email);
+              navigate('/verifyEmail');
+            } catch (error) {
+              console.error('Error during signup', error);
+              if (error.response) {
+                console.log('Response error data:', error.response.data);
               }
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
           {({ isSubmitting }) => (
-          <Form>
-            <TextInput label="First Name" name="firstName" type="text" placeholder="Your Name" />
-            <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
-            <TextInput label="User Name" name="userName" type="text" placeholder="Enter your username" />
-            <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
-            <PasswordInput
-              label="Password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="text-blue-500 text-sm mb-4 hover:underline"
-            >
-              {showPassword ? 'Hide' : 'Show'} Password
-            </button>
-            <PasswordInput
-              label="Confirm Password"
-              name="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Re-enter your password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="text-blue-500 text-sm mb-4 hover:underline"
-            >
-              {showConfirmPassword ? 'Hide' : 'Show'} Password
-            </button>
-            <br />
-            <Checkbox name="acceptedTerms">
-              I accept the terms and conditions
-            </Checkbox>
-            <button onClick={()=>{navigate('/termsandconditions')}} className="text-blue-500 text-sm hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >Check Terms and Conditions</button>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded mt-4 hover:bg-blue-600 transition"
-              disabled={isSubmitting}
-            >
-              Submit
-            </button>
-          </Form>
+            <Form className="space-y-4">
+              {/* Step 1 - Personal Information */}
+              {currentStep === 1 && (
+                <>
+                  <TextInput label="First Name" name="firstName" type="text" placeholder="Your First Name" />
+                  <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
+                  <TextInput label="User Name" name="userName" type="text" placeholder="Choose a username" />
+                  <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
+
+                  <div className="flex justify-between">
+                    <button
+                      type="button"
+                      className="py-2 px-4 bg-gray-300 text-black rounded-md"
+                      disabled={isSubmitting}
+                      onClick={nextStep}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {currentStep === 2 && (
+                <>
+                  <PasswordInput
+                    label="Password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="text-blue-500 text-sm mb-4 hover:underline focus:outline-none"
+                  >
+                    {showPassword ? 'Hide' : 'Show'} Password
+                  </button>
+                  <PasswordInput
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    placeholder="Re-enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="text-blue-500 text-sm mb-4 hover:underline focus:outline-none"
+                  >
+                    {showConfirmPassword ? 'Hide' : 'Show'} Password
+                  </button>
+
+                  <div className="flex items-center mb-4">
+                    <Checkbox name="acceptedTerms">
+                      I accept the terms and conditions
+                    </Checkbox>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <button
+                      type="button"
+                      className="py-2 px-4 bg-gray-300 text-black rounded-md"
+                      disabled={isSubmitting}
+                      onClick={prevStep}
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      className="py-2 px-4 bg-buttonGray hover:bg-buttonGrayDark text-white rounded-md"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Registering...' : 'Submit'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </Form>
           )}
         </Formik>
-        <p className='pt-4'>Already Registered ? <button onClick={()=>{navigate('/login')}}>Login</button></p>
+        <p className="pt-4 text-center">
+          Already registered?{' '}
+          <button
+            className="font-bold text-blue-600 hover:text-blue-700"
+            onClick={() => navigate('/login')}
+          >
+            Login
+          </button>
+        </p>
       </div>
     </div>
   );

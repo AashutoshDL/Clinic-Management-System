@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faQuestionCircle, faMessage, faUser, faCalendar, faCalculator, faCheck, faPhone, faGears} from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMessage, faUser, faCalendar, faCheck, faGears, faLock} from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext'; // Adjust the path as needed
 
 const Navbar = () => {
@@ -95,7 +95,8 @@ const Navbar = () => {
               : "mb-4 hover:text-white-600 p-4 rounded-lg"
           }
         >
-          <FontAwesomeIcon icon={faUser} className='mr-4'/> Login/Register
+          <FontAwesomeIcon icon={faLock} className='mr-4'/>
+          Register 
         </NavLink>
       )}
     </nav>

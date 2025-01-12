@@ -22,7 +22,7 @@ const LandingPage = () => {
       {/* Content */}
       <div className="relative z-20 text-center text-white px-6 md:px-12">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Welcome to CMS
+          Welcome to Clinic Management System
         </h1>
         <p className="text-lg md:text-xl mb-8">
           Streamline your clinic management with ease. Schedule, track, and manage appointments all in one place.
