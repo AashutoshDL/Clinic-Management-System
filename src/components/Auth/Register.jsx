@@ -1,27 +1,18 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox, PasswordInput, TextInput } from './FormElements';
 import axios from 'axios';
 
 const Register = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [currentStep, setCurrentStep] = React.useState(1); // Tracks the current step (page)
   const navigate = useNavigate();
-
-  const nextStep = () => {
-    setCurrentStep((prevStep) => prevStep + 1);
-  };
-
-  const prevStep = () => {
-    setCurrentStep((prevStep) => prevStep - 1);
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 to-pink-200 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-xl space-y-6">
+      <div className="max-w-5xl w-full bg-white p-8 rounded-lg shadow-xl space-y-6">
         <h1 className="text-center text-3xl font-semibold text-gray-800 mb-6">Signup</h1>
         <p className="text-center text-gray-600 mb-4">Create a new account to get started.</p>
 
@@ -84,85 +75,67 @@ const Register = () => {
           }}
         >
           {({ isSubmitting }) => (
-            <Form className="space-y-4">
-              {/* Step 1 - Personal Information */}
-              {currentStep === 1 && (
-                <>
-                  <TextInput label="First Name" name="firstName" type="text" placeholder="Your First Name" />
-                  <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
-                  <TextInput label="User Name" name="userName" type="text" placeholder="Choose a username" />
-                  <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
+            <Form className="flex space-x-8">
+              {/* Left Side: Personal Information */}
+              <div className="w-1/2 space-y-4">
+                <TextInput label="First Name" name="firstName" type="text" placeholder="Your First Name" />
+                <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
+                <TextInput label="User Name" name="userName" type="text" placeholder="Choose a username" />
+                <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
+              </div>
 
-                  <div className="flex justify-between">
-                    <button
-                      type="button"
-                      className="py-2 px-4 bg-gray-300 text-black rounded-md"
-                      disabled={isSubmitting}
-                      onClick={nextStep}
-                    >
-                      Next
-                    </button>
-                  </div>
-                </>
-              )}
+              {/* Right Side: Password and Terms */}
+              <div className="w-1/2 space-y-4">
+                <PasswordInput
+                  label="Password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-blue-500 text-sm mb-4 hover:underline focus:outline-none"
+                >
+                  {showPassword ? 'Hide' : 'Show'} Password
+                </button>
+                <PasswordInput
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Re-enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="text-blue-500 text-sm mb-4 hover:underline focus:outline-none"
+                >
+                  {showConfirmPassword ? 'Hide' : 'Show'} Password
+                </button>
 
-              {currentStep === 2 && (
-                <>
-                  <PasswordInput
-                    label="Password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                  />
+                <div className="flex items-center mb-4">
+                  <Checkbox name="acceptedTerms">
+                    I accept the {' '}
+                    <Link to='/termsandconditions' className='text-blue-500 hover:text-blue-700' >
+                    terms and conditions
+                    </Link>
+                  </Checkbox>
+                </div>
+
+                <div className="flex justify-center">
                   <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="text-blue-500 text-sm mb-4 hover:underline focus:outline-none"
+                    type="submit"
+                    className="py-2 px-24 bg-buttonGray hover:bg-buttonGrayDark text-white rounded-lg"
+                    disabled={isSubmitting}
                   >
-                    {showPassword ? 'Hide' : 'Show'} Password
+                    {isSubmitting ? 'Registering...' : 'Submit'}
                   </button>
-                  <PasswordInput
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Re-enter your password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    className="text-blue-500 text-sm mb-4 hover:underline focus:outline-none"
-                  >
-                    {showConfirmPassword ? 'Hide' : 'Show'} Password
-                  </button>
-
-                  <div className="flex items-center mb-4">
-                    <Checkbox name="acceptedTerms">
-                      I accept the terms and conditions
-                    </Checkbox>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <button
-                      type="button"
-                      className="py-2 px-4 bg-gray-300 text-black rounded-md"
-                      disabled={isSubmitting}
-                      onClick={prevStep}
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="submit"
-                      className="py-2 px-4 bg-buttonGray hover:bg-buttonGrayDark text-white rounded-md"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? 'Registering...' : 'Submit'}
-                    </button>
-                  </div>
-                </>
-              )}
+                </div>
+              </div>
             </Form>
           )}
         </Formik>
+
         <p className="pt-4 text-center">
           Already registered?{' '}
           <button
