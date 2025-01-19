@@ -2,7 +2,11 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
-  const { user , isLoggedIn}=useAuth();
+  const { user , isLoggedIn , logout}=useAuth();
+
+  const handleLogOut = () =>{
+    logout(); //calls from AuthContext
+  }
 
   if(!isLoggedIn){
     return(
@@ -25,7 +29,7 @@ const Profile = () => {
           <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
             Edit Profile
           </button>
-          <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition">
+          <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition" onClick={handleLogOut}>
             Log Out
           </button>
         </div>

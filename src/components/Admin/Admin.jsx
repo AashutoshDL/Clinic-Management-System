@@ -12,7 +12,7 @@ const Admin = () => {
 
   const cardData = [
     {
-      title: 'Patients',
+      title: 'Patients / Users',
       count: 69,
       images: ['/images/pic1.jpg', '/images/pic2.jpg', '/images/pic3.jpg'],
     },

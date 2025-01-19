@@ -11,6 +11,8 @@ import Reminders from './components/Reminders/Reminders';
 import VerifyEmail from './components/Auth/VerifyEmail';
 import Admin from './components/Admin/Admin';
 import { AuthProvider } from './components/context/AuthContext';
+import LoadingScreen from './components/Ui/LoadingScreen';
+import EmailReminders from './components/Reminders/EmailReminders';
 
 const App = () => {
   const AppContent = () => {
@@ -34,6 +36,8 @@ const App = () => {
             <Route path="/reminders" element={<Reminders />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
             <Route path='/admin' element={<Admin />} />
+            <Route path='/loading' element={<LoadingScreen />} />
+            <Route path='/emailReminder' element={<EmailReminders />} />
           </Routes>
         </div>
       </div>
