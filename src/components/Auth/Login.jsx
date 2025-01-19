@@ -36,8 +36,9 @@ const Login = () => {
                 },
               });
               const data = response.data;
+              console.log(data)
               alert(`Login Successful. Welcome, ${data.user.firstName}`);
-              login(data.user);
+              login(data.user.id);
               navigate('/home');
             } catch (error) {
               console.error('Error during login', error);

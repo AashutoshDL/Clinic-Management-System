@@ -5,38 +5,33 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    // Load user data from cookies on app initialization
-    const storedUser = Cookies.get('user');
-    if (storedUser) {
-      try {
-        setIsLoggedIn(true);
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Error parsing user data from cookie:', error);
-        // Handle error or reset user data
-      }
+    // Load user ID from cookies on app initialization
+    const storedUserId = Cookies.get('userId');
+    if (storedUserId) {
+      setIsLoggedIn(true);
+      setUserId(storedUserId);
     }
   }, []);
 
-  const login = (userData) => {
+  const login = (userId) => {
     setIsLoggedIn(true);
-    setUser(userData);
-    // Save user data in cookies
-    Cookies.set('user', JSON.stringify(userData), { expires: 7, secure: true });
+    setUserId(userId);
+    // Save user ID in cookies
+    Cookies.set('userId', userId, { expires: 7, secure: true });
   };
 
   const logout = () => {
     setIsLoggedIn(false);
-    setUser(null);
-    // Remove user data from cookies
-    Cookies.remove('user');
+    setUserId(null);
+    // Remove user ID from cookies
+    Cookies.remove('userId');
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

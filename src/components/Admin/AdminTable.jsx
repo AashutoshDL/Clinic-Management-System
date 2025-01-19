@@ -19,7 +19,7 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   const handleDelete = async (userId) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/user/profiles/${userId}`);
+      const response = await axios.delete(`http://localhost:3001/user/deleteProfiles/${userId}`);
       console.log("Deleted user:", response.data);
       setTableData((prevData) => prevData.filter(user => user.id !== userId));
     } catch (error) {
@@ -29,7 +29,7 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   const handleEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:3001/user/profiles/${editingUser.id}`, formData);
+      const response = await axios.put(`http://localhost:3001/user/updateProfiles/${editingUser.id}`, formData);
       console.log("Updated user:", response.data);
 
       // Refetch the data to ensure the table has the latest information
