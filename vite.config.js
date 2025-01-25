@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
   server: {
@@ -7,7 +8,11 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist', // Default build output directory
-    // If needed, set a base path for production deployment (e.g., if serving from a subdirectory)
-    base: '/',  // Adjust if you're using a subfolder (e.g., '/myapp/')
+    base: '/', // Adjust if you're using a subfolder (e.g., '/myapp/')
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // Add alias for '@/'
+    },
   },
 });
