@@ -33,11 +33,11 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/termsandconditions" element={<TermsConditions />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/reminders" element={<Reminders />} />
+            <Route path="/emailReminders" element={<Reminders />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
             <Route path='/admin' element={<Admin />} />
             <Route path='/loading' element={<LoadingScreen />} />
-            <Route path='/emailReminder' element={<EmailReminders />} />
+            <Route path='/reminders' element={<EmailReminders />} />
           </Routes>
         </div>
       </div>

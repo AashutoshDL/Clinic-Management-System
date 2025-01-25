@@ -19,15 +19,20 @@ export const AuthProvider = ({ children }) => {
   const login = (userId) => {
     setIsLoggedIn(true);
     setUserId(userId);
-    // Save user ID in cookies
+    // Save user ID and tokens in cookies
     Cookies.set('userId', userId, { expires: 7, secure: true });
+    // Cookies.set('accessToken', accessToken, { expires: 7, secure: true });
+    // Cookies.set('refreshToken', refreshToken, { expires: 7, secure: true });
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUserId(null);
-    // Remove user ID from cookies
+
+    // Remove user ID and tokens from cookies
     Cookies.remove('userId');
+    Cookies.remove('accessToken');
+    Cookies.remove('refreshToken');
   };
 
   return (
