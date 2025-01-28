@@ -21,13 +21,13 @@ const App = () => {
   const AppContent = () => {
     const location = useLocation(); // Get the current location
 
-    // Check if the current path is the landing page
-    const isLandingPage = location.pathname === '/';
+    // Check if the current path is the login or register page
+    const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname==='/' || location.pathname==='/verifyEmail';
 
     return (
       <div className="flex font-figtree">
         {/* Conditionally render Navbar */}
-        {!isLandingPage && <Navbar />}
+        {!isLoginOrRegisterPage && <Navbar />}
         <div className="flex-1 mt-0"> {/* Content area */}
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -52,9 +52,9 @@ const App = () => {
 
   return (
     <AuthProvider>
-    <Router>
-      <AppContent />
-    </Router> 
+      <Router>
+        <AppContent />
+      </Router> 
     </AuthProvider>
   );
 };

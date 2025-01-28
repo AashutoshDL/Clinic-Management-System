@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../Ui/LoadingScreen';
 
-const Profile = () => {
+const PatientProfile = () => {
   const { userId, isLoggedIn, accessToken, logout } = useAuth(); // Access token from context
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         // Send token in the Authorization header
-        const response = await axios.get(`http://localhost:3001/user/profile/${userId}`, {
+        const response = await axios.get(`http://localhost:3001/patient/getPatientByProfile/${userId}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`, // Include the token here
           },
@@ -92,4 +92,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default PatientProfile;

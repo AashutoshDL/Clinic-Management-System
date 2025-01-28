@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { Checkbox, PasswordInput, TextInput } from './FormElements';
+import { Checkbox, PasswordInput, TextInput, MySelect } from './FormElements';
 import axios from 'axios';
 
 const Register = () => {
@@ -18,8 +18,7 @@ const Register = () => {
 
         <Formik
           initialValues={{
-            firstName: '',
-            lastName: '',
+            name: '',
             userName: '',
             email: '',
             password: '',
@@ -27,11 +26,8 @@ const Register = () => {
             acceptedTerms: false,
           }}
           validationSchema={Yup.object({
-            firstName: Yup.string()
+            name: Yup.string()
               .max(15, 'Must be 15 characters or less')
-              .required('Required'),
-            lastName: Yup.string()
-              .max(20, 'Must be 20 characters or less')
               .required('Required'),
             userName: Yup.string()
               .max(20, 'Must be 20 characters or less')
@@ -78,12 +74,10 @@ const Register = () => {
             <Form className="flex space-x-8">
               {/* Left Side: Personal Information */}
               <div className="w-1/2 space-y-4">
-                <TextInput label="First Name" name="firstName" type="text" placeholder="Your First Name" />
-                <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
+                <TextInput label="Name" name="name" type="text" placeholder="Your Name" />
                 <TextInput label="User Name" name="userName" type="text" placeholder="Choose a username" />
                 <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
               </div>
-
               {/* Right Side: Password and Terms */}
               <div className="w-1/2 space-y-4">
                 <PasswordInput
@@ -112,7 +106,7 @@ const Register = () => {
                 >
                   {showConfirmPassword ? 'Hide' : 'Show'} Password
                 </button>
-
+  
                 <div className="flex items-center mb-4">
                   <Checkbox name="acceptedTerms">
                     I accept the {' '}
