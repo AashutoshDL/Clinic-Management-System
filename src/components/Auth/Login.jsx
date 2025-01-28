@@ -38,16 +38,19 @@ const Login = () => {
               const data = response.data;
               alert(`Login Successful. Welcome, ${data.user.firstName}`);
               login(data.user.id);
-              console.log(data.user.role)
-              if(data.user.role==='user'){
-                navigate('/home');
-              }else if(data.user.role==='admin'){
-                navigate('/admin')
-              }
+                navigate('/profile'); // Redirect to the patient dashboard
+
+              // if (data.user.roles.includes('doctor')) {
+              //   navigate('/doctorProfile'); // Redirect to the doctor dashboard
+              // } else if (data.user.roles.includes('patient')) {
+              //   navigate('/profile'); // Redirect to the patient dashboard
+              // } else {
+              //   alert('Role not supported.'); // Fallback if role is unexpected
+              // }
             } catch (error) {
               console.error('Error during login', error);
               if (error.response) {
-                alert(error.response.data.message)
+                alert(error.response.data.message);
                 console.error('Response error:', error.response.data);
               } else if (error.request) {
                 console.error('Request error: No response received from the server');
@@ -77,7 +80,6 @@ const Login = () => {
               </button>
               <MySelect label="Role" name="role" className="w-full px-4 py-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-50">
                 <option value="">Select a job type</option>
-                <option value="user">User</option>
                 <option value="patient">Patient</option>
                 <option value="doctor">Doctor</option>
                 <option value="lab-technician">Lab Technician</option>

@@ -38,21 +38,14 @@ const Profile = () => {
         headers: {
           'Authorization': `Bearer ${accessToken}`, // Include the token here
         },
-        withCredentials: true,
-      });
+      withCredentials: true,
+    });
     } catch (error) {
       console.error('Error during logout:', error);
     }
     logout(); // Clear local state
     navigate('/login'); // Redirect to login page
   };
-
-  useEffect(() => {
-    if (profileData && profileData.role === 'doctor') {
-      // Redirect to doctor profile if the user is a doctor
-      navigate('/doctor-profile');
-    }
-  }, [profileData, navigate]); // Dependency on profileData and navigate
 
   if (!isLoggedIn) {
     return (

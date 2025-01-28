@@ -24,7 +24,7 @@ const AdminTable = ({ tableData, setTableData }) => {
       setTableData((prevData) => prevData.filter(user => user.id !== userId));
     } catch (error) {
       console.error('Error deleting user:', error);
-    }
+    } 
   };
 
   const handleEdit = async () => {

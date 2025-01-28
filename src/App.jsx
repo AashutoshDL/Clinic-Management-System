@@ -13,6 +13,9 @@ import Admin from './components/Admin/Admin';
 import { AuthProvider } from './components/context/AuthContext';
 import LoadingScreen from './components/Ui/LoadingScreen';
 import EmailReminders from './components/Reminders/EmailReminders';
+import Appointment from './components/Appointment/Appointment';
+import DoctorProfile from './components/Profile/DoctorProfile';
+import ReportSharing from './components/Report/ReportSharing';
 
 const App = () => {
   const AppContent = () => {
@@ -33,11 +36,14 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/termsandconditions" element={<TermsConditions />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/appointment" element={<Appointment />} />
             <Route path="/emailReminders" element={<Reminders />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
             <Route path='/admin' element={<Admin />} />
             <Route path='/loading' element={<LoadingScreen />} />
+            <Route path='/doctorProfile' element={<DoctorProfile/>} />
             <Route path='/reminders' element={<EmailReminders />} />
+            <Route path='/reportSharing' element={<ReportSharing />} />
           </Routes>
         </div>
       </div>

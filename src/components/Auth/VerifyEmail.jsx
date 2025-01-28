@@ -54,14 +54,6 @@ const VerifyEmail = () => {
     }
   };
 
-  //checks from useAuth context that if the user is logged in or not and then updates the user accordingly
-  if(!isLoggedIn){
-    return(
-      <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-800">You need to log in to view this page.</h1>
-      </div>
-    )
-  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-6 w-80">
