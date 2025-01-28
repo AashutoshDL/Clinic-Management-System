@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import LoadingScreen from '../Ui/LoadingScreen'
+import axios from 'axios';
+import LoadingScreen from '../Ui/LoadingScreen';
 
 const Profile = () => {
-  const { userId, isLoggedIn, logout } = useAuth();
+  const { userId, isLoggedIn, accessToken, logout } = useAuth(); // Access token from context
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -12,13 +13,14 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/user/profile/${userId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setProfileData(data.user);
-        } else {
-          console.error('Failed to fetch profile data');
-        }
+        // Send token in the Authorization header
+        const response = await axios.get(`http://localhost:3001/user/profile/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`, // Include the token here
+          },
+          withCredentials: true, // Include credentials (cookies)
+        });
+        setProfileData(response.data.user);
       } catch (error) {
         console.error('Error fetching profile:', error);
       } finally {
@@ -27,10 +29,21 @@ const Profile = () => {
     };
 
     if (userId) fetchProfileData();
-  }, [userId]);
+  }, [userId, accessToken]); // Include accessToken as a dependency
 
-  const handleLogOut = () => {
-    logout();
+  const handleLogOut = async () => {
+    try {
+      // Call the API to log out and clear cookies on the server
+      await axios.post('http://localhost:3001/auth/logout', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`, // Include the token here
+        },
+      withCredentials: true,
+    });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+    logout(); // Clear local state
     navigate('/login'); // Redirect to login page
   };
 

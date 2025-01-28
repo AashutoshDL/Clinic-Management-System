@@ -32,22 +32,27 @@ const Login = () => {
               const response = await axios.post('http://localhost:3001/auth/login', values, {
                 headers: {
                   'Content-Type': 'application/json',
-                  withCredentials: true,
                 },
+                withCredentials: true,
               });
               const data = response.data;
-              console.log(data)
               alert(`Login Successful. Welcome, ${data.user.firstName}`);
               login(data.user.id);
-              navigate('/home');
+              console.log(data.user.role)
+              if(data.user.role==='user'){
+                navigate('/home');
+              }else if(data.user.role==='admin'){
+                navigate('/admin')
+              }
             } catch (error) {
               console.error('Error during login', error);
               if (error.response) {
-                console.log('Response error:', error.response.data);
+                alert(error.response.data.message)
+                console.error('Response error:', error.response.data);
               } else if (error.request) {
-                console.log('Request error: No response received from the server');
+                console.error('Request error: No response received from the server');
               } else {
-                console.log('Unexpected error:', error.message);
+                console.error('Unexpected error:', error.message);
               }
             } finally {
               setSubmitting(false);
@@ -77,7 +82,6 @@ const Login = () => {
                 <option value="doctor">Doctor</option>
                 <option value="lab-technician">Lab Technician</option>
                 <option value="admin">Admin</option>
-                <option value="superadmin">Super Admin</option>
               </MySelect>
               <div className="flex justify-between items-center">
                 <button

@@ -49,7 +49,7 @@ const Navbar = () => {
       </NavLink>
 
       <NavLink
-        to="/calendar"
+        to="/appointment"
         className={({ isActive }) =>
           isActive
             ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
@@ -57,7 +57,7 @@ const Navbar = () => {
         }
       >
         <FontAwesomeIcon icon={faCalendar} className='mr-4'/>
-        Calendar
+        Appointment
       </NavLink>
 
       <NavLink
