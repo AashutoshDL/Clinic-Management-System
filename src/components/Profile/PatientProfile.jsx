@@ -14,13 +14,14 @@ const PatientProfile = () => {
     const fetchProfileData = async () => {
       try {
         // Send token in the Authorization header
-        const response = await axios.get(`http://localhost:3001/patient/getPatientByProfile/${userId}`, {
+        console.log(userId);
+        const response = await axios.get(`http://localhost:3001/patient/getPatientById/${userId}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`, // Include the token here
           },
           withCredentials: true, // Include credentials (cookies)
         });
-        setProfileData(response.data.user);
+        setProfileData(response.data.patient);
       } catch (error) {
         console.error('Error fetching profile:', error);
       } finally {
@@ -32,19 +33,8 @@ const PatientProfile = () => {
   }, [userId, accessToken]); // Include accessToken as a dependency
 
   const handleLogOut = async () => {
-    try {
-      // Call the API to log out and clear cookies on the server
-      await axios.post('http://localhost:3001/auth/logout', {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`, // Include the token here
-        },
-      withCredentials: true,
-    });
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-    logout(); // Clear local state
-    navigate('/login'); // Redirect to login page
+    logout();
+    navigate('/login');
   };
 
   if (!isLoggedIn) {
@@ -68,9 +58,9 @@ const PatientProfile = () => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-4xl font-bold">
-            {profileData?.firstName?.charAt(0).toUpperCase()}
+            {profileData?.name?.charAt(0).toUpperCase()}
           </div>
-          <h2 className="text-xl font-semibold mt-4">{profileData.firstName}</h2>
+          <h2 className="text-xl font-semibold mt-4">{profileData.name}</h2>
           <p className="text-gray-600 text-sm">{profileData.role}</p>
         </div>
         <div className="mt-6 flex justify-between">

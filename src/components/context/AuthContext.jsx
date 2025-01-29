@@ -12,8 +12,8 @@ export const AuthProvider = ({ children }) => {
   // Function to check if the user is authenticated
   const checkAuth = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/auth/me', {
-        withCredentials: true, // Include cookies in the request
+      const response = await axios.get('http://localhost:3001/me', {
+        withCredentials: true,
       });
       // If the request is successful, the user is authenticated
       setIsLoggedIn(true);

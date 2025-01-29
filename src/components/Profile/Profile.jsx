@@ -4,8 +4,8 @@ import PatientProfile from './PatientProfile'; // Assuming you have a PatientPro
 import DoctorProfile from './DoctorProfile'; // Assuming you have a DoctorProfile component
 
 const Profile = () => {
-    // const { role } = useAuth(); // Access token from context
-    const role='patient';
+    const { role } = useAuth(); // Access token from context
+    // const role='patient';
   
 
   return (
