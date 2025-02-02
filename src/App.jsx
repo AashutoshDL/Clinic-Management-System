@@ -16,6 +16,8 @@ import EmailReminders from './components/Reminders/EmailReminders';
 import Appointment from './components/Appointment/Appointment';
 import DoctorProfile from './components/Profile/DoctorProfile';
 import ReportSharing from './components/Report/ReportSharing';
+import History from './components/History/History';
+import Chat from './components/chat/Chat';
 
 const App = () => {
   const AppContent = () => {
@@ -44,11 +46,13 @@ const App = () => {
             <Route path='/doctorProfile' element={<DoctorProfile/>} />
             <Route path='/reminders' element={<EmailReminders />} />
             <Route path='/reportSharing' element={<ReportSharing />} />
+            <Route path='/messages' element={<Chat />} />
+            <Route path='/history' element={<History />} />
           </Routes>
         </div>
       </div>
     );
-  };
+  };  
 
   return (
     <AuthProvider>

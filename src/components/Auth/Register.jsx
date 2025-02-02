@@ -33,7 +33,13 @@ const Register = () => {
               .max(20, 'Must be 20 characters or less')
               .matches(/[0-9]/, 'Username must contain at least one number')
               .required('Required'),
-            email: Yup.string().email('Invalid email address').required('Required'),
+              email: Yup.string()
+              .email('Invalid email address')
+              .matches(
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                'Invalid email address'
+              )
+              .required('Required'),
             password: Yup.string()
               .min(5, 'Password must be at least 5 characters')
               .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
