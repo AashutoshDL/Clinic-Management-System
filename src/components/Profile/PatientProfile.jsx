@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../Ui/LoadingScreen';
@@ -14,7 +14,7 @@ const PatientProfile = () => {
     const fetchProfileData = async () => {
       try {
         // Send token in the Authorization header
-        console.log(userId);
+        // console.log(userId) ;
         const response = await axios.get(`http://localhost:3001/patient/getPatientById/${userId}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`, // Include the token here
@@ -74,7 +74,7 @@ const PatientProfile = () => {
             className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
             onClick={handleLogOut}
           >
-            Log Out
+            Logout
           </button>
         </div>
       </div>

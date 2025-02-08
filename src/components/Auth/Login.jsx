@@ -3,14 +3,14 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { PasswordInput, TextInput, MySelect } from '../Auth/FormElements';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
-import Cookies from 'js-cookie'; // Import js-cookie
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth(); // Get login function from context
+  const {checkAuth}=useAuth();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 to-pink-200 py-12 px-4 sm:px-6 lg:px-8">
@@ -42,13 +42,10 @@ const Login = () => {
                 },
                 withCredentials: true, // Include cookies with the request
               });
-
-              // Tokens are automatically sent as cookies
               const { accessToken, refreshToken } = response.data;
-
-              // Call login function to store the cookies and update state
-              login(accessToken, refreshToken);
-              navigate('/profile'); // Redirect to profile after successful login
+              login(accessToken,refreshToken);
+              await checkAuth();
+              navigate('/profile'); 
             } catch (error) {
               console.error('Error during login', error);
               if (error.response) {

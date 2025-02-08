@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faMessage, faUser, faCalendar, faCheck, faGears, faLock, faClock} from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../context/AuthContext'; // Adjust the path as needed
+import { useAuth } from '../../context/AuthContext'; // Adjust the path as needed
 
 const Navbar = () => {
   const { isLoggedIn, user } = useAuth(); // Get the login status and user from context

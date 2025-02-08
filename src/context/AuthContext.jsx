@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
       setRole(null);
     }
   };
-
   // Check if the user is authenticated when the app loads
   useEffect(() => {
     checkAuth();
@@ -45,10 +44,8 @@ export const AuthProvider = ({ children }) => {
       // Send a request to the backend to clear the session
       await axios.post('http://localhost:3001/auth/logout', {}, { withCredentials: true });
 
-      // Clear the cookies on the frontend after successful logout
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
-      
       setIsLoggedIn(false);
       setUserId(null);
       setRole(null);
@@ -58,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userId, role, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userId, role, login, logout, checkAuth}}>
       {children}
     </AuthContext.Provider>
   );

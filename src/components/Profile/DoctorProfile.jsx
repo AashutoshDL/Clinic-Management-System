@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../Ui/LoadingScreen';
@@ -9,12 +9,15 @@ const DoctorProfile = () => {
   const [doctorData, setDoctorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // State to toggle edit form visibility
+  const [isEditing, setIsEditing] = useState(false);
   const [specialization, setSpecialization] = useState('');
-  const [description, setDescription] = useState('');
+  const [information, setInformation] = useState('');
   const [dutyTimeFrom, setDutyTimeFrom] = useState('');
   const [dutyTimeTo, setDutyTimeTo] = useState('');
-  const [formError, setFormError] = useState(null); // To track any errors during form submission
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [newAvailableTimeFrom, setNewAvailableTimeFrom] = useState('');
+  const [newAvailableTimeTo, setNewAvailableTimeTo] = useState('');
+  const [formError, setFormError] = useState(null);
   const navigate = useNavigate();
 
   // Fetch Doctor Data
@@ -22,27 +25,24 @@ const DoctorProfile = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log(userId)
       const doctorResponse = await axios.get(`http://localhost:3001/doctor/getDoctorById/${userId}`, {
         headers: { 'Authorization': `Bearer ${accessToken}` },
         withCredentials: true,
       });
 
       const doctor = doctorResponse.data.doctor;
-      console.log(doctor)
       setDoctorData(doctor);
 
-      // Check if dutyTime exists and set fallback values
       if (doctor.dutyTime) {
-        setDutyTimeFrom(doctor.dutyTime.from || '');  // Default to empty string if undefined
-        setDutyTimeTo(doctor.dutyTime.to || '');  // Default to empty string if undefined
+        setDutyTimeFrom(doctor.dutyTime.from || '');
+        setDutyTimeTo(doctor.dutyTime.to || '');
       } else {
         setDutyTimeFrom('');
         setDutyTimeTo('');
       }
-
       setSpecialization(doctor.specialization || '');
-      setDescription(doctor.description || '');
+      setInformation(doctor.information || '');
+      setAvailableTimes(doctor.availableTimes || []); // Set available times
     } catch (error) {
       console.error('Error fetching doctor data:', error);
       setError('Failed to load doctor data. Please try again later.');
@@ -63,11 +63,12 @@ const DoctorProfile = () => {
 
     const doctorData = {
       specialization,
-      description,
+      information,
       dutyTime: {
         from: dutyTimeFrom,
         to: dutyTimeTo,
       },
+      availableTimes, // Include available times in the profile update
     };
 
     try {
@@ -80,12 +81,27 @@ const DoctorProfile = () => {
       );
       console.log('Doctor Data Saved:', response.data);
       alert('Doctor information updated successfully!');
-      setDoctorData(response.data.doctor); // Update the doctor data immediately
-      setIsEditing(false); // Close the edit form
+      setDoctorData(response.data.doctor);
+      setIsEditing(false);
     } catch (error) {
       console.error('Error saving doctor data:', error);
       setFormError('Failed to save doctor data. Please try again later.');
     }
+  };
+
+  // Handle adding available time range
+  const handleAddAvailableTime = () => {
+    if (newAvailableTimeFrom && newAvailableTimeTo) {
+      setAvailableTimes([...availableTimes, { from: newAvailableTimeFrom, to: newAvailableTimeTo }]);
+      setNewAvailableTimeFrom(''); // Reset from input field
+      setNewAvailableTimeTo(''); // Reset to input field
+    }
+  };
+
+  // Handle deleting an available time slot
+  const handleDeleteAvailableTime = (index) => {
+    const updatedAvailableTimes = availableTimes.filter((_, i) => i !== index);
+    setAvailableTimes(updatedAvailableTimes);
   };
 
   if (!isLoggedIn) {
@@ -98,11 +114,15 @@ const DoctorProfile = () => {
     return <div className="min-h-screen flex items-center justify-center"><p className="text-xl text-red-600">{error}</p></div>;
   }
 
+  const handleLogOut = async () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
         {isEditing ? (
-          // Edit Form as Overlay
           <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Update Doctor Information</h2>
@@ -124,13 +144,13 @@ const DoctorProfile = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="description" className="block text-gray-700">Description</label>
+                  <label htmlFor="information" className="block text-gray-700">Information</label>
                   <textarea
-                    id="description"
+                    id="information"
                     className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter doctor description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter doctor information"
+                    value={information}
+                    onChange={(e) => setInformation(e.target.value)}
                     required
                   />
                 </div>
@@ -153,6 +173,51 @@ const DoctorProfile = () => {
                   </div>
                 </div>
 
+                <div className="mb-4">
+                  <label htmlFor="available-times" className="block text-gray-700">Available Times</label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="time"
+                      value={newAvailableTimeFrom}
+                      onChange={(e) => setNewAvailableTimeFrom(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="From"
+                    />
+                    <input
+                      type="time"
+                      value={newAvailableTimeTo}
+                      onChange={(e) => setNewAvailableTimeTo(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="To"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddAvailableTime}
+                      className="bg-blue-500 text-white p-2 rounded-md"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <div className="mt-2">
+                    {availableTimes.length > 0 && (
+                      <ul className="list-disc pl-5 text-sm text-gray-600">
+                        {availableTimes.map((time, index) => (
+                          <li key={index} className="flex items-center justify-between">
+                            {`${time.from} - ${time.to}`}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteAvailableTime(index)}
+                              className="ml-2 text-red-500 hover:text-red-700"
+                            >
+                              Delete
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600"
@@ -163,7 +228,6 @@ const DoctorProfile = () => {
             </div>
           </div>
         ) : (
-          // Doctor Profile Display
           <>
             <div className="flex flex-col items-center">
               <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-4xl font-bold">
@@ -176,20 +240,21 @@ const DoctorProfile = () => {
             <div className="mt-6">
               <p className="text-sm text-gray-600"><strong>Email:</strong> {doctorData.email}</p>
               <p className="text-sm text-gray-600"><strong>Specialization:</strong> {doctorData.specialization || 'Not provided'}</p>
+              <p className="text-sm text-gray-600"><strong>Information:</strong> {doctorData.information || 'Not provided'}</p>
               <p className="text-sm text-gray-600"><strong>Duty Time:</strong> {doctorData.dutyTime ? `${doctorData.dutyTime.from} - ${doctorData.dutyTime.to}` : 'Not set'}</p>
-              <p className="text-sm text-gray-600"><strong>Available Times:</strong> {doctorData.availableTimes.length > 0 ? doctorData.availableTimes.join(', ') : 'Not available'}</p>
+              <p className="text-sm text-gray-600"><strong>Available Times:</strong> {doctorData.availableTimes.length > 0 ? doctorData.availableTimes.map(time => `${time.from} - ${time.to}`).join(', ') : 'None'}</p>
             </div>
 
             <div className="mt-6 flex justify-between">
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
-                onClick={() => setIsEditing(true)} // Show the edit form as an overlay
+                className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                onClick={() => setIsEditing(true)}
               >
                 Edit Profile
               </button>
               <button
-                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
-                onClick={() => navigate('/login')}
+                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                onClick={handleLogOut}
               >
                 Log Out
               </button>
