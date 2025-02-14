@@ -4,7 +4,7 @@ import { Home, MessageSquare, User, Calendar, CheckSquare, Settings, Lock, Clock
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, role } = useAuth();
   const navigate = useNavigate();
 
   const NavItem = ({ to, icon: Icon, children }) => (
@@ -41,31 +41,18 @@ const Navbar = () => {
           <NavItem to="/messages" icon={MessageSquare}>Messages</NavItem>
           <NavItem to="/appointment" icon={Calendar}>Appointment</NavItem>
           <NavItem to="/history" icon={Clock}>History</NavItem>
-          
+        </div>
+
+        {/* Move Profile/Login NavItems to the bottom */}
+        <div className="mt-auto px-4 py-6">
           {isLoggedIn ? (
             <NavItem to="/profile" icon={User}>Profile</NavItem>
           ) : (
             <NavItem to="/login" icon={Lock}>Register</NavItem>
           )}
         </div>
-
-        {isLoggedIn && (
-          <div className="border-t border-gray-200 p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <User className="w-5 h-5 text-blue-950" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{user?.name || 'User'}</p>
-                <p className="text-xs text-gray-500">{user?.email || 'user@example.com'}</p>
-              </div>
-            </div>
-          </div>
-        )}
       </nav>
-      <div className="flex-1">
-        {/* Main content area */}
-      </div>
+      <div className="flex-1"></div>
     </div>
   );
 };

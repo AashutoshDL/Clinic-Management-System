@@ -1,6 +1,5 @@
 import React from 'react';
 import { Bed } from 'lucide-react'; // Import the Bed icon from Lucide
-import { useNavigate } from 'react-router-dom';
 
 const AdminCard = ({ title, count, images }) => {
   return (
