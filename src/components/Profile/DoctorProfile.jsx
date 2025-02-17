@@ -116,7 +116,7 @@ const DoctorProfile = () => {
 
   const handleLogOut = async () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
