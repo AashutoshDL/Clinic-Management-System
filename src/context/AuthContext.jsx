@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       setUserId(response.data.id);  // Set userId from the server response
       setRole(response.data.role);  // Set user role from the server response
     } catch (error) {
-      console.error('Error checking authentication:', error);
+      // console.error('Error checking authentication:', error);
       setIsLoggedIn(false);
       setUserId(null);
       setRole(null);

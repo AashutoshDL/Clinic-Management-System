@@ -34,7 +34,7 @@ const PatientProfile = () => {
 
   const handleLogOut = async () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   if (!isLoggedIn) {

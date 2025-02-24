@@ -18,19 +18,19 @@ import DoctorProfile from './components/Profile/DoctorProfile';
 import ReportSharing from './components/Report/ReportSharing';
 import History from './components/History/History';
 import Chat from './components/chat/Chat';
+import Superadmin from './components/Superadmin/Superadmin';
+import Reports from './components/Superadmin/Reports';
 
 const App = () => {
   const AppContent = () => {
-    const location = useLocation(); // Get the current location
+    const location = useLocation();
 
-    // Check if the current path is the login or register page
-    const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname==='/' || location.pathname==='/verifyEmail';
+    const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname==='/' || location.pathname==='/verifyEmail' || location.pathname==='/superadmin';
 
     return (
       <div className="flex font-figtree">
-        {/* Conditionally render Navbar */}
         {!isLoginOrRegisterPage && <Navbar />}
-        <div className="flex-1 mt-0"> {/* Content area */}
+        <div className="flex-1 mt-0">
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<Home />} />
@@ -48,6 +48,8 @@ const App = () => {
             <Route path='/reportSharing' element={<ReportSharing />} />
             <Route path='/messages' element={<Chat />} />
             <Route path='/history' element={<History />} />
+            <Route path='/superadmin' element={<Superadmin />} />
+            <Route path='/reports' element={<Reports/>} />
           </Routes>
         </div>
       </div>
