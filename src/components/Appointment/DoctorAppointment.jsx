@@ -1,39 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const DoctorAppointment = () => {
   const { userId, role } = useAuth();  // Get user data (assuming role is 'doctor')
   const [appointments, setAppointments] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');  // State for search query
-  const navigate = useNavigate();  // For navigation
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-  // Dummy appointments data
-  const dummyAppointments = [
-    {
-      id: 1,
-      patientName: 'John Doe',
-      specialization: 'Cardiology',
-      time: '1:00 PM',
-    },
-    {
-      id: 2,
-      patientName: 'Jane Smith',
-      specialization: 'Dermatology',
-      time: '10:00 AM',
-    },
-    {
-      id: 3,
-      patientName: 'Alex Johnson',
-      specialization: 'Orthopedics',
-      time: '3:00 PM',
-    },
-  ];
-
-  // Fetch dummy appointments
-  const fetchAppointments = () => {
-    // Simulating API call
-    setAppointments(dummyAppointments);
+  // Fetch appointments by doctor ID
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3001/appointments/getAppointmentsById/${userId}`);
+      if (response.status === 200) {
+        setAppointments(response.data.appointments);
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
   };
 
   // Handle rescheduling the appointment
@@ -60,8 +45,10 @@ const DoctorAppointment = () => {
   );
 
   useEffect(() => {
-    fetchAppointments();  // Load dummy appointments
-  }, [role]);
+    if (role === 'doctor') {
+      fetchAppointments();  // Load appointments for the doctor
+    }
+  }, [role, userId]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -89,17 +76,17 @@ const DoctorAppointment = () => {
         {filteredAppointments.length > 0 ? (
           <div className="space-y-6">
             {filteredAppointments.map((appointment) => (
-              <div key={appointment.id} className="bg-white shadow-md p-6 rounded-lg">
+              <div key={appointment._id || appointment.patientName + appointment.time} className="bg-white shadow-md p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-800">{appointment.patientName}</h3>
                 <p className="text-gray-600">Specialization: {appointment.specialization}</p>
                 <p className="text-gray-500 mt-3">Scheduled Time: {appointment.time}</p>
                 <div className="mt-4 flex justify-between">
-                  <button
+                  {/* <button
                     onClick={() => handleReschedule(appointment.id, '10:00 AM')} // Example reschedule to '10:00 AM'
                     className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-all duration-200"
                   >
                     Reschedule
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => handleCancelAppointment(appointment.id)}
                     className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-all duration-200"

@@ -10,7 +10,7 @@ import Profile from './components/Profile/Profile';
 import Reminders from './components/Reminders/Reminders';
 import VerifyEmail from './components/Auth/VerifyEmail';
 import Admin from './components/Admin/Admin';
-import { AuthProvider } from './components/context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import LoadingScreen from './components/Ui/LoadingScreen';
 import EmailReminders from './components/Reminders/EmailReminders';
 import Appointment from './components/Appointment/Appointment';

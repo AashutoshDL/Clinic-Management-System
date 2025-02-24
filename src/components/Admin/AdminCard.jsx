@@ -1,29 +1,28 @@
 import React from 'react';
-import { faBed } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Bed } from 'lucide-react'; // Import the Bed icon from Lucide
 
 const AdminCard = ({ title, count, images }) => {
   return (
-    <div className="bg-gray-100 p-5 rounded-lg shadow-md flex-1">
-      <div className="flex justify-between items-center">
-        <h4 className="text-2xl font-semibold">{title}</h4>
-        <FontAwesomeIcon icon={faBed} className="text-gray-600 text-4xl" />
+    <div className="bg-white p-6 rounded-lg shadow-lg flex-1 transition-all hover:shadow-xl transform hover:scale-105">
+      <div className="flex justify-between items-center mb-4">
+        <h4 className="text-xl font-semibold text-gray-700">{title}</h4>
+        <Bed className="text-gray-600 text-3xl" /> {/* Enhanced icon size for better visibility */}
       </div>
-      <p className="text-5xl font-extrabold mb-5">{count}</p>
-      <div className="flex items-center gap-2 mt-3">
+      <p className="text-4xl font-extrabold text-gray-800 mb-5">{count}</p>
+      <div className="flex items-center gap-3 mt-3">
         {images.map((image, index) => (
           <div
             key={index}
-            className="w-14 h-14 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-gray-700"
+            className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-300"
           >
             {image ? (
               <img
                 src={image}
                 alt={`profile-pic-${index}`}
-                className="w-14 h-14 rounded-full object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-gray-500">N/A</span>
+              <span className="text-gray-500 text-lg font-bold">N/A</span>
             )}
           </div>
         ))}

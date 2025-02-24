@@ -1,105 +1,59 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMessage, faUser, faCalendar, faCheck, faGears, faLock, faClock} from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../context/AuthContext'; // Adjust the path as needed
+import { useNavigate, NavLink } from 'react-router-dom';
+import { Home, MessageSquare, User, Calendar, CheckSquare, Settings, Lock, Clock } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
-  const { isLoggedIn, user } = useAuth(); // Get the login status and user from context
+  const { isLoggedIn, role } = useAuth();
+  const navigate = useNavigate();
+
+  const NavItem = ({ to, icon: Icon, children }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center w-full px-4 py-3 mb-2 rounded-lg transition-all duration-200 ease-in-out ${
+          isActive
+            ? "bg-blue-950 text-white shadow-lg"
+            : "text-gray-600 hover:bg-blue-50 hover:text-blue-950"
+        }`
+      }
+    >
+      <Icon className="w-5 h-5 mr-3" />
+      <span className="font-medium">{children}</span>
+    </NavLink>
+  );
 
   return (
-    <nav className="bg-white-400 border-r-2 h-min w-48 flex flex-col p-4 mt-20 font-archivo items-start">
-      <div>
-        <img src='/images/1-nobg1.png' alt='logo' />
-      </div>
-      <NavLink
-        to="/home"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
-            : "mb-4 hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-        <FontAwesomeIcon icon={faHome} className='mr-4'/>
-        Home
-      </NavLink>
+    <div className="flex min-h-screen">
+      <nav className="bg-white border-r border-gray-200 w-64 flex flex-col flex-shrink-0">
+        <div className="p-6 border-b border-gray-100">
+          <img 
+            src="/images/1-nobg1.png" 
+            alt="logo" 
+            className="h-12 w-auto mx-auto"
+            onClick={() => navigate('/')}
+          />
+        </div>
 
-      <NavLink
-        to="/reminders"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
-            : "mb-4 hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-        <FontAwesomeIcon icon={faCheck} className='mr-4'/>
-        Reminders
-      </NavLink>
+        <div className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <NavItem to="/home" icon={Home}>Home</NavItem>
+          <NavItem to="/reminders" icon={CheckSquare}>Reminders</NavItem>
+          <NavItem to="/messages" icon={MessageSquare}>Messages</NavItem>
+          <NavItem to="/appointment" icon={Calendar}>Appointment</NavItem>
+          <NavItem to="/history" icon={Clock}>History</NavItem>
+        </div>
 
-      <NavLink
-        to="/messages"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
-            : "mb-4 hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-        <FontAwesomeIcon icon={faMessage} className='mr-4'/>
-        Messages
-      </NavLink>
-
-      <NavLink
-        to="/appointment"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
-            : "mb-4  hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-        <FontAwesomeIcon icon={faCalendar} className='mr-4'/>
-        Appointment
-      </NavLink>
-
-      <NavLink
-        to="/history"
-        className={({ isActive }) =>
-          isActive
-            ? "mb-4 bg-blue-950 text-white p-4 pr-4 rounded-lg"
-            : "mb-4  hover:text-white-600 p-4 rounded-lg"
-        }
-      >
-        <FontAwesomeIcon icon={faClock} className='mr-4'/>
-        History
-      </NavLink>
-
-      {isLoggedIn ? (
-        // Show Profile link if logged in
-        <NavLink
-          to="/profile"
-          className={({ isActive }) =>
-            isActive
-              ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
-              : "mb-4 hover:text-white-600 p-4 rounded-lg"
-          }
-        >
-          <FontAwesomeIcon icon={faUser} className='mr-4'/>
-          Profile
-        </NavLink>
-      ) : (
-        // Show Login/Register link if not logged in
-        <NavLink
-          to="/login"
-          className={({ isActive }) =>
-            isActive
-              ? "mb-4 bg-blue-950 text-white p-4 pr-8 rounded-lg"
-              : "mb-4 hover:text-white-600 p-4 rounded-lg"
-          }
-        >
-          <FontAwesomeIcon icon={faLock} className='mr-4'/>
-          Register 
-        </NavLink>
-      )}
-    </nav>
+        {/* Move Profile/Login NavItems to the bottom */}
+        <div className="mt-auto px-4 py-6">
+          {isLoggedIn ? (
+            <NavItem to="/profile" icon={User}>Profile</NavItem>
+          ) : (
+            <NavItem to="/login" icon={Lock}>Register</NavItem>
+          )}
+        </div>
+      </nav>
+      <div className="flex-1"></div>
+    </div>
   );
 };
 
