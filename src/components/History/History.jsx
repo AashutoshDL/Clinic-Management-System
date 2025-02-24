@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { useAuth } from '../context/AuthContext'; // Assuming you have an AuthContext
-import PatientProfile from './PatientProfile'; // Assuming you have a PatientProfile component
-import DoctorProfile from './DoctorProfile'; // Assuming you have a DoctorProfile component
+import DoctorHistory from './DoctorHistory';
+import PatientHistory from './PatientHistory';
 
-const Profile = () => {
+const History = () => {
   const { role } = useAuth(); // role is an array
 
   console.log("User Roles:", role); // Debugging
@@ -15,9 +15,9 @@ const Profile = () => {
   return (
       <div>
           {role.includes("patient") ? (
-              <PatientProfile />
+              <PatientHistory />
           ) : role.includes("doctor") ? (
-              <DoctorProfile />
+              <DoctorHistory />
           ) : (
               <p>Please log in as a patient or doctor to view your profile.</p>
           )}
@@ -25,4 +25,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default History;

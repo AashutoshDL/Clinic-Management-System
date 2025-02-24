@@ -2,7 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-900 overflow-hidden">
       {/* Background Video */}
@@ -27,13 +28,38 @@ const LandingPage = () => {
         <p className="text-lg md:text-xl mb-8">
           Streamline your clinic management with ease. Schedule, track, and manage appointments all in one place.
         </p>
+
+        {/* Sign In As Section */}
         <div>
-          <button onClick={()=>{navigate('/register')}}className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg mr-4">
-            Get Started
-          </button>
-          <button className="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg">
-            Learn More
-          </button>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+            Who are you ?
+          </h2>
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg"
+            >
+              Patient
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg"
+            >
+              Doctor
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg"
+            >
+              Lab-Tech
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg"
+            >
+              Admin
+            </button>
+          </div>
         </div>
       </div>
     </div>
