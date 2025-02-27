@@ -11,7 +11,7 @@ const UserChat = () => {
     { name: "Bob", status: "inactive" },
     { name: "Charlie", status: "active" },
     { name: "David", status: "active" },
-    { name: "Eve", status: "inactive" },a
+    { name: "Eve", status: "inactive" },
   ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [messageRequests, setmessageRequests] = useState([

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 const Reminders = () => {
-  const [reminderTime, setReminderTime] = useState('12:00'); // Default time (hh:mm format)
-  const [reminderMessage, setReminderMessage] = useState(''); // Default message
-  const [reminders, setReminders] = useState([]); // Array to store multiple reminders
-  const [editingIndex, setEditingIndex] = useState(null); // To track which reminder is being edited
+  const [reminderTime, setReminderTime] = useState('12:00'); 
+  const [reminderMessage, setReminderMessage] = useState(''); 
+  const [reminders, setReminders] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null); 
 
-  // Request Notification permission on mount
   useEffect(() => {
     if (Notification.permission !== 'granted') {
       Notification.requestPermission().then((permission) => {
@@ -17,13 +16,12 @@ const Reminders = () => {
     }
   }, []);
 
-  // Function to calculate the time difference
   const calculateTimeDifference = (time) => {
     const [hours, minutes] = time.split(':').map(Number);
     const now = new Date();
     const reminderDate = new Date(now);
 
-    reminderDate.setHours(hours, minutes, 0, 0); // Set the selected time
+    reminderDate.setHours(hours, minutes, 0, 0);
 
     // If the reminder time is in the past for today, set it for the next day
     if (reminderDate <= now) {

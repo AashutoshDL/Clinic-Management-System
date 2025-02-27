@@ -70,7 +70,6 @@ const PatientHistory = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Medical History</h1>
 
-      {/* Diagnosis Section */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Diagnoses</h2>
         <table className="min-w-full border border-collapse">
@@ -115,7 +114,6 @@ const PatientHistory = () => {
         </table>
       </div>
 
-      {/* Medicines Section */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Medicines</h2>
         <table className="min-w-full border border-collapse">
@@ -160,7 +158,6 @@ const PatientHistory = () => {
         </table>
       </div>
 
-      {/* Medical Reports Section */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Medical Reports</h2>
         <input type="file" onChange={handleReportUpload} className="mb-2" />
@@ -176,7 +173,6 @@ const PatientHistory = () => {
         </ul>
       </div>
 
-      {/* Medical Images Section */}
       <div>
         <h2 className="text-xl font-semibold mb-2">Medical Images</h2>
         <input type="file" onChange={handleImageUpload} className="mb-2" />

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Users, CalendarCheck, FileText, Activity } from 'lucide-react';
 
 const SuperadminDashboard = () => {
-  // Mock Data - Replace with API Calls
   const overviewStats = [
     { title: 'Total Users', count: 1200, icon: <Users className="w-6 h-6 text-blue-600" />, link: '/users' },
     { title: 'Doctors', count: 85, icon: <Users className="w-6 h-6 text-green-600" />, link: '/doctors' },
@@ -21,7 +20,6 @@ const SuperadminDashboard = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Superadmin Dashboard</h1>
 
-      {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {overviewStats.map((stat, index) => (
           <Link
@@ -38,7 +36,6 @@ const SuperadminDashboard = () => {
         ))}
       </div>
 
-      {/* Recent Reports */}
       <div className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <Activity className="w-5 h-5 text-blue-600" />

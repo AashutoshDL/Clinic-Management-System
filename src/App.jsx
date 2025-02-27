@@ -19,7 +19,9 @@ import ReportSharing from './components/Report/ReportSharing';
 import History from './components/History/History';
 import Chat from './components/chat/Chat';
 import Superadmin from './components/Superadmin/Superadmin';
-import Reports from './components/Superadmin/Reports';
+import Reports from './components/Report/Reports';
+import ManageAdmins from './components/Superadmin/ManageAdmins';
+import ManageReports from './components/Superadmin/ManageReports';
 
 const App = () => {
   const AppContent = () => {
@@ -49,7 +51,9 @@ const App = () => {
             <Route path='/messages' element={<Chat />} />
             <Route path='/history' element={<History />} />
             <Route path='/superadmin' element={<Superadmin />} />
-            <Route path='/reports' element={<Reports/>} />
+            <Route path='/reports' element={<Reports />} />
+            <Route path='/manageAdmins' element={<ManageAdmins />} />
+            <Route path='/manageReports' element={<ManageReports />} />
           </Routes>
         </div>
       </div>

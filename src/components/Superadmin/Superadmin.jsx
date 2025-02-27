@@ -4,9 +4,8 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
 import { TextInput, PasswordInput } from '../Auth/FormElements';
-import { backendApi } from '../backendURL';
+import { baseURL } from '../baseURL';
 
-// Form validation schema
 const superadminSchema = Yup.object().shape({
   name: Yup.string()
     .required('Name is required')
@@ -22,25 +21,24 @@ const superadminSchema = Yup.object().shape({
 });
 
 const Superadmin = () => {
-  const [superadmins, setSuperadmins] = useState([]); // ✅ Always initialized as an array
+  const [superadmins, setSuperadmins] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Fetch Superadmins from API
   useEffect(() => {
     const fetchSuperadmins = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${backendApi}/superadmin/getsuperadmins`);
-        console.log('API Response:', response.data); // ✅ Debugging API response
-        setSuperadmins(Array.isArray(response.data?.data) ? response.data.data : []); // ✅ Always sets an array
+        const response = await axios.get(`${backendURL}/superadmin/getsuperadmins`);
+        console.log('API Response:', response.data);
+        setSuperadmins(Array.isArray(response.data?.data) ? response.data.data : []);
       } catch (err) {
         console.error('Error fetching superadmins:', err);
         setError('Failed to fetch superadmins');
-        setSuperadmins([]); // ✅ Prevents undefined state
+        setSuperadmins([]);
       } finally {
         setLoading(false);
       }
@@ -49,7 +47,6 @@ const Superadmin = () => {
     fetchSuperadmins();
   }, []);
 
-  // Handle Delete
   const handleDelete = (admin) => {
     setSelectedAdmin(admin);
     setShowDeleteModal(true);
@@ -72,14 +69,13 @@ const Superadmin = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold mb-6">Superadmin Management</h1>
 
-        {/* Form to Add Superadmin */}
         <Formik
           initialValues={{ name: '', email: '', password: '' }}
           validationSchema={superadminSchema}
           onSubmit={async (values, { resetForm }) => {
             try {
               const response = await axios.post(`${backendApi}/superadmin/superadminRegister`, values);
-              setSuperadmins([...superadmins, response.data]); // ✅ Prevents state corruption
+              setSuperadmins([...superadmins, response.data]);
               resetForm();
             } catch (err) {
               console.error('Error adding superadmin:', err);
@@ -117,7 +113,6 @@ const Superadmin = () => {
           )}
         </Formik>
 
-        {/* Superadmin List */}
         {loading ? (
           <div className="text-center py-4">Loading superadmins...</div>
         ) : (
@@ -158,7 +153,6 @@ const Superadmin = () => {
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg">

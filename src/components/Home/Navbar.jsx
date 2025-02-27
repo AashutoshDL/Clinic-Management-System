@@ -5,9 +5,10 @@ import {
   MessageSquare,
   User,
   Calendar,
-  CheckSquare,
-  Settings,
-  Lock,
+  // CheckSquare,
+  // Settings,
+  // Lock,
+  ClipboardPlus,
   Clock,
   Users,
   FileText,
@@ -19,7 +20,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
 
-  // Ensure role is always an array
   const userRoles = Array.isArray(role) ? role : [];
 
   const NavItem = ({ to, icon: Icon, children }) => (
@@ -41,7 +41,6 @@ const Navbar = () => {
   return (
     <div className="flex min-h-screen">
       <nav className="bg-white border-r border-gray-200 w-64 flex flex-col flex-shrink-0">
-        {/* Logo */}
         <div className="p-6 border-b border-gray-100">
           <img
             src="/images/1-nobg1.png"
@@ -51,36 +50,33 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Navigation Links */}
         <div className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
           <NavItem to="/home" icon={Home}>
             Home
           </NavItem>
 
-          {/* Superadmin Navigation */}
           {userRoles.includes("superadmin") ? (
             <>
-              <NavItem to="/admins" icon={Users}>
+              <NavItem to="/manageAdmins" icon={Users}>
                 Admins
               </NavItem>
-              <NavItem to="/doctors" icon={User}>
+              <NavItem to="/manageDoctors" icon={User}>
                 Doctors
               </NavItem>
-              <NavItem to="/patients" icon={User}>
+              <NavItem to="/managePatients" icon={User}>
                 Patients
               </NavItem>
-              <NavItem to="/appointments" icon={Calendar}>
+              <NavItem to="/manageAppointments" icon={Calendar}>
                 Appointments
               </NavItem>
-              <NavItem to="/reports" icon={FileText}>
+              <NavItem to="/manageReports" icon={FileText}>
                 Reports
               </NavItem>
             </>
           ) : (
-            // Default Navigation for other roles
             <>
-              <NavItem to="/reminders" icon={CheckSquare}>
-                Reminders
+              <NavItem to="/reports" icon={ClipboardPlus}>
+                Reports
               </NavItem>
               <NavItem to="/messages" icon={MessageSquare}>
                 Messages
@@ -95,8 +91,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Profile/Login Navigation */}
-        <div className="mt-auto px-4 py-6">
+        {/* <div className="mt-auto px-4 py-6">
           {isLoggedIn ? (
             <NavItem to="/profile" icon={User}>
               Profile
@@ -106,7 +101,7 @@ const Navbar = () => {
               Register
             </NavItem>
           )}
-        </div>
+        </div> */}
       </nav>
       <div className="flex-1"></div>
     </div>

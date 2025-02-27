@@ -20,7 +20,6 @@ const DoctorProfile = () => {
   const [formError, setFormError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch Doctor Data
   const fetchDoctorData = async () => {
     setLoading(true);
     setError(null);
@@ -42,7 +41,7 @@ const DoctorProfile = () => {
       }
       setSpecialization(doctor.specialization || '');
       setInformation(doctor.information || '');
-      setAvailableTimes(doctor.availableTimes || []); // Set available times
+      setAvailableTimes(doctor.availableTimes || []);
     } catch (error) {
       console.error('Error fetching doctor data:', error);
       setError('Failed to load doctor data. Please try again later.');
@@ -57,7 +56,6 @@ const DoctorProfile = () => {
     }
   }, [userId, isLoggedIn, accessToken]);
 
-  // Handle profile update
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
 
@@ -68,7 +66,7 @@ const DoctorProfile = () => {
         from: dutyTimeFrom,
         to: dutyTimeTo,
       },
-      availableTimes, // Include available times in the profile update
+      availableTimes,
     };
 
     try {
@@ -89,16 +87,14 @@ const DoctorProfile = () => {
     }
   };
 
-  // Handle adding available time range
   const handleAddAvailableTime = () => {
     if (newAvailableTimeFrom && newAvailableTimeTo) {
       setAvailableTimes([...availableTimes, { from: newAvailableTimeFrom, to: newAvailableTimeTo }]);
-      setNewAvailableTimeFrom(''); // Reset from input field
-      setNewAvailableTimeTo(''); // Reset to input field
+      setNewAvailableTimeFrom('');
+      setNewAvailableTimeTo('');
     }
   };
 
-  // Handle deleting an available time slot
   const handleDeleteAvailableTime = (index) => {
     const updatedAvailableTimes = availableTimes.filter((_, i) => i !== index);
     setAvailableTimes(updatedAvailableTimes);

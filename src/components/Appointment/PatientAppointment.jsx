@@ -31,7 +31,7 @@ const PatientAppointment = () => {
                 if (typeof timeSlot === 'object' && timeSlot.from && timeSlot.to) {
                   return `${timeSlot.from} - ${timeSlot.to}`;
                 } else if (typeof timeSlot === 'object' && timeSlot._id) {
-                  return "Time Slot"; // Placeholder for slots with _id only
+                  return "Time Slot";
                 } else if (typeof timeSlot === 'string') {
                   return timeSlot;
                 }
@@ -71,7 +71,6 @@ const PatientAppointment = () => {
     }
 
     try {
-      // Fetch patient details using userId
       const patientResponse = await axios.get(`http://localhost:3001/patient/getPatientById/${userId}`, {
         headers: { 'Authorization': `Bearer ${accessToken}` },
         withCredentials: true,
@@ -80,7 +79,6 @@ const PatientAppointment = () => {
       if (patientResponse.status === 200 && patientResponse.data.patient) {
         const patient = patientResponse.data.patient;
 
-        // Now create the appointment data
         const selectedDoctorData = doctors.find((doc) => doc.id === selectedDoctor);
         if (!selectedDoctorData) {
           alert("Selected doctor not found. Please refresh the page.");
@@ -95,7 +93,6 @@ const PatientAppointment = () => {
           time: selectedTime,
         };
 
-        // Send appointment request
         console.log(appointmentData);
         const response = await axios.post(`http://localhost:3001/appointments/createAppointment/${userId}`, appointmentData, {
           headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -103,11 +100,9 @@ const PatientAppointment = () => {
         });
 
         if (response.status === 201) {
-          // Appointment booked successfully, display success message below
           alert(`Appointment booked with Dr. ${selectedDoctorData.name} at ${selectedTime}`);
           setSelectedDoctor(null);
           setSelectedTime(null);
-          // Optionally, you can store the appointment data to display it below
           setPatientData({
             doctorName: selectedDoctorData.name,
             time: selectedTime,
@@ -218,7 +213,6 @@ const PatientAppointment = () => {
         </div>
       )}
 
-      {/* Displaying the booked appointment below */}
       {patientData.doctorName && (
         <div className="mt-8 p-6 bg-green-100 border border-green-200 rounded-lg">
           <h3 className="text-xl font-semibold text-green-600">Appointment Booked</h3>

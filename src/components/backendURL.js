@@ -1,1 +1,0 @@
-export const backendApi=import.meta.env.VITE_backendApi;

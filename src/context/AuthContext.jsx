@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import axios from 'axios'; // To make API requests
+import axios from 'axios';
+//baseURL later needed for different fetching
+// import {baseURL} from '../components/baseURL';
 
 const AuthContext = createContext();
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Edit, Trash } from 'lucide-react'; // Replace FontAwesome with Lucide icons
+import { Edit, Trash } from 'lucide-react';
 
 const AdminTable = ({ tableData, setTableData }) => {
   const [editingUser, setEditingUser] = React.useState(null);
@@ -10,7 +10,7 @@ const AdminTable = ({ tableData, setTableData }) => {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:3001/user/profiles');
-      setTableData(response.data); // Update table data with the latest fetched data
+      setTableData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -55,7 +55,7 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   return (
     <div>
-      {/* Modal for Editing */}
+
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
@@ -118,7 +118,6 @@ const AdminTable = ({ tableData, setTableData }) => {
         </div>
       )}
 
-      {/* Table */}
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full table-auto border-collapse border border-gray-300">
           <thead>

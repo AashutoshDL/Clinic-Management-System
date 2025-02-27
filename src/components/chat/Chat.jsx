@@ -3,12 +3,12 @@ import { useAuth } from '../../context/AuthContext'; // Assuming you have an Aut
 import UserChat from './UserChat';
 
 const Chat = () => {
-  const { role } = useAuth(); // role is an array
+  const { role } = useAuth();
 
-  console.log("User Roles:", role); // Debugging
+  console.log("User Roles:", role);
 
   if (!role || role.length === 0) {
-      return <p>Loading...</p>; // Handle case where role is undefined or empty
+      return <p>Loading...</p>;
   }
 
   return (

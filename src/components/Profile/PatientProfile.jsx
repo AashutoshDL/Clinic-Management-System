@@ -5,7 +5,7 @@ import axios from 'axios';
 import LoadingScreen from '../Ui/LoadingScreen';
 
 const PatientProfile = () => {
-  const { userId, isLoggedIn, accessToken, logout } = useAuth(); // Access token from context
+  const { userId, isLoggedIn, accessToken, logout } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -13,15 +13,14 @@ const PatientProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // Send token in the Authorization header
-        // console.log(userId) ;
+        console.log(userId)
         const response = await axios.get(`http://localhost:3001/patient/getPatientById/${userId}`, {
           headers: {
-            'Authorization': `Bearer ${accessToken}`, // Include the token here
+            'Authorization': `Bearer ${accessToken}`,
           },
-          withCredentials: true, // Include credentials (cookies)
+          withCredentials: true,
         });
-        setProfileData(response.data.patient);
+        setProfileData(response.data.data);
       } catch (error) {
         console.error('Error fetching profile:', error);
       } finally {
@@ -30,7 +29,7 @@ const PatientProfile = () => {
     };
 
     if (userId) fetchProfileData();
-  }, [userId, accessToken]); // Include accessToken as a dependency
+  }, [userId, accessToken]);
 
   const handleLogOut = async () => {
     logout();
