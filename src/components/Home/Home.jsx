@@ -22,7 +22,7 @@ const Home = () => {
           ) : role.includes("admin") ? (
               <AdminHome />
           ) : 
-            role.includes("admin") ? (
+            role.includes("superadmin") ? (
               <SuperadminDashboard />
           ) : (
               <p>Please log in as a patient or doctor to view your dashboard.</p>

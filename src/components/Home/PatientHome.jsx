@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import PatientProfile from '../Profile/PatientProfile';
+import AppointmentReminder from '../Reminders/AppointmentReminder';
 
 const PatientHome = () => {
   const { isLoggedIn, userId } = useAuth();
@@ -25,6 +26,7 @@ const PatientHome = () => {
   const handleSetReminder = (appointmentId) => {
     alert(`Reminder set for appointment ID: ${appointmentId}`);
     // Implement reminder functionality here
+    <AppointmentReminder appointmentId={appointmentId} />
   };
 
   return (
@@ -58,10 +60,16 @@ const PatientHome = () => {
                             <p className="text-gray-600">Scheduled Time: {appointment.time}</p>
                             <p className="text-gray-500">Specialization: {appointment.specialization}</p>
                             <button 
-                              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                              className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
                               onClick={() => handleSetReminder(appointment.id)}
                             >
-                              Set Reminder
+                              Cancel Reminder
+                            </button>
+                            <button 
+                              className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                              onClick={() => handleSetReminder(appointment.id)}
+                            >
+                              Cancel Appointment
                             </button>
                           </div>
                         </li>

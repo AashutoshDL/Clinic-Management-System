@@ -32,7 +32,7 @@ const Superadmin = () => {
     const fetchSuperadmins = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${backendURL}/superadmin/getsuperadmins`);
+        const response = await axios.get(`${baseURL}/superadmin/getsuperadmins`);
         console.log('API Response:', response.data);
         setSuperadmins(Array.isArray(response.data?.data) ? response.data.data : []);
       } catch (err) {
@@ -54,7 +54,7 @@ const Superadmin = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${backendApi}/superadmin/deletesuperadmin/${selectedAdmin._id}`);
+      await axios.delete(`${baseURL}/superadmin/deletesuperadmin/${selectedAdmin._id}`);
       setSuperadmins(superadmins.filter((admin) => admin._id !== selectedAdmin._id));
       setShowDeleteModal(false);
       setSelectedAdmin(null);
@@ -74,7 +74,7 @@ const Superadmin = () => {
           validationSchema={superadminSchema}
           onSubmit={async (values, { resetForm }) => {
             try {
-              const response = await axios.post(`${backendApi}/superadmin/superadminRegister`, values);
+              const response = await axios.post(`${baseURL}/superadmin/superadminRegister`, values);
               setSuperadmins([...superadmins, response.data]);
               resetForm();
             } catch (err) {

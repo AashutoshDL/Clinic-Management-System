@@ -23,12 +23,11 @@ const Reminders = () => {
 
     reminderDate.setHours(hours, minutes, 0, 0);
 
-    // If the reminder time is in the past for today, set it for the next day
     if (reminderDate <= now) {
       reminderDate.setDate(reminderDate.getDate() + 1);
     }
 
-    return reminderDate.getTime() - now.getTime(); // Time difference in milliseconds
+    return reminderDate.getTime() - now.getTime();
   };
 
   // Function to add a reminder
@@ -42,12 +41,12 @@ const Reminders = () => {
 
       setTimeout(() => {
         new Notification('Reminder', {
-          body: reminderMessage, // Use the custom message entered by the user
-          icon: '/images/2-nobg.png', // Optional: Set an icon here
+          body: reminderMessage, 
+          icon: '/images/2-nobg.png', 
         });
       }, timeDifference);
 
-      setReminderMessage(''); // Clear the message field after setting reminder
+      setReminderMessage('');
     } else {
       alert('Please set a valid reminder time and allow notifications.');
     }

@@ -22,6 +22,7 @@ import Superadmin from './components/Superadmin/Superadmin';
 import Reports from './components/Report/Reports';
 import ManageAdmins from './components/Superadmin/ManageAdmins';
 import ManageReports from './components/Superadmin/ManageReports';
+import ManageDoctors from './components/Superadmin/ManageDoctors';
 
 const App = () => {
   const AppContent = () => {
@@ -54,6 +55,7 @@ const App = () => {
             <Route path='/reports' element={<Reports />} />
             <Route path='/manageAdmins' element={<ManageAdmins />} />
             <Route path='/manageReports' element={<ManageReports />} />
+            <Route path='/manageDoctors' element={<ManageDoctors />} />
           </Routes>
         </div>
       </div>
