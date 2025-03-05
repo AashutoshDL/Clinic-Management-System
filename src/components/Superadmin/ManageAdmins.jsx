@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CreateAdmin from "./CreateAdmin";
-import { baseURL } from "../baseURL";
+import { baseURL } from "../service/baseURL";
 
 const ManageAdmins = () => {
   const [showCreateAdmin, setShowCreateAdmin] = useState(false);

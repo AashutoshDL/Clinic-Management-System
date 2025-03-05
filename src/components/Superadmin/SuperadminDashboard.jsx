@@ -1,8 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Users, CalendarCheck, FileText, Activity } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Users, CalendarCheck, FileText, Activity, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 const SuperadminDashboard = () => {
+  const { logout } = useAuth();
+  const navigate=useNavigate();
+
+  const handleLogout= async ()=>{
+      await logout();
+      await navigate('/')
+  }
+
   const overviewStats = [
     { title: 'Total Users', count: 1200, icon: <Users className="w-6 h-6 text-blue-600" />, link: '/users' },
     { title: 'Doctors', count: 85, icon: <Users className="w-6 h-6 text-green-600" />, link: '/doctors' },
@@ -18,7 +27,16 @@ const SuperadminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Superadmin Dashboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Superadmin Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {overviewStats.map((stat, index) => (

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import PatientHome from './PatientHome';
 import AdminHome from './AdminHome';
+import DoctorHome from './DoctorHome';
 import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
 
 const Home = () => {

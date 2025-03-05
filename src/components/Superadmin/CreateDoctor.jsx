@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, PasswordInput } from '../Auth/FormElements';
 import axios from 'axios';
-import {baseURL} from '../baseURL';
+import {baseURL} from '../service/baseURL';
 
 const CreateDoctor = () => {
   return (

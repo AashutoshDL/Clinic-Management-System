@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { baseURL } from "../baseURL";
+import { baseURL } from "../service/baseURL";
 
 const ReportSharing = () => {
   const [emails, setEmails] = useState("");

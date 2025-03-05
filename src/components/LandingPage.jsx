@@ -34,6 +34,7 @@ const Landing = () => {
 
   const handleLoginSubmit = async (values, { setSubmitting }) => {
     try {
+      console.log(values)
       const response = await axios.post('http://localhost:3001/auth/login', values, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,

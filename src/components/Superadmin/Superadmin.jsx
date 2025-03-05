@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
 import { TextInput, PasswordInput } from '../Auth/FormElements';
-import { baseURL } from '../baseURL';
+import { baseURL } from '../service/baseURL';
 
 const superadminSchema = Yup.object().shape({
   name: Yup.string()

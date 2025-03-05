@@ -75,9 +75,9 @@ const PatientAppointment = () => {
         headers: { 'Authorization': `Bearer ${accessToken}` },
         withCredentials: true,
       });
-
-      if (patientResponse.status === 200 && patientResponse.data.patient) {
-        const patient = patientResponse.data.patient;
+      console.log(patientResponse.data.data)
+      if (patientResponse.status === 200 && patientResponse.data.data) {
+        const patient = patientResponse.data.data;
 
         const selectedDoctorData = doctors.find((doc) => doc.id === selectedDoctor);
         if (!selectedDoctorData) {
@@ -88,7 +88,7 @@ const PatientAppointment = () => {
         const appointmentData = {
           doctorId: selectedDoctorData.id,
           doctorName: selectedDoctorData.name,
-          patientId: userId,
+          patientId: patient.id,
           patientName: patient.name,
           time: selectedTime,
         };

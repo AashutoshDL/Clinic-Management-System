@@ -1,24 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { baseURL } from "../service/baseURL";
 
 const ReportGeneration = () => {
-  const [title, setTitle] = useState('');
-  const [customFields, setCustomFields] = useState([{ label: '', value: '' }]);
+  const [title, setTitle] = useState("");
+  const [customFields, setCustomFields] = useState([{ label: "", value: "" }]);
   const [templateCreated, setTemplateCreated] = useState(false);
   const [savedTemplate, setSavedTemplate] = useState(null);
-  const [fetchedReport, setFetchedReport] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
+  const [fetchedReports, setFetchedReports] = useState([]);
+  const [showDetails, setShowDetails] = useState(null);
 
   useEffect(() => {
-    fetchReportTemplate();
+    fetchReportTemplates();
   }, []);
 
-  const fetchReportTemplate = async () => {
+  const fetchReportTemplates = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/report/getReportTemplateById/67bf9c9dcb2b6866bd231bd5');
-      setFetchedReport(response.data.data);
+      const response = await axios.get(`${baseURL}/report/getAllReportTemplates`, {
+        withCredentials: true,
+      });
+
+      if (response.data.success && Array.isArray(response.data.data)) {
+        setFetchedReports(response.data.data);
+      }
     } catch (error) {
-      console.error('Error fetching report template:', error.response?.data || error.message);
+      console.error("Error fetching report templates:", error.response?.data || error.message);
     }
   };
 
@@ -29,7 +35,7 @@ const ReportGeneration = () => {
   };
 
   const addField = () => {
-    setCustomFields([...customFields, { label: '', value: '' }]);
+    setCustomFields([...customFields, { label: "", value: "" }]);
   };
 
   const removeField = (index) => {
@@ -38,21 +44,22 @@ const ReportGeneration = () => {
 
   const generateTemplate = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/report/createReportTemplate', {
+      const response = await axios.post(`${baseURL}/report/createReportTemplate`, {
         title,
-        customFields
+        customFields,
       });
 
-      console.log('Template Created:', response.data);
+      console.log("Template Created:", response.data);
 
       setSavedTemplate({
         title: response.data.data.title,
-        customFields: response.data.data.customFields
+        customFields: response.data.data.customFields,
       });
 
       setTemplateCreated(true);
+      fetchReportTemplates(); // Refresh the list of reports
     } catch (error) {
-      console.error('Error creating template:', error.response?.data || error.message);
+      console.error("Error creating template:", error.response?.data || error.message);
     }
   };
 
@@ -123,33 +130,41 @@ const ReportGeneration = () => {
         )}
       </div>
 
-      {/* Display the fetched report template BELOW the creation form */}
-      {fetchedReport && (
+      {/* Display the fetched report templates */}
+      {fetchedReports.length > 0 && (
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2
-            className="text-xl font-semibold text-blue-600 cursor-pointer"
-            onClick={() => setShowDetails(!showDetails)}
-          >
-            {fetchedReport.title}
-          </h2>
-          {showDetails && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold text-gray-700">Report Details:</h3>
-              <div className="border border-gray-300 rounded-md p-4 mt-2 bg-gray-50">
-                {fetchedReport.customFields.length > 0 ? (
-                  <ul className="list-disc pl-5">
-                    {fetchedReport.customFields.map((field, index) => (
-                      <li key={index} className="mb-2">
-                        <strong className="text-gray-800">{field.label}:</strong> {field.value || 'N/A'}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">No custom fields available.</p>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Available Report Templates</h2>
+          <ul className="space-y-4">
+            {fetchedReports.map((report, index) => (
+              <li key={report._id} className="p-4 border rounded-lg shadow-md bg-gray-50">
+                <h3
+                  className="text-lg font-bold text-blue-600 cursor-pointer"
+                  onClick={() => setShowDetails(showDetails === index ? null : index)}
+                >
+                  {report.title}
+                </h3>
+
+                {showDetails === index && (
+                  <div className="mt-4">
+                    <h4 className="text-lg font-semibold text-gray-700">Report Details:</h4>
+                    <div className="border border-gray-300 rounded-md p-4 mt-2 bg-gray-50">
+                      {report.customFields.length > 0 ? (
+                        <ul className="list-disc pl-5">
+                          {report.customFields.map((field, i) => (
+                            <li key={i} className="mb-2">
+                              <strong className="text-gray-800">{field.label}:</strong> {field.value || "N/A"}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500">No custom fields available.</p>
+                      )}
+                    </div>
+                  </div>
                 )}
-              </div>
-            </div>
-          )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
