@@ -5,9 +5,7 @@ import DoctorChat from './DoctorChat'
 
 const Chat = () => {
   const { role } = useAuth();
-
-  console.log("User Roles:", role);
-
+  
   if (!role || role.length === 0) {
       return <p>Loading...</p>;
   }

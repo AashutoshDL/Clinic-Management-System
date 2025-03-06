@@ -17,6 +17,7 @@ const DoctorReport = () => {
         const patientResponse = await axios.get(`${baseURL}/patient/getAllPatients`);
         if (patientResponse.data.success && Array.isArray(patientResponse.data.data)) {
           setPatients(patientResponse.data.data);
+          console.log(patientResponse.data.data)
         }
       } catch (error) {
         console.error('Error fetching patients:', error);
@@ -60,6 +61,48 @@ const DoctorReport = () => {
     setFormValues(newValues);
   };
 
+  //saves the medical data
+  const saveMedicalReport = async () => {
+    const reportData = {
+      patientId: selectedPatient._id,
+      patientName: selectedPatient.name,
+      templateTitle: selectedTemplate.title,
+      fields: selectedTemplate.customFields.map((field, index) => ({
+        label: field.label,
+        value: formValues[index] || '',
+      })),
+    };
+  
+    try {
+      console.log(reportData);
+      const response = await axios.post(`${baseURL}/patient/createPatientReport`, { 
+        reportData 
+      });
+  
+      if (response.data.success) {
+        console.log('Report saved successfully');
+        
+        // Clear form and selections on success
+        setSelectedPatient(null);
+        setSelectedTemplate(null);
+        setReportTemplates([]);
+        setFormValues({});
+        
+      } else {
+        console.error('Error saving report:', response.data.message);
+        
+        // Clear form on failure as well
+        setFormValues({});
+      }
+    } catch (error) {
+      console.error('Error saving report to backend:', error);
+      
+      // Clear form on error
+      setFormValues({});
+    }
+  };
+   
+
   // Generate PDF report and save to backend
   const generateReportPDF = async () => {
     if (!selectedTemplate || !selectedPatient) return;
@@ -79,33 +122,6 @@ const DoctorReport = () => {
       }
     });
 
-    // Prepare report data for saving
-    const reportData = {
-      patientId: selectedPatient.id,
-      patientName: selectedPatient.name,
-      templateTitle: selectedTemplate.title,
-      fields: selectedTemplate.customFields.map((field, index) => ({
-        label: field.label,
-        value: formValues[index] || '',
-      })),
-    };
-
-    try {
-      // Send the report data to the backend API to save medical history
-      const response = await axios.post(`${baseURL}/patient/medicalHistory`, { 
-        patientId: selectedPatient.id, 
-        reportData 
-      });
-
-      if (response.data.success) {
-        console.log('Report saved successfully');
-      } else {
-        console.error('Error saving report:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error saving report to backend:', error);
-    }
-
     // Generate PDF
     doc.save(`${selectedPatient.name}_report.pdf`);
   };
@@ -119,7 +135,7 @@ const DoctorReport = () => {
         <div className="grid grid-cols-3 gap-4">
           {patients?.map((patient) => (
             <div
-              key={patient.id}
+              key={patient._id}
               onClick={() => handlePatientSelect(patient)}
               className={`p-4 border rounded-lg cursor-pointer ${selectedPatient?.id === patient.id ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-200'}`}
             >
@@ -148,7 +164,7 @@ const DoctorReport = () => {
           <div className="grid grid-cols-3 gap-4">
             {reportTemplates.map((template) => (
               <div
-                key={template.id}
+                key={template._id}
                 onClick={() => handleTemplateSelect(template)}
                 className={`p-4 border rounded-lg cursor-pointer ${selectedTemplate?.id === template.id ? 'bg-green-600 text-white' : 'bg-white hover:bg-gray-200'}`}
               >
@@ -181,6 +197,12 @@ const DoctorReport = () => {
             ))}
           </div>
 
+          <button
+            onClick={saveMedicalReport}
+            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Save Data
+          </button>
           <button
             onClick={generateReportPDF}
             className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
