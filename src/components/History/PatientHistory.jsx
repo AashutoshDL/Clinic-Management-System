@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { baseURL } from '../service/baseURL';
 import { useAuth } from '../../context/AuthContext';
+import axiosInstance from '../service/axiosInterceptor';
 
 const PatientHistory = () => {
   const { userId } = useAuth();
@@ -12,7 +11,7 @@ const PatientHistory = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get(`${baseURL}/patient/patientReportById/${userId}`);
+        const response = await axiosInstance.get(`/patient/patientReportById/${userId}`);
         setHistory(response.data?.data || []);
       } catch (err) {
         setError('Failed to fetch patient history');

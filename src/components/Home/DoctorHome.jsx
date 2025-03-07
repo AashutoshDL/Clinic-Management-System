@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import axiosInstance from '../service/axiosInterceptor';
 
 const DoctorHome = () => {
   const { isLoggedIn, userId } = useAuth();
@@ -10,7 +10,7 @@ const DoctorHome = () => {
     const fetchAppointments = async () => {
       if (isLoggedIn && userId) {
         try {
-          const response = await axios.get(`http://localhost:3001/appointments/getAppointmentsById/${userId}`);
+          const response = await axiosInstance.get(`/appointments/getAppointmentsById/${userId}`);
           setAppointments(response.data.appointments);
         } catch (error) {
           console.error("Error fetching appointments:", error);
@@ -23,7 +23,6 @@ const DoctorHome = () => {
 
   const handleConfirmAppointment = (appointmentId) => {
     alert(`Appointment ID ${appointmentId} confirmed.`);
-    // Implement appointment confirmation functionality here
   };
 
   return (

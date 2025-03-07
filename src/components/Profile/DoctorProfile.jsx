@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../Ui/LoadingScreen';
+import axiosInstance from '../service/axiosInterceptor';
 
 const DoctorProfile = () => {
   const { userId, isLoggedIn, accessToken, logout } = useAuth();
@@ -24,7 +25,7 @@ const DoctorProfile = () => {
     setLoading(true);
     setError(null);
     try {
-      const doctorResponse = await axios.get(`http://localhost:3001/doctor/getDoctorById/${userId}`, {
+      const doctorResponse = await axiosInstance.get(`/doctor/getDoctorById/${userId}`, {
         headers: { 'Authorization': `Bearer ${accessToken}` },
         withCredentials: true,
       });

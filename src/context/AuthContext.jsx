@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }) => {
       await axios.post('http://localhost:3001/auth/logout', {}, { withCredentials: true });
 
       Cookies.remove('accessToken');
-      Cookies.remove('refreshToken');
       setIsLoggedIn(false);
       setUserId(null);
       setRole(null);

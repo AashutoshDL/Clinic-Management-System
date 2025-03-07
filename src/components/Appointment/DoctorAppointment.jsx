@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../service/axiosInterceptor';
 
 const DoctorAppointment = () => {
   const { userId, role } = useAuth();
@@ -11,7 +11,7 @@ const DoctorAppointment = () => {
 
   const fetchAppointments = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/appointments/getAppointmentsById/${userId}`);
+      const response = await axiosInstance.get(`/appointments/getAppointmentsById/${userId}`);
       if (response.status === 200) {
         setAppointments(response.data.appointments);
       }
