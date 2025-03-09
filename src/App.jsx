@@ -23,6 +23,8 @@ import Reports from './components/Report/Reports';
 import ManageAdmins from './components/Superadmin/ManageAdmins';
 import ManageReports from './components/Superadmin/ManageReports';
 import ManageDoctors from './components/Superadmin/ManageDoctors';
+import SetupProfile from './components/Profile/SetupProfile';
+import MedicineForm from './components/Meds-API/MedicineForm';
 
 const App = () => {
   const AppContent = () => {
@@ -56,6 +58,8 @@ const App = () => {
             <Route path='/manageAdmins' element={<ManageAdmins />} />
             <Route path='/manageReports' element={<ManageReports />} />
             <Route path='/manageDoctors' element={<ManageDoctors />} />
+            <Route path='/edit-profile' element={<SetupProfile />} />
+            <Route path='/medicineForm' element={<MedicineForm />} />
           </Routes>
         </div>
       </div>

@@ -52,11 +52,7 @@ const PatientProfile = () => {
   const skills = ["Medical History", "Appointments", "Prescriptions", "Lab Results", "Insurance"]
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Colorful gradient header */}
-      <div className="h-48 bg-gradient-to-r from-orange-300 via-pink-400 to-cyan-400 rounded-b-lg"></div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24">
+      <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Profile header section */}
           <div className="p-6">
@@ -116,7 +112,7 @@ const PatientProfile = () => {
           </div>
 
           {/* Medical Information Section */}
-          <div className="mt-8 border-t border-gray-200 pt-6">
+          <div className="mt-8 border-t border-gray-200 pt-6 px-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Star className="w-5 h-5 mr-2 text-blue-500" />
               Medical Information
@@ -200,9 +196,9 @@ const PatientProfile = () => {
               </div>
             </div>
           </div>
-          <div>
-            <div>
-</div>
+
+          {/* Update Information Section */}
+          <div className="border-t border-gray-200">
             <div className="p-6 hover:bg-gray-50 transition cursor-pointer">
               <div className="flex justify-between items-start">
                 <div>
@@ -215,7 +211,6 @@ const PatientProfile = () => {
           </div>
         </div>
       </div>
-    </div>
   )
 }
 
