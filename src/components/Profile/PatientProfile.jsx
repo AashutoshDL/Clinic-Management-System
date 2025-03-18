@@ -3,8 +3,7 @@ import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import LoadingScreen from "../Ui/LoadingScreen"
 import axiosInstance from "../service/axiosInterceptor"
-// Import Lucide React icons
-import { ArrowRight, Briefcase, MapPin, Star } from "lucide-react"
+import { Briefcase, MapPin, Star } from "lucide-react"
 
 const PatientProfile = () => {
   const { userId, isLoggedIn, accessToken, logout } = useAuth()
@@ -193,19 +192,6 @@ const PatientProfile = () => {
                   <h4 className="text-sm font-medium text-gray-500 mb-1">Blood Glucose</h4>
                   <p className="text-lg font-semibold">110 mg/dL</p>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Update Information Section */}
-          <div className="border-t border-gray-200">
-            <div className="p-6 hover:bg-gray-50 transition cursor-pointer">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium">Update Information</h3>
-                  <p className="text-sm text-gray-500 mt-1">Keep your profile updated for better healthcare service.</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-blue-500" />
               </div>
             </div>
           </div>

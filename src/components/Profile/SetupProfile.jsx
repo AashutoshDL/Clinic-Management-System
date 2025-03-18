@@ -1,479 +1,224 @@
-import React ,{ useState } from "react"
+import { Formik, Form, Field, FieldArray } from "formik"
+import * as Yup from "yup"
+import { MySelect } from "../Auth/FormElements"
+import React from "react"
+import axiosInstance from "../service/axiosInterceptor"
+import { useAuth } from "../../context/AuthContext"
+import { useNavigate } from "react-router-dom"
+
+const validationSchema = Yup.object({
+  bloodType: Yup.string().required("Blood type is required"),
+  height: Yup.number().required("Height is required"),
+  weight: Yup.number().required("Weight is required"),
+  systolicBP: Yup.number().required("Systolic BP is required"),
+  diastolicBP: Yup.number().required("Diastolic BP is required"),
+  heartRate: Yup.number().required("Heart rate is required"),
+  temperature: Yup.number(),
+  bloodGlucose: Yup.number().required("Blood glucose is required"),
+})
 
 const SetupProfile = () => {
-  const [formData, setFormData] = useState({
-    bloodType: "",
-    height: "",
-    heightUnit: "cm",
-    weight: "",
-    weightUnit: "kg",
-    medications: [],
-    systolicBP: "",
-    diastolicBP: "",
-    heartRate: "",
-    temperature: "",
-    temperatureUnit: "celsius",
-    bloodGlucose: "",
-  })
-
-  const [newMedication, setNewMedication] = useState("")
-  const [errors, setErrors] = useState({})
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-
-  const addMedication = () => {
-    if (newMedication.trim() !== "") {
-      const updatedMedications = [...formData.medications, newMedication]
-      setFormData({
-        ...formData,
-        medications: updatedMedications,
-      })
-      setNewMedication("")
-    }
-  }
-
-  const removeMedication = (index) => {
-    const updatedMedications = formData.medications.filter((_, i) => i !== index)
-    setFormData({
-      ...formData,
-      medications: updatedMedications,
-    })
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.bloodType) newErrors.bloodType = "Blood type is required"
-    if (!formData.height) newErrors.height = "Height is required"
-    if (!formData.weight) newErrors.weight = "Weight is required"
-    if (!formData.systolicBP) newErrors.systolicBP = "Systolic BP is required"
-    if (!formData.diastolicBP) newErrors.diastolicBP = "Diastolic BP is required"
-    if (!formData.heartRate) newErrors.heartRate = "Heart rate is required"
-    if (!formData.temperature) newErrors.temperature = "Temperature is required"
-    if (!formData.bloodGlucose) newErrors.bloodGlucose = "Blood glucose is required"
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    if (validateForm()) {
-      console.log(formData)
-      // Here you would typically send the data to your backend
-      alert("Profile saved successfully!")
-    }
-  }
-
+  const {userId} = useAuth();
+  const navigate=useNavigate();
   return (
-    <div className="container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
-      <div
-        className="card"
-        style={{
-          maxWidth: "800px",
-          margin: "0 auto",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          overflow: "hidden",
-        }}
-      >
-        <div className="card-header" style={{ padding: "24px 24px 0" }}>
-          <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "8px" }}>Medical Profile Setup</h2>
-          <p style={{ color: "#666", marginBottom: "16px" }}>
+    <div className="container mx-auto px-5 py-10 max-w-7xl">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="px-6 pt-6">
+          <h2 className="text-2xl font-semibold mb-2">Medical Profile Setup</h2>
+          <p className="text-gray-500 mb-4">
             Please fill in your medical information. This data will be kept private and secure.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="card-content" style={{ padding: "24px" }}>
-            <div className="section" style={{ marginBottom: "24px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "500", marginBottom: "12px" }}>Basic Information</h3>
-              <hr style={{ margin: "12px 0", border: "none", borderTop: "1px solid #eee" }} />
+        <Formik
+          initialValues={{
+            bloodType: "",
+            height: "",
+            heightUnit: "cm",
+            weight: "",
+            weightUnit: "kg",
+            systolicBP: "",
+            diastolicBP: "",
+            heartRate: "",
+            temperature: "",
+            temperatureUnit: "celsius",
+            bloodGlucose: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            const response= axiosInstance(`/profile/setupProfileById/${userId}`)
+            console.log(values)
+            alert("Profile saved successfully!")
+          }}
+        >
+          {({ values, setFieldValue }) => (
+            <Form>
+              <div className="p-6">
+                {/* Basic Information Section */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-medium mb-3">Basic Information</h3>
+                  <hr className="my-3 border-t border-gray-100" />
 
-              <div className="form-group" style={{ marginBottom: "16px" }}>
-                <label htmlFor="bloodType" style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                  Blood Type
-                </label>
-                <select
-                  id="bloodType"
-                  name="bloodType"
-                  value={formData.bloodType}
-                  onChange={handleChange}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: "4px",
-                    border: errors.bloodType ? "1px solid #f43f5e" : "1px solid #ddd",
-                  }}
-                >
-                  <option value="">Select your blood type</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-                {errors.bloodType && (
-                  <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>{errors.bloodType}</p>
-                )}
-              </div>
-
-              <div className="form-row" style={{ display: "flex", flexWrap: "wrap", margin: "0 -12px" }}>
-                <div
-                  className="form-group"
-                  style={{ flex: "1 1 50%", padding: "0 12px", minWidth: "250px", marginBottom: "16px" }}
-                >
-                  <label htmlFor="height" style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                    Height
-                  </label>
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    <input
-                      type="number"
-                      id="height"
-                      name="height"
-                      value={formData.height}
-                      onChange={handleChange}
-                      placeholder="Height"
-                      style={{
-                        flex: "1",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: errors.height ? "1px solid #f43f5e" : "1px solid #ddd",
-                      }}
-                    />
-                    <select
-                      name="heightUnit"
-                      value={formData.heightUnit}
-                      onChange={handleChange}
-                      style={{
-                        width: "80px",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: "1px solid #ddd",
-                      }}
+                  <div className="mb-4">
+                    <MySelect
+                      label="Blood Type"
+                      name="bloodType"
+                      className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                     >
-                      <option value="cm">cm</option>
-                      <option value="ft">ft</option>
-                    </select>
+                      <option value="">Select your blood type</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </MySelect>
                   </div>
-                  {errors.height && (
-                    <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>{errors.height}</p>
-                  )}
-                </div>
 
-                <div
-                  className="form-group"
-                  style={{ flex: "1 1 50%", padding: "0 12px", minWidth: "250px", marginBottom: "16px" }}
-                >
-                  <label htmlFor="weight" style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                    Weight
-                  </label>
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    <input
-                      type="number"
-                      id="weight"
-                      name="weight"
-                      value={formData.weight}
-                      onChange={handleChange}
-                      placeholder="Weight"
-                      style={{
-                        flex: "1",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: errors.weight ? "1px solid #f43f5e" : "1px solid #ddd",
-                      }}
-                    />
-                    <select
-                      name="weightUnit"
-                      value={formData.weightUnit}
-                      onChange={handleChange}
-                      style={{
-                        width: "80px",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <option value="kg">kg</option>
-                      <option value="lbs">lbs</option>
-                    </select>
-                  </div>
-                  {errors.weight && (
-                    <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>{errors.weight}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="section" style={{ marginBottom: "24px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "500", marginBottom: "12px" }}>Medications</h3>
-              <hr style={{ margin: "12px 0", border: "none", borderTop: "1px solid #eee" }} />
-
-              <div className="form-group" style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>Current Medications</label>
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <input
-                    type="text"
-                    value={newMedication}
-                    onChange={(e) => setNewMedication(e.target.value)}
-                    placeholder="Add medication"
-                    style={{
-                      flex: "1",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      border: "1px solid #ddd",
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={addMedication}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "4px",
-                      backgroundColor: "#0284c7",
-                      color: "white",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Add
-                  </button>
-                </div>
-                <p style={{ color: "#666", fontSize: "14px", marginBottom: "8px" }}>
-                  List all medications you are currently taking
-                </p>
-
-                {formData.medications.length > 0 && (
-                  <div style={{ marginTop: "12px" }}>
-                    {formData.medications.map((med, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          padding: "8px 12px",
-                          backgroundColor: "#f5f5f5",
-                          borderRadius: "4px",
-                          marginBottom: "8px",
-                        }}
-                      >
-                        <span>{med}</span>
-                        <button
-                          type="button"
-                          onClick={() => removeMedication(index)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#f43f5e",
-                            cursor: "pointer",
-                          }}
+                  <div className="flex flex-wrap -mx-3">
+                    <div className="w-full md:w-1/2 px-3 mb-4">
+                      <label htmlFor="height" className="block mb-2 font-medium">
+                        Height
+                      </label>
+                      <div className="flex gap-2">
+                        <Field
+                          name="height"
+                          type="number"
+                          placeholder="Height"
+                          className="flex-1 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        />
+                        <Field
+                          as="select"
+                          name="heightUnit"
+                          className="w-20 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                         >
-                          Remove
-                        </button>
+                          <option value="cm">cm</option>
+                          <option value="ft">ft</option>
+                        </Field>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+                    </div>
 
-            <div className="section" style={{ marginBottom: "24px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "500", marginBottom: "12px" }}>Vital Signs</h3>
-              <hr style={{ margin: "12px 0", border: "none", borderTop: "1px solid #eee" }} />
-
-              <div className="form-row" style={{ display: "flex", flexWrap: "wrap", margin: "0 -12px" }}>
-                <div
-                  className="form-group"
-                  style={{ flex: "1 1 50%", padding: "0 12px", minWidth: "250px", marginBottom: "16px" }}
-                >
-                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                    Blood Pressure (mmHg)
-                  </label>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <input
-                      type="number"
-                      name="systolicBP"
-                      value={formData.systolicBP}
-                      onChange={handleChange}
-                      placeholder="Systolic"
-                      style={{
-                        flex: "1",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: errors.systolicBP ? "1px solid #f43f5e" : "1px solid #ddd",
-                      }}
-                    />
-                    <span>/</span>
-                    <input
-                      type="number"
-                      name="diastolicBP"
-                      value={formData.diastolicBP}
-                      onChange={handleChange}
-                      placeholder="Diastolic"
-                      style={{
-                        flex: "1",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: errors.diastolicBP ? "1px solid #f43f5e" : "1px solid #ddd",
-                      }}
-                    />
+                    <div className="w-full md:w-1/2 px-3 mb-4">
+                      <label htmlFor="weight" className="block mb-2 font-medium">
+                        Weight
+                      </label>
+                      <div className="flex gap-2">
+                        <Field
+                          name="weight"
+                          type="number"
+                          placeholder="Weight"
+                          className="flex-1 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        />
+                        <Field
+                          as="select"
+                          name="weightUnit"
+                          className="w-20 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        >
+                          <option value="kg">kg</option>
+                          <option value="lbs">lbs</option>
+                        </Field>
+                      </div>
+                    </div>
                   </div>
-                  {(errors.systolicBP || errors.diastolicBP) && (
-                    <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>
-                      {errors.systolicBP || errors.diastolicBP}
-                    </p>
-                  )}
                 </div>
 
-                <div
-                  className="form-group"
-                  style={{ flex: "1 1 50%", padding: "0 12px", minWidth: "250px", marginBottom: "16px" }}
-                >
-                  <label htmlFor="heartRate" style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                    Heart Rate (bpm)
-                  </label>
-                  <input
-                    type="number"
-                    id="heartRate"
-                    name="heartRate"
-                    value={formData.heartRate}
-                    onChange={handleChange}
-                    placeholder="Heart rate"
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      border: errors.heartRate ? "1px solid #f43f5e" : "1px solid #ddd",
-                    }}
-                  />
-                  {errors.heartRate && (
-                    <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>{errors.heartRate}</p>
-                  )}
-                </div>
-              </div>
+                {/* Vital Signs Section */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-medium mb-3">Vital Signs</h3>
+                  <hr className="my-3 border-t border-gray-100" />
 
-              <div className="form-row" style={{ display: "flex", flexWrap: "wrap", margin: "0 -12px" }}>
-                <div
-                  className="form-group"
-                  style={{ flex: "1 1 50%", padding: "0 12px", minWidth: "250px", marginBottom: "16px" }}
-                >
-                  <label htmlFor="temperature" style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                    Temperature
-                  </label>
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    <input
-                      type="number"
-                      id="temperature"
-                      name="temperature"
-                      step="0.1"
-                      value={formData.temperature}
-                      onChange={handleChange}
-                      placeholder="Temperature"
-                      style={{
-                        flex: "1",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: errors.temperature ? "1px solid #f43f5e" : "1px solid #ddd",
-                      }}
-                    />
-                    <select
-                      name="temperatureUnit"
-                      value={formData.temperatureUnit}
-                      onChange={handleChange}
-                      style={{
-                        width: "100px",
-                        padding: "10px",
-                        borderRadius: "4px",
-                        border: "1px solid #ddd",
-                      }}
-                    >
-                      <option value="celsius">°C</option>
-                      <option value="fahrenheit">°F</option>
-                    </select>
+                  <div className="flex flex-wrap -mx-3">
+                    <div className="w-full md:w-1/2 px-3 mb-4">
+                      <label className="block mb-2 font-medium">Blood Pressure (mmHg)</label>
+                      <div className="flex items-center gap-2">
+                        <Field
+                          name="systolicBP"
+                          type="number"
+                          placeholder="Systolic"
+                          className="flex-1 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        />
+                        <span>/</span>
+                        <Field
+                          name="diastolicBP"
+                          type="number"
+                          placeholder="Diastolic"
+                          className="flex-1 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-full md:w-1/2 px-3 mb-4">
+                      <label htmlFor="heartRate" className="block mb-2 font-medium">
+                        Heart Rate (bpm)
+                      </label>
+                      <Field
+                        name="heartRate"
+                        type="number"
+                        placeholder="Heart rate"
+                        className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                      />
+                    </div>
                   </div>
-                  {errors.temperature && (
-                    <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>{errors.temperature}</p>
-                  )}
-                </div>
 
-                <div
-                  className="form-group"
-                  style={{ flex: "1 1 50%", padding: "0 12px", minWidth: "250px", marginBottom: "16px" }}
-                >
-                  <label htmlFor="bloodGlucose" style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
-                    Blood Glucose (mg/dL)
-                  </label>
-                  <input
-                    type="number"
-                    id="bloodGlucose"
-                    name="bloodGlucose"
-                    value={formData.bloodGlucose}
-                    onChange={handleChange}
-                    placeholder="Blood glucose"
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      border: errors.bloodGlucose ? "1px solid #f43f5e" : "1px solid #ddd",
-                    }}
-                  />
-                  {errors.bloodGlucose && (
-                    <p style={{ color: "#f43f5e", fontSize: "14px", marginTop: "4px" }}>{errors.bloodGlucose}</p>
-                  )}
+                  <div className="flex flex-wrap -mx-3">
+                    <div className="w-full md:w-1/2 px-3 mb-4">
+                      <label htmlFor="temperature" className="block mb-2 font-medium">
+                        Temperature
+                      </label>
+                      <div className="flex gap-2">
+                        <Field
+                          name="temperature"
+                          type="number"
+                          step="0.1"
+                          placeholder="Temperature"
+                          className="flex-1 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        />
+                        <Field
+                          as="select"
+                          name="temperatureUnit"
+                          className="w-24 p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        >
+                          <option value="celsius">°C</option>
+                          <option value="fahrenheit">°F</option>
+                        </Field>
+                      </div>
+                    </div>
+
+                    <div className="w-full md:w-1/2 px-3 mb-4">
+                      <label htmlFor="bloodGlucose" className="block mb-2 font-medium">
+                        Blood Glucose (mg/dL)
+                      </label>
+                      <Field
+                        name="bloodGlucose"
+                        type="number"
+                        placeholder="Blood glucose"
+                        className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div
-            className="card-footer"
-            style={{
-              padding: "16px 24px",
-              borderTop: "1px solid #eee",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <button
-              type="button"
-              style={{
-                padding: "10px 16px",
-                borderRadius: "4px",
-                backgroundColor: "white",
-                color: "#333",
-                border: "1px solid #ddd",
-                cursor: "pointer",
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              style={{
-                padding: "10px 16px",
-                borderRadius: "4px",
-                backgroundColor: "#0284c7",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Save Profile
-            </button>
-          </div>
-        </form>
+              <div className="px-6 py-4 border-t border-gray-100 flex justify-between">
+                <button
+                  type="button"
+                  className="px-4 py-2.5 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                  onClick={()=>(navigate('/home'))}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2.5 rounded-md bg-sky-600 text-white hover:bg-sky-700 transition-colors"
+                >
+                  Save Profile
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   )
