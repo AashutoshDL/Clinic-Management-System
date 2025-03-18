@@ -1,1 +1,11 @@
-// user can login via OAuth and just book appointment without any other access
+import React from 'react'
+
+const UserAppointment = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default UserAppointment

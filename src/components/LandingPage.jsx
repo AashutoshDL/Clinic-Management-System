@@ -42,7 +42,7 @@ const Landing = () => {
       const { id, role } = response.data;
       login(id, role);
       await checkAuth();
-      navigate('/profile');
+      navigate('/home');
     } catch (error) {
       console.error('Error during login', error);
       if (error.response) alert(error.response.data.message);
@@ -82,9 +82,9 @@ const Landing = () => {
             Experience healthcare management reimagined. Book appointments, find specialists, and manage your family's health all in one place.
           </p>
           <div className="flex flex-wrap gap-4 mb-12">
-            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium">
+            {/* <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium">
               Find Doctors <ChevronRight className="w-4 h-4" />
-            </button>
+            </button> */}
             <button className="flex items-center gap-2 bg-white hover:bg-gray-50 text-black-600 border-2 border-gray-600 px-6 py-3 rounded-lg font-medium" onClick={() => navigate('/appointment')}>
               Book Appointment <Calendar className="w-4 h-4" />
             </button>
