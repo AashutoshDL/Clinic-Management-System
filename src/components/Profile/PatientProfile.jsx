@@ -134,45 +134,6 @@ const PatientProfile = () => {
               </div>
             </div>
 
-            {/* Current Medications */}
-            {/* <div className="mb-6">
-              <h3 className="text-md font-medium text-gray-700 mb-2">Current Medications</h3>
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Medication
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Dosage
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Frequency
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    <tr>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">Lisinopril</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">10mg</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">Once daily</td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">Metformin</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">500mg</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">Twice daily</td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">Atorvastatin</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">20mg</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">Once daily at bedtime</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div> */}
-
             {/* Recent Vital Signs */}
             <div className="mb-6">
               <h3 className="text-md font-medium text-gray-700 mb-2">Recent Vital Signs</h3>

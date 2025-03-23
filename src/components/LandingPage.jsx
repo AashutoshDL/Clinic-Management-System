@@ -119,7 +119,7 @@ const Landing = () => {
                       <option value="">Select a role</option>
                       <option value="patient">Patient</option>
                       <option value="doctor">Doctor</option>
-                      <option value="lab-technician">Lab Technician</option>
+                      <option value="admin">Receptionist</option>
                     </MySelect>
                     <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg" disabled={isSubmitting}>
                       {isSubmitting ? 'Logging in...' : 'Sign In'}

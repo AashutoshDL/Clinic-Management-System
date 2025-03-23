@@ -75,7 +75,7 @@ const Login = () => {
                 <option value="">Select a job type</option>
                 <option value="patient">Patient</option>
                 <option value="doctor">Doctor</option>
-                <option value="lab-technician">Lab Technician</option>
+                <option value="admin">Receptionist</option>
               </MySelect>
               <div className="flex justify-between items-center">
                 <button

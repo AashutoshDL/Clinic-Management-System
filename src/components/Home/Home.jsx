@@ -4,6 +4,7 @@ import PatientHome from './PatientHome';
 import AdminHome from './AdminHome';
 import DoctorHome from './DoctorHome';
 import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
+import Admin from '../Admin/Admin';
 
 const Home = () => {
   const { role } = useAuth();
@@ -19,7 +20,7 @@ const Home = () => {
           ) : role.includes("doctor") ? (
               <DoctorHome />
           ) : role.includes("admin") ? (
-              <AdminHome />
+              <Admin />
           ) : 
             role.includes("superadmin") ? (
               <SuperadminDashboard />

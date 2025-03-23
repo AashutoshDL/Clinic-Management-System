@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
+    "html2canvas": "^1.4.1",
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.2",
     "lucide-react": "^0.474.0",

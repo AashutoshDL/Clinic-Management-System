@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Edit, Trash } from 'lucide-react';
+import { baseURL } from '../service/baseURL';
 
 const AdminTable = ({ tableData, setTableData }) => {
   const [editingUser, setEditingUser] = React.useState(null);
@@ -9,8 +10,9 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/user/profiles');
-      setTableData(response.data);
+      const response = await axios.get(`${baseURL}/patient/getAllPatients`);
+      console.log(response);
+      setTableData(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -18,7 +20,7 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   const handleDelete = async (userId) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/user/deleteProfiles/${userId}`);
+      const response = await axios.delete(`${baseURL}/patient/deletePatientById/${userId}`);
       console.log("Deleted user:", response.data);
       setTableData((prevData) => prevData.filter(user => user.id !== userId));
     } catch (error) {
@@ -28,7 +30,8 @@ const AdminTable = ({ tableData, setTableData }) => {
 
   const handleEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:3001/user/updateProfiles/${editingUser.id}`, formData);
+      console.log(formData)
+      const response = await axios.patch(`${baseURL}/patient/setupProfileById/${editingUser.id}`, formData);
       console.log("Updated user:", response.data);
       await fetchData();
       setIsModalOpen(false);
@@ -41,8 +44,7 @@ const AdminTable = ({ tableData, setTableData }) => {
   const handleEditClick = (user) => {
     setEditingUser(user);
     setFormData({
-      firstName: user.firstName,
-      lastName: user.lastName,
+      name: user.name,
       userName: user.userName,
       email: user.email,
     });
@@ -62,20 +64,11 @@ const AdminTable = ({ tableData, setTableData }) => {
             <h2 className="text-xl font-semibold mb-4">Edit User</h2>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="mb-4">
-                <label className="block text-gray-700">First Name</label>
+                <label className="block text-gray-700">Name</label>
                 <input
                   type="text"
-                  value={formData.firstName || ''}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  value={formData.lastName || ''}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  value={formData.name || ''}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
@@ -139,7 +132,7 @@ const AdminTable = ({ tableData, setTableData }) => {
                     <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white">
                       {data.userName ? data.userName.charAt(0).toUpperCase() : 'N/A'}
                     </div>
-                    {data.firstName} {data.lastName}
+                    {data.name}
                   </div>
                 </td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.userName || 'N/A'}</td>

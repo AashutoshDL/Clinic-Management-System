@@ -3,6 +3,7 @@ import axios from 'axios';
 import AdminCard from './AdminCard';
 import AdminTable from './AdminTable';
 import UserForm from './UserForm';
+import { baseURL } from '../service/baseURL';
 
 const Admin = () => {
   const [showForm, setShowForm] = useState(false);
@@ -31,9 +32,9 @@ const Admin = () => {
   const fetchTableData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3001/user/profiles');
-      console.log("Fetched Data:", response.data);
-      setTableData(Array.isArray(response.data.users) ? response.data.users : []);
+      const response = await axios.get(`${baseURL}/patient/getAllPatients`);
+      console.log("Fetched Data:", response.data.data);
+      setTableData(Array.isArray(response.data.data) ? response.data.data : []);
     } catch (error) {
       console.error('Error fetching table data:', error);
     } finally {
