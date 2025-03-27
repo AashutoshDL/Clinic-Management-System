@@ -8,8 +8,6 @@ import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
 const Home = () => {
   const { role } = useAuth();
 
-//   console.log("User Roles:", role); // Debugging
-
   if (!role || role.length === 0) {
       return <p>Loading...</p>;
   }

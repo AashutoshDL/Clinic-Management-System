@@ -20,7 +20,7 @@ const superadminSchema = Yup.object().shape({
     .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
 });
 
-const Superadmin = () => {
+const CreateSuperadmin = () => {
   const [superadmins, setSuperadmins] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -174,4 +174,4 @@ const Superadmin = () => {
   );
 };
 
-export default Superadmin;
+export default CreateSuperadmin;

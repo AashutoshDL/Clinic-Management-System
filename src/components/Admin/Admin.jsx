@@ -31,8 +31,8 @@ const Admin = () => {
   const fetchTableData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3001/user/profiles'); // Replace with your backend endpoint
-      console.log("Fetched Data:", response.data); // Debug API response
+      const response = await axios.get('http://localhost:3001/user/profiles');
+      console.log("Fetched Data:", response.data);
       setTableData(Array.isArray(response.data.users) ? response.data.users : []);
     } catch (error) {
       console.error('Error fetching table data:', error);

@@ -18,7 +18,7 @@ import DoctorProfile from './components/Profile/DoctorProfile';
 import ReportSharing from './components/Report/ReportSharing';
 import History from './components/History/History';
 import Chat from './components/chat/Chat';
-import Superadmin from './components/Superadmin/Superadmin';
+import CreateSuperadmin from './components/Superadmin/CreateSuperadmin';
 import Reports from './components/Report/Reports';
 import ManageAdmins from './components/Superadmin/ManageAdmins';
 import ManageReports from './components/Superadmin/ManageReports';
@@ -53,7 +53,7 @@ const App = () => {
             <Route path='/reportSharing' element={<ReportSharing />} />
             <Route path='/messages' element={<Chat />} />
             <Route path='/history' element={<History />} />
-            <Route path='/superadmin' element={<Superadmin />} />
+            <Route path='/create-superadmin' element={<CreateSuperadmin />} />
             <Route path='/reports' element={<Reports />} />
             <Route path='/manageAdmins' element={<ManageAdmins />} />
             <Route path='/manageReports' element={<ManageReports />} />

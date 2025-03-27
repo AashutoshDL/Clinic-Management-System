@@ -45,7 +45,6 @@ const Login = () => {
               const { accessToken, refreshToken } = response.data;
               login(accessToken,refreshToken);
               await checkAuth();
-              navigate('/home'); 
             } catch (error) {
               console.error('Error during login', error);
               if (error.response) {

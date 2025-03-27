@@ -3,8 +3,7 @@ import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import LoadingScreen from "../Ui/LoadingScreen"
 import axiosInstance from "../service/axiosInterceptor"
-// Import Lucide React icons
-import { ArrowRight, Briefcase, MapPin, Star } from "lucide-react"
+import { Briefcase, MapPin, Star } from "lucide-react"
 
 const PatientProfile = () => {
   const { userId, isLoggedIn, accessToken, logout } = useAuth()
@@ -17,6 +16,7 @@ const PatientProfile = () => {
       try {
         const response = await axiosInstance.get(`/patient/getPatientById/${userId}`)
         setProfileData(response.data.data)
+        console.log(response.data.data)
       } catch (error) {
         console.error("Error fetching profile:", error)
       } finally {
@@ -122,20 +122,20 @@ const PatientProfile = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Blood Type</h3>
-                <p className="text-lg font-semibold">O Positive</p>
+                <p className="text-lg font-semibold">{profileData.bloodType}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Height</h3>
-                <p className="text-lg font-semibold">175 cm</p>
+                <p className="text-lg font-semibold">{profileData.height} {profileData.heightUnit}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Weight</h3>
-                <p className="text-lg font-semibold">68 kg</p>
+                <p className="text-lg font-semibold">{profileData.weight} {profileData.weightUnit}</p>
               </div>
             </div>
 
             {/* Current Medications */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <h3 className="text-md font-medium text-gray-700 mb-2">Current Medications</h3>
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -171,7 +171,7 @@ const PatientProfile = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
 
             {/* Recent Vital Signs */}
             <div className="mb-6">
@@ -179,33 +179,20 @@ const PatientProfile = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500 mb-1">Blood Pressure</h4>
-                  <p className="text-lg font-semibold">120/80 mmHg</p>
+                  <p className="text-lg font-semibold">{profileData.systolicBP}/{profileData.diastolicBP} mmHg</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500 mb-1">Heart Rate</h4>
-                  <p className="text-lg font-semibold">72 bpm</p>
+                  <p className="text-lg font-semibold">{profileData.heartRate} bpm</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500 mb-1">Temperature</h4>
-                  <p className="text-lg font-semibold">98.6 °F</p>
+                  <p className="text-lg font-semibold">{profileData.temperature} {profileData.temperatureUnit}</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500 mb-1">Blood Glucose</h4>
-                  <p className="text-lg font-semibold">110 mg/dL</p>
+                  <p className="text-lg font-semibold">{profileData.bloodGlucose} mg/dL</p>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Update Information Section */}
-          <div className="border-t border-gray-200">
-            <div className="p-6 hover:bg-gray-50 transition cursor-pointer">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium">Update Information</h3>
-                  <p className="text-sm text-gray-500 mt-1">Keep your profile updated for better healthcare service.</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-blue-500" />
               </div>
             </div>
           </div>

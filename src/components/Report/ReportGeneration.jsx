@@ -64,7 +64,6 @@ const ReportGeneration = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <h1 className="text-2xl font-bold mb-4">Report Template Creator</h1>
 
@@ -129,45 +128,6 @@ const ReportGeneration = () => {
           </div>
         )}
       </div>
-
-      {/* Display the fetched report templates */}
-      {fetchedReports.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Available Report Templates</h2>
-          <ul className="space-y-4">
-            {fetchedReports.map((report, index) => (
-              <li key={report._id} className="p-4 border rounded-lg shadow-md bg-gray-50">
-                <h3
-                  className="text-lg font-bold text-blue-600 cursor-pointer"
-                  onClick={() => setShowDetails(showDetails === index ? null : index)}
-                >
-                  {report.title}
-                </h3>
-
-                {showDetails === index && (
-                  <div className="mt-4">
-                    <h4 className="text-lg font-semibold text-gray-700">Report Details:</h4>
-                    <div className="border border-gray-300 rounded-md p-4 mt-2 bg-gray-50">
-                      {report.customFields.length > 0 ? (
-                        <ul className="list-disc pl-5">
-                          {report.customFields.map((field, i) => (
-                            <li key={i} className="mb-2">
-                              <strong className="text-gray-800">{field.label}:</strong> {field.value || "N/A"}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-gray-500">No custom fields available.</p>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
   );
 };
 
