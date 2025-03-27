@@ -7,17 +7,17 @@ const Appointment = () => {
     const { role } = useAuth();
 
     if (!role || role.length === 0) {
-        return <p>Loading...</p>;  // Handle case where role is undefined or empty
+        return <p>Loading...</p>;
     }
 
     return (
         <div>
             {role.includes("patient") ? (
-                <PatientAppointment />  // Render PatientAppointment if the role is 'patient'
+                <PatientAppointment />  
             ) : role.includes("doctor") ? (
-                <DoctorAppointment />  // Render DoctorAppointments if the role is 'doctor'
+                <DoctorAppointment /> 
             ) : (
-                <p>Please log in as either a patient or doctor.</p>  // Display this if no valid role is provided
+                <p>Please log in as either a patient or doctor.</p>  
             )}
         </div>
     );

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Bed } from 'lucide-react'; // Import the Bed icon from Lucide
+import { Bed } from 'lucide-react'; 
 
 const AdminCard = ({ title, count, images }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg flex-1 transition-all hover:shadow-xl transform hover:scale-105">
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-xl font-semibold text-gray-700">{title}</h4>
-        <Bed className="text-gray-600 text-3xl" /> {/* Enhanced icon size for better visibility */}
+        <Bed className="text-gray-600 text-3xl" />
       </div>
       <p className="text-4xl font-extrabold text-gray-800 mb-5">{count}</p>
       <div className="flex items-center gap-3 mt-3">

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { baseURL } from "../service/baseURL";
 
 const ReportSharing = () => {
-  const [emails, setEmails] = useState(""); // Store emails as a string
+  const [emails, setEmails] = useState("");
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,18 +18,16 @@ const ReportSharing = () => {
       return;
     }
 
-    const emailList = emails.split(",").map((email) => email.trim()); // Split emails by comma and trim any extra spaces
+    const emailList = emails.split(",").map((email) => email.trim());
 
     setIsSubmitting(true);
 
-    // Create FormData object to send the emails and file
     const formData = new FormData();
-    formData.append("emails", JSON.stringify(emailList)); // Convert email array to JSON string
+    formData.append("emails", JSON.stringify(emailList));
     formData.append("file", file);
 
     try {
-      // Replace this with your API endpoint
-      const response = await fetch("/api/send-email", {
+      const response = await fetch(`${baseURL}/api/send-email`, {
         method: "POST",
         body: formData,
       });

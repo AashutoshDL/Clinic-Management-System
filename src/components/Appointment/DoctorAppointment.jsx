@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const DoctorAppointment = () => {
-  const { userId, role } = useAuth();  // Get user data (assuming role is 'doctor')
+  const { userId, role } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  // Fetch appointments by doctor ID
   const fetchAppointments = async () => {
     try {
       const response = await axios.get(`http://localhost:3001/appointments/getAppointmentsById/${userId}`);
@@ -21,9 +20,7 @@ const DoctorAppointment = () => {
     }
   };
 
-  // Handle rescheduling the appointment
   const handleReschedule = (appointmentId, newTime) => {
-    // Simulating rescheduling
     const updatedAppointments = appointments.map((appointment) =>
       appointment.id === appointmentId ? { ...appointment, time: newTime } : appointment
     );
@@ -31,22 +28,19 @@ const DoctorAppointment = () => {
     alert('Appointment rescheduled successfully!');
   };
 
-  // Handle appointment cancellation
   const handleCancelAppointment = (appointmentId) => {
-    // Simulating cancellation
     const updatedAppointments = appointments.filter((appointment) => appointment.id !== appointmentId);
     setAppointments(updatedAppointments);
     alert('Appointment canceled successfully!');
   };
 
-  // Filter appointments based on search query
   const filteredAppointments = appointments.filter((appointment) =>
     appointment.patientName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
     if (role === 'doctor') {
-      fetchAppointments();  // Load appointments for the doctor
+      fetchAppointments();
     }
   }, [role, userId]);
 
@@ -54,7 +48,6 @@ const DoctorAppointment = () => {
     <div className="p-8 max-w-7xl mx-auto">
       <h1 className="text-4xl font-bold text-center text-gray-900 mb-10">Your Appointments</h1>
 
-      {/* Search Bar */}
       <div className="mb-8 flex justify-center">
         <div className="relative w-full max-w-md">
           <input
@@ -70,7 +63,6 @@ const DoctorAppointment = () => {
         </div>
       </div>
 
-      {/* Display Appointments */}
       <div>
         <h2 className="text-3xl font-semibold text-gray-800 mb-8">Your Scheduled Appointments</h2>
         {filteredAppointments.length > 0 ? (

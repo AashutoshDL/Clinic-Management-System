@@ -1,16 +1,14 @@
 import React, { useContext } from 'react';
-import { useAuth } from '../../context/AuthContext'; // Assuming you have an AuthContext
-import PatientProfile from './PatientProfile'; // Assuming you have a PatientProfile component
-import DoctorProfile from './DoctorProfile'; // Assuming you have a DoctorProfile component
+import { useAuth } from '../../context/AuthContext';
+import PatientProfile from './PatientProfile'; 
+import DoctorProfile from './DoctorProfile'; 
 import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
 
 const Profile = () => {
-  const { role } = useAuth(); // role is an array
-
-//   console.log("User Roles:", role); // Debugging
+  const { role } = useAuth();
 
   if (!role || role.length === 0) {
-      return <p>Loading...</p>; // Handle case where role is undefined or empty
+      return <p>Loading...</p>;
   }
 
   return (

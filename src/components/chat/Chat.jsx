@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext'; // Assuming you have an AuthContext
 import UserChat from './UserChat';
+import DoctorChat from './DoctorChat'
 
 const Chat = () => {
-  const { role } = useAuth(); // role is an array
-
-  console.log("User Roles:", role); // Debugging
-
+  const { role } = useAuth();
+  
   if (!role || role.length === 0) {
-      return <p>Loading...</p>; // Handle case where role is undefined or empty
+      return <p>Loading...</p>;
   }
 
   return (

@@ -2,7 +2,6 @@ import React from 'react';
 import { useField } from 'formik';
 
 
-//creating dynamic form fields
 export const TextInput = ({ label, ...props }) => {
     const [field, meta] = useField(props);
     return (

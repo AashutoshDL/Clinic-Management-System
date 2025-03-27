@@ -7,7 +7,7 @@ const VerifyEmail = () => {
   const {isLoggedIn}=useAuth();
   const [verificationCode, setVerificationCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [showResendButton, setShowResendButton] = useState(false); // State for the resend button
+  const [showResendButton, setShowResendButton] = useState(false); 
   const navigate = useNavigate();
   const location = useLocation();
   const email = sessionStorage.getItem('email');
@@ -29,7 +29,7 @@ const VerifyEmail = () => {
       if (error.response) {
         console.error('Error while verifying email:', error.response.data.message || 'Verification failed.');
         setErrorMessage(error.response.data.message || 'Verification failed. Please try again.');
-        setShowResendButton(true); // Show the resend button if verification fails
+        setShowResendButton(true);
       } else if (error.request) {
         console.error('No response received from server. Please try again later.');
         setErrorMessage('No response from server. Please try again later.');
@@ -47,7 +47,7 @@ const VerifyEmail = () => {
       const response = await axios.post('http://localhost:3001/auth/verifyEmail', { email });
       console.log(response.data.message || 'Verification code sent successfully!');
       alert('A new verification code has been sent to your email.');
-      setShowResendButton(false); // Hide the resend button after successful resend
+      setShowResendButton(false);
     } catch (error) {
       console.error('Error while resending verification code:', error.message);
       alert('Failed to resend verification code. Please try again later.');

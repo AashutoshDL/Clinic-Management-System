@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
-import { useAuth } from '../../context/AuthContext'; // Assuming you have an AuthContext
+import { useAuth } from '../../context/AuthContext';
 import DoctorHistory from './DoctorHistory';
 import PatientHistory from './PatientHistory';
 
 const History = () => {
-  const { role } = useAuth(); // role is an array
+  const { role } = useAuth();
 
 //   console.log("User Roles:", role); // Debugging
 
   if (!role || role.length === 0) {
-      return <p>Loading...</p>; // Handle case where role is undefined or empty
+      return <p>Loading...</p>;
   }
 
   return (

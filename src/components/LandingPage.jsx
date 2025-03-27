@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, PasswordInput, MySelect } from './Auth/FormElements';
-import { ChevronRight, Calendar, Search, UserPlus, Eye, EyeOff } from 'lucide-react';
+import { ChevronRight, Calendar, Search, UserPlus, Eye, EyeOff, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const Landing = () => {
-  const [showLoginForm, setShowLoginForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login, checkAuth } = useAuth();
+  const { isLoggedIn, login, checkAuth, logout, role } = useAuth();
 
   const loginSchema = Yup.object({
     email: Yup.string()
@@ -35,12 +34,13 @@ const Landing = () => {
 
   const handleLoginSubmit = async (values, { setSubmitting }) => {
     try {
+      console.log(values)
       const response = await axios.post('http://localhost:3001/auth/login', values, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
-      const { accessToken, refreshToken } = response.data;
-      login(accessToken, refreshToken);
+      const { id, role } = response.data;
+      login(id, role);
       await checkAuth();
       navigate('/profile');
     } catch (error) {
@@ -58,12 +58,18 @@ const Landing = () => {
           Clinic Management System
         </div>
         <div className="flex gap-4">
-          <button onClick={() => setShowLoginForm(true)} className="text-blue-600 hover:text-blue-700 font-medium">
-            Login
-          </button>
-          <button onClick={() => setShowLoginForm(false)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-            Get Started
-          </button>
+          {isLoggedIn ? (
+            <User className="w-6 h-6 text-blue-600 cursor-pointer" onClick={() => navigate('/profile')} />
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')} className="text-blue-600 hover:text-blue-700 font-medium">
+                Login
+              </button>
+              <button onClick={() => navigate('/register')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                Get Started
+              </button>
+            </>
+          )}
         </div>
       </nav>
 
@@ -79,7 +85,7 @@ const Landing = () => {
             <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium">
               Find Doctors <ChevronRight className="w-4 h-4" />
             </button>
-            <button className="flex items-center gap-2 bg-white hover:bg-gray-50 text-black-600 border-2 border-gray-600 px-6 py-3 rounded-lg font-medium" onClick={()=>navigate('/appointment')}>
+            <button className="flex items-center gap-2 bg-white hover:bg-gray-50 text-black-600 border-2 border-gray-600 px-6 py-3 rounded-lg font-medium" onClick={() => navigate('/appointment')}>
               Book Appointment <Calendar className="w-4 h-4" />
             </button>
           </div>
@@ -94,34 +100,36 @@ const Landing = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex justify-center items-center p-8">
-          <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-2 text-gray-900 text-center">Welcome Back</h2>
-            <p className="text-gray-600 mb-8 text-center">Please enter your credentials to continue.</p>
-            <Formik initialValues={{ email: '', password: '', role: '' }} validationSchema={loginSchema} onSubmit={handleLoginSubmit}>
-              {({ isSubmitting }) => (
-                <Form className="space-y-4">
-                  <TextInput label="Email" name="email" type="text" placeholder="Enter your email" />
-                  <div className="relative">
-                    <PasswordInput label="Password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+        {!isLoggedIn && (
+          <div className="flex-1 flex justify-center items-center p-8">
+            <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-2xl font-bold mb-2 text-gray-900 text-center">Welcome Back</h2>
+              <p className="text-gray-600 mb-8 text-center">Please enter your credentials to continue.</p>
+              <Formik initialValues={{ email: '', password: '', role: '' }} validationSchema={loginSchema} onSubmit={handleLoginSubmit}>
+                {({ isSubmitting }) => (
+                  <Form className="space-y-4">
+                    <TextInput label="Email" name="email" type="text" placeholder="Enter your email" />
+                    <div className="relative">
+                      <PasswordInput label="Password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    <MySelect label="Role" name="role" className="w-full px-4 py-2 mt-2 border rounded-md">
+                      <option value="">Select a role</option>
+                      <option value="patient">Patient</option>
+                      <option value="doctor">Doctor</option>
+                      <option value="lab-technician">Lab Technician</option>
+                    </MySelect>
+                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg" disabled={isSubmitting}>
+                      {isSubmitting ? 'Logging in...' : 'Sign In'}
                     </button>
-                  </div>
-                  <MySelect label="Role" name="role" className="w-full px-4 py-2 mt-2 border rounded-md">
-                    <option value="">Select a role</option>
-                    <option value="patient">Patient</option>
-                    <option value="doctor">Doctor</option>
-                    <option value="lab-technician">Lab Technician</option>
-                  </MySelect>
-                  <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg" disabled={isSubmitting}>
-                    {isSubmitting ? 'Logging in...' : 'Sign In'}
-                  </button>
-                </Form>
-              )}
-            </Formik>
+                  </Form>
+                )}
+              </Formik>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

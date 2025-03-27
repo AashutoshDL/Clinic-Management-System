@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 
 const TermsConditions = () => {
-  // State to track the current page
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Array of sections, each representing a page
   const termsPages = [
       {
           "title": "1. Acceptance of Terms",
@@ -28,21 +26,18 @@ const TermsConditions = () => {
       }
   ];
 
-  // Function to go to the next page
   const nextPage = () => {
     if (currentPage < termsPages.length) {
       setCurrentPage(currentPage + 1);
     }
   };
 
-  // Function to go to the previous page
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
-  // Current page content based on the state
   const currentContent = termsPages[currentPage - 1];
 
   return (
@@ -56,11 +51,9 @@ const TermsConditions = () => {
           Last Updated: <span className="font-medium">12/20/2024</span>
         </p>
 
-        {/* Display the current page's content */}
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">{currentContent.title}</h2>
         <p className="text-gray-600 mb-4">{currentContent.content}</p>
 
-        {/* Pagination Controls */}
         <div className="flex justify-between mt-6">
           <button
             onClick={prevPage}

@@ -1,174 +1,214 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Send, Search, UserPlus, Trash2 } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Send, Search } from "lucide-react";
+import axios from "axios";
+import { baseURL } from "../service/baseURL";
 
 const UserChat = () => {
   const [messages, setMessages] = useState([
-    { text: "Hello! How can I help you?", sender: "bot", time: "10:00 AM", recipient: null },
   ]);
+
   const [input, setInput] = useState("");
-  const [users, setUsers] = useState([
-    { name: "Alice", status: "active" },
-    { name: "Bob", status: "inactive" },
-    { name: "Charlie", status: "active" },
-    { name: "David", status: "active" },
-    { name: "Eve", status: "inactive" },a
-  ]);
+  const [doctors, setDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [messageRequests, setmessageRequests] = useState([
-    { name: "Frank" },
-    { name: "Grace" }
-  ]);
   const [activeChat, setActiveChat] = useState(null);
+  const [ws, setWs] = useState(null);
 
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Fetch doctors data on component mount
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/doctor/getAllDoctors`); // Replace with your API endpoint
+        // Check if the response data is an array before setting it
+        if (Array.isArray(response.data.doctors)) {
+          setDoctors(response.data.doctors);
+        } else {
+          console.error("Doctors response is not an array", response.data);
+          setDoctors([]); // Default to empty array if it's not an array
+        }
+      } catch (error) {
+        console.error("Error fetching doctor data:", error);
+        setDoctors([]); // Default to empty array in case of error
+      }
+    };
+  
+    fetchDoctors();
+  }, []);
+  
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  useEffect(() => {
+    // WebSocket connection when chat is active
+    if (activeChat) {
+      const socket = new WebSocket(`ws://localhost:3001/socket/${activeChat}`);
+      
+      socket.onopen = () => {
+        console.log('WebSocket connection established');
+      };
+
+      socket.onmessage = (event) => {
+        const receivedMessage = JSON.parse(event.data);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            text: receivedMessage.text,
+            sender: "doctor",
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            recipient: activeChat,
+          },
+        ]);
+      };
+
+      setWs(socket); // Save WebSocket reference to state
+
+      return () => {
+        socket.close();
+      };
+    }
+  }, [activeChat]);
 
   const sendMessage = (recipient) => {
-    if (input.trim() === "") return;
+    if (input.trim() === "" || !activeChat || !ws) return;
 
-    const newMessage = {
+    const message = {
       text: input,
       sender: "user",
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       recipient: recipient,
+      recipientId: activeChat,
     };
 
-    setMessages([...messages, newMessage]);
-    setInput("");
+    // Send message via WebSocket
+    ws.send(JSON.stringify(message));
+
+    // Add message to the state for the UI
+    setMessages([...messages, message]);
+    setInput(""); // Reset input field
   };
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDoctors = doctors.filter((doctor) =>
+    doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAcceptRequest = (user) => {
-    setmessageRequests(messageRequests.filter(req => req.name !== user.name));
-    setUsers([...users, user]);
+  const startChat = (doctor) => {
+    setActiveChat(doctor.id); // Use the doctor's ID to establish a chat with them
   };
-
-  const handleDeleteRequest = (user) => {
-    setmessageRequests(messageRequests.filter(req => req.name !== user.name));
-  };
-
-  const startChat = (user) => {
-    setActiveChat(user.name);
-  };
-
-  const filteredMessages = messages.filter(msg => {
-    if (msg.recipient === null) return msg.sender === 'bot';
-    return (msg.sender === "user" && msg.recipient === activeChat) ||
-           (msg.sender !== "user" && msg.recipient === activeChat) ||
-           (msg.sender !== "user" && msg.recipient === null);
-  });
 
   return (
-    <div className="flex h-screen bg-gray-100 p-4 max-w-5xl mx-auto shadow-lg rounded-lg overflow-hidden">
-      {/* Message Request Section (Moved to the left) */}
-      <div className="w-1/4 bg-white shadow-md rounded-lg p-4 overflow-y-auto mr-4">
-        <h2 className="text-lg font-semibold mb-3 flex items-center">
-          Message Requests <UserPlus className="ml-2" />
-        </h2>
-        <ul>
-          {messageRequests.map((request, index) => (
-            <li key={index} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-200">
-              <span>{request.name}</span>
-              <div>
-                <button onClick={() => handleAcceptRequest(request)} className="text-green-500 hover:text-green-700 mr-2">Accept</button>
-                <button onClick={() => handleDeleteRequest(request)} className="text-red-500 hover:text-red-700">
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+    <div className="flex h-screen bg-gray-100 p-4 max-w-6xl mx-auto shadow-lg rounded-lg overflow-hidden">
+      {/* Doctor List Sidebar */}
+      <div className="w-1/3 bg-white shadow-md rounded-lg overflow-hidden mr-4 flex flex-col">
+        {/* Doctor Search */}
+        <div className="p-4 border-b">
+          <div className="relative">
+            <Search size={16} className="text-gray-500 absolute left-3 top-3" />
+            <input
+              type="text"
+              className="w-full pl-10 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-gray-50"
+              placeholder="Search doctors..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Doctor List */}
+        <div className="overflow-y-auto flex-grow p-3">
+          <h2 className="text-sm font-semibold mb-3 text-gray-500 px-2">DOCTORS</h2>
+          <ul className="space-y-2">
+            {filteredDoctors.map((doctor) => (
+              <li
+                key={doctor.id}
+                className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
+                  activeChat === doctor.id ? "bg-blue-100" : "hover:bg-gray-100"
+                }`}
+                onClick={() => startChat(doctor)}
+              >
+                <div className="relative">
+                  <div
+                    className={`w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full mr-3`}
+                  >
+                    {doctor.name.charAt(0)}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium">{doctor.name}</span>
+                  <span className="text-xs text-gray-500">Online</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* Chat Section */}
-      <div className="flex flex-col flex-grow w-2/4">
-        <div className="bg-blue-500 text-white p-4 rounded-t-lg shadow-md flex items-center">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-500 font-bold mr-3">
-            U
-          </div>
-          <h2 className="text-lg font-semibold">User Chat</h2>
+      <div className="flex flex-col flex-grow rounded-lg overflow-hidden bg-white shadow-md">
+        {/* Chat Header */}
+        <div className="bg-blue-600 text-white p-3 flex items-center shadow-sm">
+          {activeChat ? (
+            <div>
+              <h2 className="font-semibold">{activeChat}</h2>
+              <p className="text-xs text-blue-200">Online</p>
+            </div>
+          ) : (
+            <h2 className="font-semibold">Select a conversation</h2>
+          )}
         </div>
-        <div className="flex-grow overflow-y-auto p-4 space-y-2 bg-white rounded-b-lg shadow relative">
-          {filteredMessages.map((msg, index) => (
+
+        {/* Messages Area */}
+        <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-gray-50">
+          {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex items-start ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+              className={`flex items-end ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
               {msg.sender !== "user" && (
-                <div className="w-10 h-10 bg-gray-400 text-white flex items-center justify-center rounded-full mr-2">
-                  B
+                <div className="w-8 h-8 bg-blue-500 text-white flex items-center justify-center rounded-full mr-2 mb-1">
+                  {msg.sender.charAt(0)}
                 </div>
               )}
+
               <div
-                className={`p-3 rounded-lg shadow-md text-white max-w-[70%] ${msg.sender === "user" ? "bg-blue-500" : "bg-gray-500"}`}
+                className={`p-3 rounded-lg max-w-xs lg:max-w-md ${
+                  msg.sender === "user"
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : "bg-gray-200 text-gray-800 rounded-bl-none"
+                }`}
               >
                 <p className="break-words">{msg.text}</p>
-                <span className="text-xs opacity-70 block text-right">{msg.time}</span>
+                <span
+                  className={`text-xs block text-right mt-1 ${
+                    msg.sender === "user" ? "text-blue-100" : "text-gray-500"
+                  }`}
+                >
+                  {msg.time}
+                </span>
               </div>
-              {msg.sender === "user" && (
-                <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full ml-2">
-                  U
-                </div>
-              )}
             </div>
           ))}
-          <div ref={messagesEndRef} />
         </div>
-        <div className="flex items-center p-2 bg-white mt-2 rounded-lg shadow-md">
-          <input
-            type="text"
-            className="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300"
-            placeholder="Type a message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage(activeChat)}
-          />
-          <button onClick={() => sendMessage(activeChat)} className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300" disabled={input.trim() === ""}>
-            <Send size={20} />
-          </button>
-        </div>
-      </div>
 
-      {/* User Section */}
-      <div className="w-1/4 bg-white shadow-md rounded-lg p-4 ml-4 overflow-y-auto">
-        <div className="flex items-center mb-3">
-          <Search size={20} className="text-gray-500 mr-2" />
-          <input
-            type="text"
-            className="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300"
-            placeholder="Search users..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <h2 className="text-lg font-semibold mb-3">Users</h2>
-        <ul className="space-y-2">
-          {filteredUsers.map((user, index) => (
-            <li
-              key={index}
-              className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer"
-              onClick={() => startChat(user)}
+        {/* Message Input */}
+        <div className="p-3 bg-white border-t">
+          <div className="flex items-center">
+            <input
+              type="text"
+              className="flex-grow p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              placeholder={activeChat ? "Type a message..." : "Select a doctor to start chatting"}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage(activeChat)}
+              disabled={!activeChat}
+            />
+            <button
+              onClick={() => sendMessage(activeChat)}
+              className="ml-2 p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              disabled={input.trim() === "" || !activeChat}
             >
-              <div className={`w-10 h-10 ${user.status === "active" ? "bg-green-500" : "bg-gray-400"} text-white flex items-center justify-center rounded-full mr-2`}>
-                {user.name.charAt(0)}
-              </div>
-              <span>{user.name}</span>
-              <span className={`ml-2 text-sm ${user.status === "active" ? "text-green-500" : "text-gray-500"}`}>
-                {user.status === "active" ? "Active" : "Offline"}
-              </span>
-            </li>
-          ))}
-        </ul>
+              <Send size={18} />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

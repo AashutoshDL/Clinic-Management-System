@@ -62,14 +62,14 @@ const UserForm = ({ onClose, onSubmit }) => {
                   withCredentials: true,
                 }
               );
-              onSubmit('User added successfully'); // Call onSubmit with success message
+              onSubmit('User added successfully');
               onClose();
             } catch (error) {
               console.error('Error during user creation:', error);
               if (error.response) {
                 console.error('Response error data:', error.response.data);
               }
-              onSubmit('Error during user creation'); // Call onSubmit with error message
+              onSubmit('Error during user creation');
             } finally {
               setSubmitting(false);
             }

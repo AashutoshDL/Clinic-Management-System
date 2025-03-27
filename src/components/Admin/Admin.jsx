@@ -28,7 +28,6 @@ const Admin = () => {
     },
   ];
 
-  // Fetching table data from the backend
   const fetchTableData = async () => {
     try {
       setLoading(true);
@@ -42,19 +41,16 @@ const Admin = () => {
     }
   };
 
-  // Call fetchTableData once on component mount
+
   useEffect(() => {
     fetchTableData();
   }, []);
 
-  // Function to handle the new user addition
   const handleUserSubmit = (newUser) => {
-    // Assuming newUser is returned from the backend and has the same structure
     setAlertMessage('User added successfully');
-    setTimeout(() => setAlertMessage(''), 5000); // Clear the alert after 5 seconds
+    setTimeout(() => setAlertMessage(''), 5000);
 
-    // Refetch table data after adding the user
-    fetchTableData(); // Trigger the refetch
+    fetchTableData();
   };
 
   return (
@@ -88,7 +84,6 @@ const Admin = () => {
         )}
       </div>
 
-      {/* Display alert message */}
       {alertMessage && (
         <div className="bg-green-100 text-green-700 p-4 mt-4 rounded">
           {alertMessage}
@@ -98,7 +93,7 @@ const Admin = () => {
       {showForm && (
         <UserForm
           onClose={() => setShowForm(false)}
-          onSubmit={handleUserSubmit} // Pass the function to handle user creation
+          onSubmit={handleUserSubmit}
         />
       )}
     </div>

@@ -9,9 +9,9 @@ import axios from 'axios';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth(); // Get login function from context
+  const { login } = useAuth();
   const {checkAuth}=useAuth();
-``
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 to-pink-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-xl space-y-6">
@@ -40,12 +40,12 @@ const Login = () => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                withCredentials: true, // Include cookies with the request
+                withCredentials: true,
               });
               const { accessToken, refreshToken } = response.data;
               login(accessToken,refreshToken);
               await checkAuth();
-              navigate('/profile'); 
+              navigate('/home'); 
             } catch (error) {
               console.error('Error during login', error);
               if (error.response) {

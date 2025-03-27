@@ -54,7 +54,6 @@ const DoctorHistory = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Doctor History</h1>
 
-      {/* Treated Patients Section */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Treated Patients</h2>
         <table className="min-w-full border border-collapse">
@@ -122,7 +121,6 @@ const DoctorHistory = () => {
         </table>
       </div>
 
-      {/* Hospitals Worked At Section */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Hospitals Worked At</h2>
         <table className="min-w-full border border-collapse">
