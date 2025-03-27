@@ -14,6 +14,7 @@ const ManageAdmins = () => {
       try {
         const response = await axios.get(`${baseURL}/admin/getAllAdmin`); // Replace with your actual API URL
         setAdmins(response.data.data || []);
+        console.log(response.data.data)
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch admins");
       } finally {

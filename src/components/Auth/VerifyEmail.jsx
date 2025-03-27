@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { baseURL } from '../service/baseURL';
 
 const VerifyEmail = () => {
   const {isLoggedIn}=useAuth();
@@ -18,12 +19,12 @@ const VerifyEmail = () => {
     console.log("Email", email);
 
     try {
-      const response = await axios.post('http://localhost:3001/auth/verifyEmail', {
+      const response = await axios.post(`${baseURL}/auth/verifyEmail`, {
         email,
         verificationCode,
       });
 
-      console.log(response.data.message || 'Email verified successfully!');
+      console.log(response);
       navigate('/login');
     } catch (error) {
       if (error.response) {
@@ -44,7 +45,7 @@ const VerifyEmail = () => {
 
   const handleResendCode = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/auth/verifyEmail', { email });
+      const response = await axios.post(`${baseURL}/auth/verifyEmail`, { email });
       console.log(response.data.message || 'Verification code sent successfully!');
       alert('A new verification code has been sent to your email.');
       setShowResendButton(false);

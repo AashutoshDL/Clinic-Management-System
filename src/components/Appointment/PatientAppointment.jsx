@@ -1,8 +1,10 @@
 import React,{ useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
-import axiosInstance from "../service/axiosInterceptor"
 import { Calendar, Clock, Search, ArrowLeft, CheckCircle, X, User, Briefcase, MapPin } from "lucide-react"
+import axios from "axios"
+import { baseURL } from "../service/baseURL"
+
 
 const PatientAppointment = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null)
@@ -22,7 +24,7 @@ const PatientAppointment = () => {
     const fetchDoctors = async () => {
       try {
         setLoading(true)
-        const response = await axiosInstance.get("/doctor/getAllDoctors", {
+        const response = await axios.get(`${baseURL}/doctor/getAllDoctors`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -93,7 +95,7 @@ const PatientAppointment = () => {
       setBookingStatus({ status: "loading", message: "Booking your appointment..." })
 
       // Get patient details
-      const patientResponse = await axiosInstance.get(`/patient/getPatientById/${userId}`)
+      const patientResponse = await axios.get(`${baseURL}/patient/getPatientById/${userId}`)
 
       if (patientResponse.status === 200 && patientResponse.data.data) {
         const patient = patientResponse.data.data
@@ -106,18 +108,17 @@ const PatientAppointment = () => {
           })
           return
         }
-
+        
         const appointmentData = {
           doctorId: selectedDoctorData.id,
           doctorName: selectedDoctorData.name,
-          patientId: patient.id,
+          patientId: patient._id,
           patientName: patient.name,
           time: selectedTime,
           specialization: selectedDoctorData.specialization || "General",
         }
 
-        // Book appointment
-        const response = await axiosInstance.post(`/appointments/createAppointment/${userId}`, appointmentData)
+        const response = await axios.post(`${baseURL}/appointments/createAppointment/${userId}`, appointmentData)
 
         if (response.status === 201) {
           setBookingStatus({
@@ -230,7 +231,6 @@ const PatientAppointment = () => {
           </div>
         </div>
 
-        {/* Booking Status Message */}
         {bookingStatus.status && (
           <div
             className={`mb-8 p-4 rounded-lg ${
@@ -262,9 +262,7 @@ const PatientAppointment = () => {
           </div>
         )}
 
-        {/* Main Content */}
         {selectedDoctor === null ? (
-          /* Doctor Selection View */
           <div>
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">Select a Doctor</h2>
 
@@ -286,12 +284,12 @@ const PatientAppointment = () => {
                       <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                         <div className="w-24 h-24 rounded-full bg-white p-1">
                           <img
-                            src={doctor.image || "https://via.placeholder.com/150?text=Doctor"}
+                            src={doctor.image || "Image"}
                             alt={doctor.name}
                             className="w-full h-full object-cover rounded-full"
                             onError={(e) => {
                               e.target.onerror = null
-                              e.target.src = "https://via.placeholder.com/150?text=Doctor"
+                              e.target.src = "Image"
                             }}
                           />
                         </div>
@@ -347,13 +345,13 @@ const PatientAppointment = () => {
               <img
                 src={
                   doctors.find((doc) => doc.id === selectedDoctor)?.image ||
-                  "https://via.placeholder.com/150?text=Doctor"
+                  "Image"
                 }
                 alt="Doctor"
                 className="w-16 h-16 rounded-full object-cover mr-4"
                 onError={(e) => {
                   e.target.onerror = null
-                  e.target.src = "https://via.placeholder.com/150?text=Doctor"
+                  e.target.src = "Image"
                 }}
               />
               <div>

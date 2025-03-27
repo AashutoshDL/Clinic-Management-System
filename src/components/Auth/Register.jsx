@@ -24,6 +24,7 @@ const Register = () => {
             password: '',
             confirmPassword: '',
             acceptedTerms: false,
+            role: '', // Add the role field here
           }}
           validationSchema={Yup.object({
             name: Yup.string()
@@ -33,7 +34,7 @@ const Register = () => {
               .max(20, 'Must be 20 characters or less')
               .matches(/[0-9]/, 'Username must contain at least one number')
               .required('Required'),
-              email: Yup.string()
+            email: Yup.string()
               .email('Invalid email address')
               .matches(
                 /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -53,6 +54,8 @@ const Register = () => {
             acceptedTerms: Yup.boolean()
               .required('Required')
               .oneOf([true], 'Please accept the terms and conditions before continuing.'),
+            role: Yup.string() // Add role validation
+              .required('Please select a role'),
           })}
           onSubmit={async (values, { setSubmitting }) => {
             try {
@@ -83,6 +86,14 @@ const Register = () => {
                 <TextInput label="Name" name="name" type="text" placeholder="Your Name" />
                 <TextInput label="User Name" name="userName" type="text" placeholder="Choose a username" />
                 <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
+                {/* Add the Role Selection Here */}
+                <MySelect label="Role" name="role">
+                  <option value="">Select a Role</option>
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="admin">Admin</option>
+                  <option value="superadmin">Superadmin</option>
+                </MySelect>
               </div>
               {/* Right Side: Password and Terms */}
               <div className="w-1/2 space-y-4">
@@ -112,12 +123,12 @@ const Register = () => {
                 >
                   {showConfirmPassword ? 'Hide' : 'Show'} Password
                 </button>
-  
+
                 <div className="flex items-center mb-4">
                   <Checkbox name="acceptedTerms">
                     I accept the {' '}
                     <Link to='/termsandconditions' className='text-blue-500 hover:text-blue-700' >
-                    terms and conditions
+                      terms and conditions
                     </Link>
                   </Checkbox>
                 </div>

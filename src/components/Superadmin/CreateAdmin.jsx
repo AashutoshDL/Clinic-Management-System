@@ -18,7 +18,6 @@ const CreateAdmin = () => {
         })}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           try {
-            console.log(values)
             await axios.post(`${baseURL}/admin/createAdmin`, values, {
               headers: { 'Content-Type': 'application/json' },
               withCredentials: true,

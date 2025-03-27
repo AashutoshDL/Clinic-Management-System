@@ -1,10 +1,11 @@
-import React,{ useState, useEffect } from "react"
-import { useAuth } from "../../context/AuthContext"
-import { useNavigate } from "react-router-dom"
-import PatientProfile from "../Profile/PatientProfile"
-import AppointmentReminder from "../Reminders/AppointmentReminder"
-import axiosInstance from "../service/axiosInterceptor"
-import { Calendar, Bell } from "lucide-react"
+import React,{ useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import PatientProfile from "../Profile/PatientProfile";
+import axiosInstance from "../service/axiosInterceptor";
+import { Calendar, Bell } from "lucide-react";
+import { baseURL } from "../service/baseURL";
+import axios from 'axios';
 
 const PatientHome = () => {
   const { isLoggedIn, userId } = useAuth()
@@ -26,16 +27,15 @@ const PatientHome = () => {
     fetchAppointments()
   }, [isLoggedIn, userId])
 
-  const handleSetReminder = (appointmentId) => {
-    alert(`Reminder set for appointment ID: ${appointmentId}`)
-    // Implement reminder functionality here
-    ;<AppointmentReminder appointmentId={appointmentId} />
-  }
-
-  const handleCancelAppointment = (appointmentId) => {
-    alert(`Cancelling appointment ID: ${appointmentId}`)
-    // Implement cancel functionality here
-  }
+  const handleSetReminder = async (appointmentId) => {
+      try{
+        console.log(appointmentId)
+        const response= await axios.post(`${baseURL}/reminder/emailReminder/${appointmentId}`)
+        console.log(response)
+      }catch(error){
+        console.error("Error setting reminder",error);
+      }
+    }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -72,13 +72,13 @@ const PatientHome = () => {
                   <div key={appointment._id || appointment.id} className="p-6 hover:bg-gray-50">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                       <div className="flex-1">
-                        <h3 className="font-medium">{appointment.patientName || "Appointment"}</h3>
+                        <h3 className="font-medium">{appointment.patientName || "Placeholder name"}</h3>
                         <p className="text-gray-600 mb-1">
                           <span className="font-medium">Specialization:</span>{" "}
-                          {appointment.specialization || "General Checkup"}
+                          {appointment.specialization || "Placeholder specilization"}
                         </p>
                         <p className="text-gray-600 mb-1">
-                          <span className="font-medium">Time:</span> {appointment.time || "Not specified"}
+                          <span className="font-medium">Time:</span> {appointment.time || "Placeholder timme"}
                         </p>
                       </div>
                       <div className="mt-4 md:mt-0 flex space-x-3">
@@ -88,12 +88,6 @@ const PatientHome = () => {
                         >
                           <Bell className="w-4 h-4 mr-1" />
                           Remind
-                        </button>
-                        <button
-                          className="px-3 py-1 border border-red-300 text-red-500 rounded-full hover:bg-red-50 transition"
-                          onClick={() => handleCancelAppointment(appointment._id || appointment.id)}
-                        >
-                          Cancel
                         </button>
                       </div>
                     </div>
