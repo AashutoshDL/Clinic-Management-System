@@ -25,6 +25,7 @@ import ManageReports from './components/Superadmin/ManageReports';
 import ManageDoctors from './components/Superadmin/ManageDoctors';
 import SetupProfile from './components/Profile/SetupProfile';
 import MedicineForm from './components/Meds-API/MedicineForm';
+import DeletingScreen from './components/Ui/DeletingScreen';
 
 const App = () => {
   const AppContent = () => {

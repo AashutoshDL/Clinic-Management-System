@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../service/axiosInterceptor';
+import axios from 'axios';
+import { baseURL } from '../service/baseURL';
 
 const DoctorAppointment = () => {
   const { userId, role } = useAuth();
@@ -11,42 +12,51 @@ const DoctorAppointment = () => {
 
   const fetchAppointments = async () => {
     try {
-      const response = await axiosInstance.get(`/appointments/getAppointmentsById/${userId}`);
-      if (response.status === 200) {
-        setAppointments(response.data.appointments);
+      const response = await axios.get(`${baseURL}/appointments/getAppointmentsById/${userId}`);
+      if (!response.data || !response.data.appointments) {
+        console.log("No appointments received from API.");
+        return;
       }
+
+      setAppointments(response.data.appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
   };
 
-  const handleReschedule = (appointmentId, newTime) => {
-    const updatedAppointments = appointments.map((appointment) =>
-      appointment.id === appointmentId ? { ...appointment, time: newTime } : appointment
-    );
-    setAppointments(updatedAppointments);
-    alert('Appointment rescheduled successfully!');
-  };
-
-  const handleCancelAppointment = (appointmentId) => {
-    const updatedAppointments = appointments.filter((appointment) => appointment.id !== appointmentId);
-    setAppointments(updatedAppointments);
-    alert('Appointment canceled successfully!');
-  };
-
-  const filteredAppointments = appointments.filter((appointment) =>
-    appointment.patientName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   useEffect(() => {
-    if (role === 'doctor') {
-      fetchAppointments();
-    }
+    fetchAppointments();
   }, [role, userId]);
+
+  const handleConfirmAppointment = async (appointmentId) => {
+    try {
+      const response = await axios.patch(
+        `${baseURL}/appointments/confirmAppointment/${appointmentId}`,
+      );
+      
+      if (response.data.success) {
+        setAppointments((prevAppointments) =>
+          prevAppointments.map((appointment) =>
+            appointment._id === appointmentId
+              ? { ...appointment, status: 'Confirmed' }
+              : appointment
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error confirming appointment:', error);
+    }
+  };
+
+  const filteredAppointments = appointments.filter(
+    (appointment) => 
+      appointment.status === "Pending" &&
+      appointment.patientName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold text-center text-gray-900 mb-10">Your Appointments</h1>
+      <h1 className="text-4xl font-bold text-center text-gray-900 mb-10">Pending Appointments</h1>
 
       <div className="mb-8 flex justify-center">
         <div className="relative w-full max-w-md">
@@ -64,33 +74,27 @@ const DoctorAppointment = () => {
       </div>
 
       <div>
-        <h2 className="text-3xl font-semibold text-gray-800 mb-8">Your Scheduled Appointments</h2>
         {filteredAppointments.length > 0 ? (
           <div className="space-y-6">
             {filteredAppointments.map((appointment) => (
-              <div key={appointment._id || appointment.patientName + appointment.time} className="bg-white shadow-md p-6 rounded-lg">
+              <div key={appointment._id} className="bg-white shadow-md p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-800">{appointment.patientName}</h3>
-                <p className="text-gray-600">Specialization: {appointment.specialization}</p>
+                <h3 className="text-xl font-semibold text-gray-800">{appointment.patientId}</h3>
                 <p className="text-gray-500 mt-3">Scheduled Time: {appointment.time}</p>
+                <p className="text-gray-500 mt-1">Status: {appointment.status}</p>
                 <div className="mt-4 flex justify-between">
-                  {/* <button
-                    onClick={() => handleReschedule(appointment.id, '10:00 AM')} // Example reschedule to '10:00 AM'
-                    className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-all duration-200"
-                  >
-                    Reschedule
-                  </button> */}
                   <button
-                    onClick={() => handleCancelAppointment(appointment.id)}
-                    className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-all duration-200"
+                    onClick={() => handleConfirmAppointment(appointment._id)}
+                    className="bg-buttonGrayDark text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-all duration-200"
                   >
-                    Cancel Appointment
+                    Confirm Appointment
                   </button>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p>No appointments found</p>
+          <p className="text-gray-700 text-center">No pending appointments found.</p>
         )}
       </div>
     </div>
