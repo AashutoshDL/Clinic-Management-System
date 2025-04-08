@@ -3,6 +3,7 @@ import PatientAppointment from './PatientAppointment';
 import DoctorAppointment from './DoctorAppointment';
 import { useAuth } from '../../context/AuthContext';
 import LoadingScreen from '../Ui/LoadingScreen';
+import LoginWarningPage from '../Ui/LoginWarningPage';
 
 const Appointment = () => {
     const { isLoggedIn, role } = useAuth();
