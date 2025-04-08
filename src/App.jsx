@@ -52,7 +52,7 @@ const App = () => {
             <Route path='/doctorProfile' element={<DoctorProfile/>} />
             <Route path='/reminders' element={<EmailReminders />} />
             <Route path='/reportSharing' element={<ReportSharing />} />
-            <Route path='/messages' element={<Chat />} />
+            <Route path='/messages/:doctorId?' element={<Chat />} />
             <Route path='/history' element={<History />} />
             <Route path='/create-superadmin' element={<CreateSuperadmin />} />
             <Route path='/reports' element={<Reports />} />
@@ -65,7 +65,7 @@ const App = () => {
         </div>
       </div>
     );
-  };  
+  };  ``
 
   return (
     <AuthProvider>

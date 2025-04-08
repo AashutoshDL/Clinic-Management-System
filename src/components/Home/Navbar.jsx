@@ -5,9 +5,6 @@ import {
   MessageSquare,
   User,
   Calendar,
-  // CheckSquare,
-  // Settings,
-  // Lock,
   ClipboardPlus,
   Clock,
   Users,
@@ -18,7 +15,6 @@ import { useAuth } from "../../context/AuthContext";
 const Navbar = () => {
   const { isLoggedIn, role } = useAuth();
   const navigate = useNavigate();
-
 
   const userRoles = Array.isArray(role) ? role : [];
 
@@ -51,11 +47,10 @@ const Navbar = () => {
         </div>
 
         <div className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          <NavItem to="/home" icon={Home}>
-            Home
-          </NavItem>
 
-          {userRoles.includes("superadmin") ? (
+
+          {/* Admin-specific items */}
+          {userRoles.includes("superadmin") && (
             <>
               <NavItem to="/manageAdmins" icon={Users}>
                 Admins
@@ -73,35 +68,60 @@ const Navbar = () => {
                 Reports
               </NavItem>
             </>
-          ) : (
+          )}
+          {userRoles.includes("admin") && (
             <>
-              <NavItem to="/reports" icon={ClipboardPlus}>
-                Reports
-              </NavItem>
-              <NavItem to="/messages" icon={MessageSquare}>
-                Messages
-              </NavItem>
-              <NavItem to="/appointment" icon={Calendar}>
-                Appointment
-              </NavItem>
-              <NavItem to="/history" icon={Clock}>
-                History
-              </NavItem>
+          <NavItem to="/home" icon={Home}>
+            Home
+          </NavItem>
+          <NavItem to="/reports" icon={ClipboardPlus}>
+            Reports
+          </NavItem>
+          <NavItem to="/appointment" icon={Calendar}>
+            Appointment
+          </NavItem>
+          <NavItem to="/history" icon={Clock}>
+            History
+          </NavItem>
             </>
           )}
-        </div>
-
-        {/* <div className="mt-auto px-4 py-6">
-          {isLoggedIn ? (
-            <NavItem to="/profile" icon={User}>
-              Profile
-            </NavItem>
-          ) : (
-            <NavItem to="/login" icon={Lock}>
-              Register
-            </NavItem>
+          {userRoles.includes("patient") && (
+            <>
+          <NavItem to="/home" icon={Home}>
+            Home
+          </NavItem>
+          <NavItem to="/reports" icon={ClipboardPlus}>
+            Reports
+          </NavItem>
+          <NavItem to="/messages" icon={MessageSquare}>
+            Messages
+          </NavItem>
+          <NavItem to="/appointment" icon={Calendar}>
+            Appointment
+          </NavItem>
+          <NavItem to="/history" icon={Clock}>
+            History
+          </NavItem>
+            </>
           )}
-        </div> */}
+
+          {userRoles.includes("doctor") && (
+            <>
+            <NavItem to="/home" icon={Home}>
+              Home
+            </NavItem>
+            <NavItem to="/reports" icon={ClipboardPlus}>
+              Reports
+            </NavItem>
+            <NavItem to="/messages" icon={MessageSquare}>
+              Messages
+            </NavItem>
+            <NavItem to="/appointment" icon={Calendar}>
+              Appointment
+            </NavItem>
+              </>
+          )}
+        </div>
       </nav>
       <div className="flex-1"></div>
     </div>

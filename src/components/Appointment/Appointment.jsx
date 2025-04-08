@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PatientAppointment from './PatientAppointment';
 import DoctorAppointment from './DoctorAppointment';
 import { useAuth } from '../../context/AuthContext';
-import LoginWarningPage from '../Ui/LoginWarningPage';
+import LoadingScreen from '../Ui/LoadingScreen';
 
 const Appointment = () => {
     const { isLoggedIn, role } = useAuth();
@@ -12,11 +12,11 @@ const Appointment = () => {
     }
 
     if (!role || role.length === 0) {
-        return <p>Loading...</p>;
+        return <LoadingScreen />;
     }
 
     return (
-        <div>
+        <div> 
             {role.includes("patient") ? (
                 <PatientAppointment />  
             ) : role.includes("doctor") ? (

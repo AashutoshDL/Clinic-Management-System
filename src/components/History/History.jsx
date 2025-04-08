@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import DoctorHistory from './DoctorHistory';
 import PatientHistory from './PatientHistory';
+import CreatePatientHistory from './CreatePatientHistory';
+import LoadingScreen from '../Ui/LoadingScreen';
 
 const History = () => {
   const { role } = useAuth();
@@ -9,7 +11,7 @@ const History = () => {
 //   console.log("User Roles:", role); // Debugging
 
   if (!role || role.length === 0) {
-      return <p>Loading...</p>;
+      return <LoadingScreen />;
   }
 
   return (
@@ -18,6 +20,8 @@ const History = () => {
               <PatientHistory />
           ) : role.includes("doctor") ? (
               <DoctorHistory />
+          ) : role.includes("admin") ? (
+              <CreatePatientHistory />
           ) : (
               <p>Please log in as a patient or doctor to view your profile.</p>
           )}

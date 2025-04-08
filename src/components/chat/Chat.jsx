@@ -2,12 +2,13 @@ import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext'; // Assuming you have an AuthContext
 import UserChat from './UserChat';
 import DoctorChat from './DoctorChat'
+import LoadingScreen from '../Ui/LoadingScreen'
 
 const Chat = () => {
   const { role } = useAuth();
   
   if (!role || role.length === 0) {
-      return <p>Loading...</p>;
+      return <LoadingScreen />;
   }
 
   return (

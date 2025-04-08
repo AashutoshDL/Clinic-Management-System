@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import PatientHome from './PatientHome';
-import AdminHome from './AdminHome';
 import DoctorHome from './DoctorHome';
 import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
 import Admin from '../Admin/Admin';
+import LoadingScreen from '../Ui/LoadingScreen';
+
 
 const Home = () => {
   const { role } = useAuth();
 
   if (!role || role.length === 0) {
-      return <p>Loading...</p>;
+      return <LoadingScreen />;
   }
 
   return (

@@ -18,6 +18,7 @@ const PatientHome = () => {
         try {
           const response = await axiosInstance.get(`/appointments/getAppointmentsById/${userId}`)
           setAppointments(response.data.appointments || [])
+          // console.log(response)
         } catch (error) {
           console.error("Error fetching appointments:", error)
         }
@@ -29,9 +30,9 @@ const PatientHome = () => {
 
   const handleSetReminder = async (appointmentId) => {
       try{
-        console.log(appointmentId)
+        // console.log(appointmentId)
         const response= await axios.post(`${baseURL}/reminder/emailReminder/${appointmentId}`)
-        console.log(response)
+        // console.log(response)
       }catch(error){
         console.error("Error setting reminder",error);
       }
@@ -57,12 +58,7 @@ const PatientHome = () => {
                   <Calendar className="w-5 h-5 mr-2 text-blue-500" />
                   <h2 className="text-xl font-semibold">Upcoming Appointments</h2>
                 </div>
-                <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
-                  onClick={() => navigate("/book-appointment")}
-                >
-                  Book New
-                </button>
+
               </div>
             </div>
 
@@ -91,6 +87,12 @@ const PatientHome = () => {
                         </button>
                       </div>
                     </div>
+                      <button
+                      className="px-4 py-2 m-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
+                      onClick={() => navigate(`/messages/${appointment.doctorId}`)}
+                    >
+                      Talk to Doctor
+                    </button>
                   </div>
                 ))
               ) : (

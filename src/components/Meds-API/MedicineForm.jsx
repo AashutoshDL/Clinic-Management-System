@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axiosInstance from "../service/axiosInterceptor";
+import { baseURL } from "../service/baseURL";
+import axios from "axios";
 
 
 const MedicineForm = () => {
@@ -12,7 +13,7 @@ const MedicineForm = () => {
         if (query.length < 3) return;
 
         try {
-            const response = await axiosInstance.get("/auto/medicines", { params: { query } });
+            const response = await axios.get(`${baseURL}/auto/medicines`, { params: { query } });
             setCachedConditions(response.data);
             filterSuggestions(query, response.data);
         } catch (error) {
@@ -61,7 +62,7 @@ const MedicineForm = () => {
                 value={query}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Search for a condition..."
+                placeholder="Search for a medicine..."
                 style={{ width: "100%", padding: "8px", marginBottom: "5px" }}
             />
             <ul style={{ listStyle: "none", padding: 0, margin: 0, border: "1px solid #ccc", maxHeight: "150px", overflowY: "auto", position: "absolute", width: "100%", backgroundColor: "white", zIndex: 1 }}>
