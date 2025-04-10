@@ -3,6 +3,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { Checkbox, PasswordInput, TextInput, MySelect } from '../Auth/FormElements';
 import axios from 'axios';
+import { baseURL } from '../service/baseURL';
 
 const UserForm = ({ onClose, onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,8 +15,7 @@ const UserForm = ({ onClose, onSubmit }) => {
         <h2 className="text-xl font-bold mb-4">Create New User</h2>
         <Formik
           initialValues={{
-            firstName: '',
-            lastName: '',
+            name: '',
             userName: '',
             role: '',
             email: '',
@@ -24,11 +24,8 @@ const UserForm = ({ onClose, onSubmit }) => {
             acceptedTerms: false,
           }}
           validationSchema={Yup.object({
-            firstName: Yup.string()
-              .max(15, 'Must be 15 characters or less')
-              .required('Required'),
-            lastName: Yup.string()
-              .max(20, 'Must be 20 characters or less')
+            name: Yup.string()
+              .max(30, 'Must be 30 characters or less')
               .required('Required'),
             userName: Yup.string()
               .max(20, 'Must be 20 characters or less')
@@ -52,8 +49,9 @@ const UserForm = ({ onClose, onSubmit }) => {
           })}
           onSubmit={async (values, { setSubmitting }) => {
             try {
+              console.log(values);
               const response = await axios.post(
-                `http://localhost:3001/auth/register`,
+                `${baseURL}/auth/register`,
                 values,
                 {
                   headers: {
@@ -62,6 +60,7 @@ const UserForm = ({ onClose, onSubmit }) => {
                   withCredentials: true,
                 }
               );
+              console.log(response);
               onSubmit('User added successfully');
               onClose();
             } catch (error) {
@@ -77,18 +76,12 @@ const UserForm = ({ onClose, onSubmit }) => {
         >
           {({ isSubmitting }) => (
             <Form>
-              <TextInput label="First Name" name="firstName" type="text" placeholder="Your Name" />
-              <TextInput label="Last Name" name="lastName" type="text" placeholder="Your Last Name" />
+              <TextInput label="Full Name" name="name" type="text" placeholder="Your Full Name" />
               <TextInput label="User Name" name="userName" type="text" placeholder="Enter your username" />
               <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
               <MySelect label="Role" name="role" className="w-full px-3 py-2 mt-2 border rounded focus:ring-2 focus:ring-blue-400 focus:outline-none text-gray-700 bg-gray-100">
                 <option value="">Select a job type</option>
-                <option value="user">User</option>
                 <option value="patient">Patient</option>
-                <option value="doctor">Doctor</option>
-                <option value="lab-technician">Lab Technician</option>
-                <option value="admin">Admin</option>
-                <option value="superadmin">Super Admin</option>
               </MySelect>
               <PasswordInput
                 label="Password"

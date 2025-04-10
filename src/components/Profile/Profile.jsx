@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import PatientProfile from './PatientProfile'; 
 import DoctorProfile from './DoctorProfile'; 
-import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
+import SuperAdminHome from '../Home/SuperAdminHome';
 
 const Profile = () => {
   const { role } = useAuth();
@@ -18,7 +18,7 @@ const Profile = () => {
           ) : role.includes("doctor") ? (
               <DoctorProfile />
           ) : role.includes("superadmin") ? (
-              <SuperadminDashboard />
+              <SuperAdminHome />
           ) : (
               <p>Please log in as a patient or doctor to view your profile.</p>
           )}

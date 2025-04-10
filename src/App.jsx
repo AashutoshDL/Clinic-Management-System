@@ -25,6 +25,8 @@ import ManageReports from './components/Superadmin/ManageReports';
 import ManageDoctors from './components/Superadmin/ManageDoctors';
 import SetupProfile from './components/Profile/SetupProfile';
 import MedicineForm from './components/Meds-API/MedicineForm';
+import DeletingScreen from './components/Ui/DeletingScreen';
+import ManageAppointments from './components/Superadmin/ManageAppointments';
 
 const App = () => {
   const AppContent = () => {
@@ -51,7 +53,7 @@ const App = () => {
             <Route path='/doctorProfile' element={<DoctorProfile/>} />
             <Route path='/reminders' element={<EmailReminders />} />
             <Route path='/reportSharing' element={<ReportSharing />} />
-            <Route path='/messages' element={<Chat />} />
+            <Route path='/messages/:doctorId?' element={<Chat />} />
             <Route path='/history' element={<History />} />
             <Route path='/create-superadmin' element={<CreateSuperadmin />} />
             <Route path='/reports' element={<Reports />} />
@@ -59,12 +61,13 @@ const App = () => {
             <Route path='/manageReports' element={<ManageReports />} />
             <Route path='/manageDoctors' element={<ManageDoctors />} />
             <Route path='/edit-profile' element={<SetupProfile />} />
+            <Route path='/viewAppointments' element={<ManageAppointments />} />
             <Route path='/medicineForm' element={<MedicineForm />} />
           </Routes>
         </div>
       </div>
     );
-  };  
+  };  ``
 
   return (
     <AuthProvider>

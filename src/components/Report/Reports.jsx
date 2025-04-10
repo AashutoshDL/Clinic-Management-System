@@ -4,12 +4,13 @@ import ReportViewing from './ReportViewing';
 import ReportGeneration from './ReportGeneration';
 import ReportSharing from './ReportSharing';
 import DoctorReport from './DoctorReport';
+import LoadingScreen from '../Ui/LoadingScreen';
 
 const Report = () => {
   const { role } = useAuth();
 
   if (!role || role.length === 0) {
-      return <p>Loading...</p>;
+      return <LoadingScreen />;
   }
 
   return (

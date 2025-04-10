@@ -3,65 +3,67 @@ import axios from 'axios';
 import { Edit, Trash } from 'lucide-react';
 import { baseURL } from '../service/baseURL';
 
-const AdminTable = ({ tableData, setTableData }) => {
-  const [editingUser, setEditingUser] = React.useState(null);
+const AdminDoctorTable = ({ tableData, setTableData }) => {
+  const [editingDoctor, setEditingDoctor] = React.useState(null);
   const [formData, setFormData] = React.useState({});
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const fetchData = async () => {
+  const fetchDoctorData = async () => {
     try {
-      const response = await axios.get(`${baseURL}/patient/getAllPatients`);
-      console.log(response);
+      const response = await axios.get(`${baseURL}/doctor/getAllDoctors`);
+      console.log("Doctors fetched:", response.data.data);
       setTableData(response.data.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching doctor data:', error);
     }
   };
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (doctorId) => {
     try {
-      const response = await axios.delete(`${baseURL}/patient/deletePatientById/${userId}`);
-      console.log("Deleted user:", response.data);
-      setTableData((prevData) => prevData.filter(user => user.id !== userId));
+      const response = await axios.delete(`${baseURL}/doctor/deleteDoctorById/${doctorId}`);
+      console.log("Deleted doctor:", response.data);
+      setTableData((prevData) => prevData.filter(doctor => doctor.id !== doctorId));
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error('Error deleting doctor:', error);
     }
   };
 
   const handleEdit = async () => {
     try {
-      console.log(formData)
-      const response = await axios.patch(`${baseURL}/patient/setupProfileById/${editingUser.id}`, formData);
-      console.log("Updated user:", response.data);
-      await fetchData();
+      const response = await axios.patch(`${baseURL}/doctor/setupProfileById/${editingDoctor.id}`, formData);
+      console.log("Updated doctor:", response.data);
+      await fetchDoctorData();
       setIsModalOpen(false);
-      setEditingUser(null);
+      setEditingDoctor(null);
     } catch (error) {
-      console.error('Error updating user:', error);
+      console.error('Error updating doctor:', error);
     }
   };
 
-  const handleEditClick = (user) => {
-    setEditingUser(user);
+  const handleEditClick = (doctor) => {
+    setEditingDoctor(doctor);
     setFormData({
-      name: user.name,
-      userName: user.userName,
-      email: user.email,
+      name: doctor.name,
+      userName: doctor.userName,
+      email: doctor.email,
     });
     setIsModalOpen(true);
   };
 
   if (!Array.isArray(tableData) || tableData.length === 0) {
-    return <p className="text-center text-gray-600">No data available</p>;
+    return <p className="text-center text-gray-600">No doctor data available</p>;
   }
 
   return (
     <div>
+      {/* Title */}
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Doctor List</h2>
 
+      {/* Modal for Editing */}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Edit User</h2>
+            <h2 className="text-xl font-semibold mb-4">Edit Doctor</h2>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="mb-4">
                 <label className="block text-gray-700">Name</label>
@@ -111,6 +113,7 @@ const AdminTable = ({ tableData, setTableData }) => {
         </div>
       )}
 
+      {/* Table */}
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full table-auto border-collapse border border-gray-300">
           <thead>
@@ -136,13 +139,13 @@ const AdminTable = ({ tableData, setTableData }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.userName || 'N/A'}</td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.role || 'N/A'}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.role || 'Doctor'}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.email || 'N/A'}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.accountCreated || 'N/A'}</td>
                 <td className="px-6 py-4 text-center border-t border-gray-200">
                   <button
                     className="text-blue-600 hover:text-blue-800"
-                    onClick={() => handleEditClick(data)} // Open the modal with user data
+                    onClick={() => handleEditClick(data)}
                   >
                     <Edit className="w-5 h-5" />
                   </button>
@@ -150,7 +153,7 @@ const AdminTable = ({ tableData, setTableData }) => {
                 <td className="px-6 py-4 text-center border-t border-gray-200">
                   <button
                     className="text-red-600 hover:text-red-800"
-                    onClick={() => handleDelete(data.id)} // Call handleDelete with user ID
+                    onClick={() => handleDelete(data.id)}
                   >
                     <Trash className="w-5 h-5" />
                   </button>
@@ -164,4 +167,4 @@ const AdminTable = ({ tableData, setTableData }) => {
   );
 };
 
-export default AdminTable;
+export default AdminDoctorTable;

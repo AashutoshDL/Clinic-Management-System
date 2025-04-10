@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { PasswordInput, TextInput, MySelect } from '../Auth/FormElements';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+import { baseURL } from '../service/baseURL';
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +38,7 @@ const Login = () => {
           })}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              const response = await axios.post('http://localhost:3001/auth/login', values, {
+              const response = await axios.post(`${baseURL}/auth/login`, values, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -45,6 +47,7 @@ const Login = () => {
               const { accessToken, refreshToken } = response.data;
               login(accessToken,refreshToken);
               await checkAuth();
+              navigate('/home')
             } catch (error) {
               console.error('Error during login', error);
               if (error.response) {
@@ -76,6 +79,7 @@ const Login = () => {
                 <option value="patient">Patient</option>
                 <option value="doctor">Doctor</option>
                 <option value="admin">Receptionist</option>
+                <option value="superadmin">Superadmin</option>
               </MySelect>
               <div className="flex justify-between items-center">
                 <button
@@ -98,6 +102,15 @@ const Login = () => {
             }}
           >
             Register
+          </button>
+          <br />
+          <button
+            className="font-bold text-blue-500 hover:text-blue-600"
+            onClick={() => {
+              navigate('/');
+            }}
+          >
+            Back to home
           </button>
         </p>
       </div>

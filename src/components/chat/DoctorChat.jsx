@@ -20,10 +20,10 @@ const DoctorChat = () => {
         const response = await axios.get(`${baseURL}/patient/getAllPatients`);
   
         if (response.data.success && Array.isArray(response.data.data)) {
-          setPatients(response.data.data); // Use response.data.data
+          setPatients(response.data.data);
         } else {
           console.error("Unexpected patient data format:", response.data);
-          setPatients([]); // Ensure empty array if data is unexpected
+          setPatients([]);
         }
       } catch (error) {
         console.error("Error fetching patients:", error);
@@ -34,7 +34,6 @@ const DoctorChat = () => {
     if (userId) fetchPatients();
   }, [userId]);
   
-
   // Handle socket connection and chat history
   useEffect(() => {
     if (activeChat) {
@@ -43,15 +42,15 @@ const DoctorChat = () => {
 
       newSocket.emit("startChat", { userId });
 
-      newSocket.on("receiveMessage", ({ text, sender }) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text,
-            sender,
-            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          },
-        ]);
+      newSocket.on("receiveMessage", (message) => {
+        // Format incoming messages to match the UI format
+        const formattedMessage = {
+          text: message.message || message.text,
+          sender: message.senderId === userId ? "doctor" : "patient", 
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        
+        setMessages((prevMessages) => [...prevMessages, formattedMessage]);
       });
 
       setSocket(newSocket);
@@ -59,7 +58,16 @@ const DoctorChat = () => {
       const fetchChatHistory = async () => {
         try {
           const response = await axios.get(`${baseURL}/chat/history/${userId}/${activeChat._id}`);
-          setMessages(response.data);
+          
+          // Format the chat history to match UI format
+          const formattedHistory = response.data.map(msg => ({
+            text: msg.message || msg.text,
+            sender: msg.senderId === userId ? "doctor" : "patient",
+            time: new Date(msg.timestamp || msg.createdAt || Date.now())
+              .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          }));
+          
+          setMessages(formattedHistory);
         } catch (error) {
           console.error("Error fetching chat history:", error);
         }
@@ -154,7 +162,7 @@ const DoctorChat = () => {
             <div key={index} className={`flex items-end ${msg.sender === "doctor" ? "justify-end" : "justify-start"}`}>
               {msg.sender !== "doctor" && msg.sender && (
                 <div className="w-8 h-8 bg-green-500 text-white flex items-center justify-center rounded-full mr-2 mb-1">
-                  {msg.sender.charAt(0).toUpperCase()}
+                  {activeChat?.name?.charAt(0).toUpperCase() || "P"}
                 </div>
               )}
               <div className={`p-3 rounded-lg max-w-xs lg:max-w-md ${msg.sender === "doctor" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-800"}`}>

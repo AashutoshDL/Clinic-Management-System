@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import axios from 'axios';
 import { baseURL } from '../service/baseURL';
+import HealthMetricsChart from '../service/HealthMetrics';
+import MedicineInput from '../Meds-API/MedicineInput';
 
 const DoctorReport = () => {
   const [patients, setPatients] = useState([]);
@@ -9,15 +11,14 @@ const DoctorReport = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [formValues, setFormValues] = useState({});
+  const [viewStats, setViewStats] = useState(false);
 
-  // Fetch patients
   useEffect(() => {
     const fetchPatients = async () => {
       try {
         const patientResponse = await axios.get(`${baseURL}/patient/getAllPatients`);
         if (patientResponse.data.success && Array.isArray(patientResponse.data.data)) {
           setPatients(patientResponse.data.data);
-          console.log(patientResponse.data.data)
         }
       } catch (error) {
         console.error('Error fetching patients:', error);
@@ -27,7 +28,6 @@ const DoctorReport = () => {
     fetchPatients();
   }, []);
 
-  // Fetch report templates
   const fetchReportTemplates = async () => {
     try {
       const reportResponse = await axios.get(`${baseURL}/report/getAllReportTemplates`);
@@ -39,7 +39,6 @@ const DoctorReport = () => {
     }
   };
 
-  // Handle patient selection
   const handlePatientSelect = (patient) => {
     setSelectedPatient(patient);
     setSelectedTemplate(null);
@@ -48,20 +47,17 @@ const DoctorReport = () => {
     fetchReportTemplates();
   };
 
-  // Handle template selection
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
-    setFormValues({}); // Reset form values on new template selection
+    setFormValues({});
   };
 
-  // Handle form field change
   const handleFormValueChange = (index, e) => {
     const newValues = { ...formValues };
-    newValues[index] = e.target.value;
+    newValues[index] = e.target?.value ?? e;
     setFormValues(newValues);
   };
 
-  //saves the medical data
   const saveMedicalReport = async () => {
     const reportData = {
       patientId: selectedPatient._id,
@@ -72,38 +68,25 @@ const DoctorReport = () => {
         value: formValues[index] || '',
       })),
     };
-  
+
     try {
-      console.log(reportData);
-      const response = await axios.post(`${baseURL}/patient/createPatientReport`, { 
-        reportData 
-      });
-  
+      const response = await axios.post(`${baseURL}/patient/createPatientReport`, { reportData });
       if (response.data.success) {
         console.log('Report saved successfully');
-        
-        // Clear form and selections on success
         setSelectedPatient(null);
         setSelectedTemplate(null);
         setReportTemplates([]);
         setFormValues({});
-        
       } else {
         console.error('Error saving report:', response.data.message);
-        
-        // Clear form on failure as well
         setFormValues({});
       }
     } catch (error) {
       console.error('Error saving report to backend:', error);
-      
-      // Clear form on error
       setFormValues({});
     }
   };
-   
 
-  // Generate PDF report and save to backend
   const generateReportPDF = async () => {
     if (!selectedTemplate || !selectedPatient) return;
 
@@ -117,19 +100,26 @@ const DoctorReport = () => {
     selectedTemplate.customFields.forEach((field, index) => {
       if (field.label && formValues[index]) {
         doc.setFontSize(12);
-        doc.text(`${field.label}: ${formValues[index]}`, 20, y);
+        const text = Array.isArray(formValues[index])
+          ? `${field.label}: ${formValues[index].join(', ')}`
+          : `${field.label}: ${formValues[index]}`;
+        doc.text(text, 20, y);
         y += 10;
       }
     });
 
-    // Generate PDF
     doc.save(`${selectedPatient.name}_report.pdf`);
+  };
+
+  const handleViewStats = () => {
+    setViewStats(true);
   };
 
   return (
     <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Doctor Report Generation</h1>
 
+      {/* Patient Selection */}
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Select Patient</h2>
         <div className="grid grid-cols-3 gap-4">
@@ -137,7 +127,9 @@ const DoctorReport = () => {
             <div
               key={patient._id}
               onClick={() => handlePatientSelect(patient)}
-              className={`p-4 border rounded-lg cursor-pointer ${selectedPatient?.id === patient.id ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-200'}`}
+              className={`p-4 border rounded-lg cursor-pointer ${
+                selectedPatient?.id === patient.id ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-200'
+              }`}
             >
               <h3 className="font-semibold text-lg">{patient.name}</h3>
               <p>Age: {patient.age}</p>
@@ -147,17 +139,28 @@ const DoctorReport = () => {
         </div>
       </div>
 
-      {/* Display selected patient's details */}
+      {/* Selected Patient Info */}
       {selectedPatient && (
         <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
           <h2 className="text-lg font-bold">Patient Details:</h2>
           <p><strong>Name:</strong> {selectedPatient.name}</p>
           <p><strong>Age:</strong> {selectedPatient.age}</p>
           <p><strong>Gender:</strong> {selectedPatient.gender}</p>
+          <button
+            onClick={handleViewStats}
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            View Stats
+          </button>
         </div>
       )}
 
-      {/* Report Template Selection */}
+      {/* Health Chart */}
+      {viewStats && selectedPatient && (
+        <HealthMetricsChart data={[selectedPatient]} loading={false} />
+      )}
+
+      {/* Report Templates */}
       {selectedPatient && (
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-2">Select Report Template</h2>
@@ -166,7 +169,9 @@ const DoctorReport = () => {
               <div
                 key={template._id}
                 onClick={() => handleTemplateSelect(template)}
-                className={`p-4 border rounded-lg cursor-pointer ${selectedTemplate?.id === template.id ? 'bg-green-600 text-white' : 'bg-white hover:bg-gray-200'}`}
+                className={`p-4 border rounded-lg cursor-pointer ${
+                  selectedTemplate?.id === template.id ? 'bg-green-600 text-white' : 'bg-white hover:bg-gray-200'
+                }`}
               >
                 <h3 className="font-semibold text-lg">{template.title}</h3>
               </div>
@@ -176,16 +181,20 @@ const DoctorReport = () => {
       )}
 
       {/* Report Form */}
-      {selectedTemplate && selectedPatient && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">
-            {selectedTemplate.title} for {selectedPatient.name}
-          </h2>
-
-          <div className="space-y-4">
-            {selectedTemplate.customFields.map((field, index) => (
-              <div key={index}>
-                <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+      {selectedTemplate && (
+        <div className="p-4 bg-white rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Fill Out Report</h2>
+          {selectedTemplate.customFields.map((field, index) => (
+            <div key={index} className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+              {field.label.toLowerCase().includes("medicine","medication") ? (
+                <MedicineInput
+                  selectedMedicines={formValues[index] || []}
+                  setSelectedMedicines={(meds) =>
+                    handleFormValueChange(index, { target: { value: meds } })
+                  }
+                />
+              ) : (
                 <input
                   type="text"
                   value={formValues[index] || ''}
@@ -193,9 +202,9 @@ const DoctorReport = () => {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                   placeholder={`Enter ${field.label}`}
                 />
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ))}
 
           <button
             onClick={saveMedicalReport}
@@ -203,6 +212,7 @@ const DoctorReport = () => {
           >
             Save Data
           </button>
+
           <button
             onClick={generateReportPDF}
             className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

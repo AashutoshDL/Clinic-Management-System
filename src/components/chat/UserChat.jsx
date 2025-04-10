@@ -4,6 +4,7 @@ import axios from "axios";
 import { baseURL } from "../service/baseURL";
 import { io } from "socket.io-client";
 import {useAuth} from '../../context/AuthContext'
+import { useParams } from "react-router-dom";
 
 const UserChat = () => {
   const [messages, setMessages] = useState([]);
@@ -12,52 +13,71 @@ const UserChat = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeChat, setActiveChat] = useState(null);
   const [socket, setSocket] = useState(null);
-  const {userId}=useAuth();
-
+  const {userId} = useAuth();
+  const {doctorId} = useParams();
+  
   // Fetch doctors from backend
   useEffect(() => {
-    const fetchDoctors = async () => {
+    const fetchDoctor = async () => {
       try {
-        const response = await axios.get(`${baseURL}/doctor/getAllDoctors`);
-        if (Array.isArray(response.data.doctors)) {
-          setDoctors(response.data.doctors);
+        const response = await axios.get(`${baseURL}/doctor/getDoctorById/${doctorId}`);
+        
+        if (response.data.doctor) {
+          const doctor = response.data.doctor;
+          setDoctors([doctor]);
+          
+          // If doctorId param exists, automatically set active chat
+          if (doctorId && doctor) {
+            setActiveChat(doctor);
+          }
         } else {
           console.error("Invalid doctor data:", response.data);
           setDoctors([]);
         }
       } catch (error) {
-        console.error("Error fetching doctors:", error);
+        console.error("Error fetching doctor:", error);
         setDoctors([]);
       }
     };
-    fetchDoctors();
-  }, []);
-
+    
+    fetchDoctor();
+  }, [doctorId]);
+  
   // Handle socket connection and fetch chat history
   useEffect(() => {
     if (activeChat) {
       const newSocket = io("http://localhost:3001");
-      console.log("Websocker connection started")
+      console.log("WebSocket connection started");
 
       newSocket.emit("startChat", { userId: userId });
 
-      newSocket.on("receiveMessage", ({ text, sender }) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text,
-            sender,
-            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          },
-        ]);
+      newSocket.on("receiveMessage", (message) => {
+        // Format incoming messages to match the UI format
+        const formattedMessage = {
+          text: message.message || message.text,
+          sender: message.senderId === userId ? "user" : "doctor",
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        
+        setMessages((prevMessages) => [...prevMessages, formattedMessage]);
       });
 
       setSocket(newSocket);
 
       const fetchChatHistory = async () => {
         try {
-          const response = await axios.get(`${baseURL}/chat/history/${userId}/${activeChat.id}`);
-          setMessages(response.data);
+          const chatId = activeChat._id || activeChat.id;
+          const response = await axios.get(`${baseURL}/chat/history/${userId}/${chatId}`);
+          
+          // Format the chat history to match UI format
+          const formattedHistory = response.data.map(msg => ({
+            text: msg.message || msg.text,
+            sender: msg.senderId === userId ? "user" : "doctor",
+            time: new Date(msg.timestamp || msg.createdAt || Date.now())
+              .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          }));
+          
+          setMessages(formattedHistory);
         } catch (error) {
           console.error("Error fetching chat history:", error);
         }
@@ -78,7 +98,7 @@ const UserChat = () => {
       receiverId: activeChat._id || activeChat.id,
       message: input,
     };
-    console.log("Mesage in line 81 of user chat i.e what user chat is sending",message)
+    console.log("Message being sent:", message);
 
     socket.emit("sendMessage", message);
 
@@ -89,7 +109,9 @@ const UserChat = () => {
     setInput("");
   };
 
-  const filteredDoctors = doctors.filter((doctor) => doctor.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredDoctors = doctors.filter((doctor) => 
+    doctor.name && doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="flex h-screen bg-gray-100 p-4 max-w-6xl mx-auto shadow-lg rounded-lg overflow-hidden">
@@ -114,15 +136,16 @@ const UserChat = () => {
           <ul className="space-y-2">
             {filteredDoctors.map((doctor, index) => (
               <li
-                key={doctor.id || index} // Fixed key issue
+                key={doctor._id || doctor.id || index}
                 className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                  activeChat?.id === doctor.id ? "bg-blue-100" : "hover:bg-gray-100"
+                  activeChat?._id === doctor._id || activeChat?.id === doctor.id 
+                    ? "bg-blue-100" 
+                    : "hover:bg-gray-100"
                 }`}
                 onClick={() => {
-                  console.log(doctor.id)
+                  console.log("Setting active doctor:", doctor);
                   setActiveChat(doctor);
                 }}
-                 // Save full doctor object
               >
                 <div className="relative">
                   <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full mr-3">
@@ -131,7 +154,6 @@ const UserChat = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-medium">{doctor.name}</span>
-                  <span className="text-xs text-gray-500">Online</span>
                 </div>
               </li>
             ))}
@@ -153,9 +175,9 @@ const UserChat = () => {
         <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-gray-50">
           {messages.map((msg, index) => (
             <div key={index} className={`flex items-end ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-              {msg.sender !== "user" && msg.sender && (
+              {msg.sender !== "user" && (
                 <div className="w-8 h-8 bg-blue-500 text-white flex items-center justify-center rounded-full mr-2 mb-1">
-                  {msg.sender.charAt(0).toUpperCase()}
+                  {activeChat?.name?.charAt(0).toUpperCase() || "D"}
                 </div>
               )}
               <div className={`p-3 rounded-lg max-w-xs lg:max-w-md ${msg.sender === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>

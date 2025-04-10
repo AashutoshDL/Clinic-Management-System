@@ -1,14 +1,14 @@
-import React,{ useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { Calendar, Clock, Search, ArrowLeft, CheckCircle, X, User, Briefcase, MapPin } from "lucide-react"
 import axios from "axios"
 import { baseURL } from "../service/baseURL"
 
-
 const PatientAppointment = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null)
   const [selectedTime, setSelectedTime] = useState(null)
+  const [selectedDate, setSelectedDate] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [doctors, setDoctors] = useState([])
   const [loading, setLoading] = useState(true)
@@ -19,6 +19,10 @@ const PatientAppointment = () => {
   const { userId, accessToken } = useAuth()
   const [patientData, setPatientData] = useState({})
   const navigate = useNavigate()
+
+  // Set minimum date to today
+  const today = new Date()
+  const minDate = today.toISOString().split('T')[0] // Format: YYYY-MM-DD
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -81,11 +85,17 @@ const PatientAppointment = () => {
     setSelectedTime(time)
   }
 
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value)
+  }
+
   const handleBookAppointment = async () => {
-    if (!selectedTime || !selectedDoctor) {
+    if (!selectedTime || !selectedDoctor || !selectedDate) {
       setBookingStatus({
         status: "error",
-        message: "Please select a doctor and a time",
+        message: !selectedDate 
+          ? "Please select a date for your appointment" 
+          : "Please select a doctor and a time",
       })
       return
     }
@@ -115,9 +125,12 @@ const PatientAppointment = () => {
           patientId: patient._id,
           patientName: patient.name,
           time: selectedTime,
+          date: selectedDate,
           specialization: selectedDoctorData.specialization || "General",
         }
 
+        console.log(appointmentData);
+        
         const response = await axios.post(`${baseURL}/appointments/createAppointment/${userId}`, appointmentData)
 
         if (response.status === 201) {
@@ -129,6 +142,7 @@ const PatientAppointment = () => {
           setPatientData({
             doctorName: selectedDoctorData.name,
             time: selectedTime,
+            date: selectedDate,
             patientName: patient.name,
             specialization: selectedDoctorData.specialization || "General",
           })
@@ -137,6 +151,7 @@ const PatientAppointment = () => {
           setTimeout(() => {
             setSelectedDoctor(null)
             setSelectedTime(null)
+            setSelectedDate("")
           }, 3000)
         } else {
           setBookingStatus({
@@ -172,6 +187,18 @@ const PatientAppointment = () => {
       doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (doctor.specialization && doctor.specialization.toLowerCase().includes(searchQuery.toLowerCase())),
   )
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
 
   // Render loading state
   if (loading) {
@@ -211,7 +238,7 @@ const PatientAppointment = () => {
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-2">Book an Appointment</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Select a doctor and available time slot to schedule your appointment
+            Select a doctor, date, and available time slot to schedule your appointment
           </p>
         </div>
 
@@ -364,8 +391,37 @@ const PatientAppointment = () => {
               </div>
             </div>
 
+            {/* Date Selection */}
+            <div className="mb-8">
+              <h3 className="text-xl font-medium text-gray-700 mb-4 flex items-center">
+                <Calendar className="w-5 h-5 mr-2 text-blue-500" />
+                Select Appointment Date
+              </h3>
+              
+              <div className="max-w-md">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="date"
+                    min={minDate}
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    required
+                  />
+                </div>
+                {selectedDate && (
+                  <p className="mt-2 text-blue-600 font-medium">
+                    Appointment Date: {formatDate(selectedDate)}
+                  </p>
+                )}
+              </div>
+            </div>
+
             <h3 className="text-xl font-medium text-gray-700 mb-4 flex items-center">
-              <Calendar className="w-5 h-5 mr-2 text-blue-500" />
+              <Clock className="w-5 h-5 mr-2 text-blue-500" />
               Available Time Slots
             </h3>
 
@@ -399,18 +455,28 @@ const PatientAppointment = () => {
             <div className="border-t border-gray-200 pt-6">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="mb-4 sm:mb-0">
-                  <h3 className="text-lg font-medium text-gray-700">Selected Time:</h3>
-                  {selectedTime ? (
-                    <p className="text-blue-600 font-semibold">{selectedTime}</p>
-                  ) : (
-                    <p className="text-gray-500 italic">Please select a time slot</p>
-                  )}
+                  <div className="mb-2">
+                    <h3 className="text-lg font-medium text-gray-700">Selected Date:</h3>
+                    {selectedDate ? (
+                      <p className="text-blue-600 font-semibold">{formatDate(selectedDate)}</p>
+                    ) : (
+                      <p className="text-gray-500 italic">Please select a date</p>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-700">Selected Time:</h3>
+                    {selectedTime ? (
+                      <p className="text-blue-600 font-semibold">{selectedTime}</p>
+                    ) : (
+                      <p className="text-gray-500 italic">Please select a time slot</p>
+                    )}
+                  </div>
                 </div>
                 <button
                   onClick={handleBookAppointment}
-                  disabled={!selectedTime || isBooking}
+                  disabled={!selectedTime || !selectedDate || isBooking}
                   className={`px-6 py-3 rounded-lg shadow-sm font-medium ${
-                    !selectedTime || isBooking
+                    !selectedTime || !selectedDate || isBooking
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-green-500 text-white hover:bg-green-600"
                   } transition-colors`}
@@ -448,6 +514,9 @@ const PatientAppointment = () => {
                   <div>
                     <p className="text-green-700 mb-1">
                       <span className="font-medium">Patient:</span> {patientData.patientName}
+                    </p>
+                    <p className="text-green-700 mb-1">
+                      <span className="font-medium">Date:</span> {formatDate(patientData.date)}
                     </p>
                     <p className="text-green-700">
                       <span className="font-medium">Time:</span> {patientData.time}
