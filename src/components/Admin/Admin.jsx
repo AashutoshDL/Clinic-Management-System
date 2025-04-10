@@ -7,6 +7,7 @@ import UserForm from './UserForm';
 import { baseURL } from '../service/baseURL';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import LoginWarningPage from '../Ui/LoginWarningPage';
 
 const Admin = () => {
   const [showForm, setShowForm] = useState(false);
@@ -17,8 +18,13 @@ const Admin = () => {
   const [patientCount, setPatientCount] = useState(0);
   const [doctorCount, setDoctorCount] = useState(0);
   const [activeTab, setActiveTab] = useState('patients');
-  const { logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
+
+  // If not logged in, show the login warning component
+  if (!isLoggedIn) {
+    return <LoginWarningPage />;
+  }
 
   const handleLogOut = async () => {
     logout();

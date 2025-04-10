@@ -52,16 +52,16 @@ const Navbar = () => {
           {/* Admin-specific items */}
           {userRoles.includes("superadmin") && (
             <>
+              <NavItem to="/home" icon={Home}>
+                  Home
+              </NavItem>
               <NavItem to="/manageAdmins" icon={Users}>
                 Admins
               </NavItem>
               <NavItem to="/manageDoctors" icon={User}>
                 Doctors
               </NavItem>
-              <NavItem to="/managePatients" icon={User}>
-                Patients
-              </NavItem>
-              <NavItem to="/manageAppointments" icon={Calendar}>
+              <NavItem to="/viewAppointments" icon={Calendar}>
                 Appointments
               </NavItem>
               <NavItem to="/manageReports" icon={FileText}>
@@ -92,9 +92,6 @@ const Navbar = () => {
           </NavItem>
           <NavItem to="/reports" icon={ClipboardPlus}>
             Reports
-          </NavItem>
-          <NavItem to="/messages" icon={MessageSquare}>
-            Messages
           </NavItem>
           <NavItem to="/appointment" icon={Calendar}>
             Appointment

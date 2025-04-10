@@ -41,7 +41,6 @@ const DoctorHome = () => {
           <div className="w-full">
             {isLoggedIn ? (
               <>
-                <h2 className="text-white text-3xl mb-6">Welcome, Doctor!</h2>
                 <div className="appointments">
                   <h3 className="text-white text-xl mb-4">Upcoming Appointments</h3>
                   {appointments.length > 0 ? (
@@ -54,6 +53,7 @@ const DoctorHome = () => {
                             <h2 className="text-xl font-semibold">Patient: {appointment.patientName}</h2>
                             <h2 className="text-xl font-semibold">Patient Id: {appointment.patientId}</h2>
                             <p className="text-gray-600">Scheduled Time: {appointment.time}</p>
+                            <p className="text-gray-600">Scheduled Date: {appointment.date}</p>
                             <p className="text-gray-500">Appointment Status: {appointment.status}</p>
                           </div>
                         </li>

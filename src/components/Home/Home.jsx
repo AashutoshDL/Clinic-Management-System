@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import PatientHome from './PatientHome';
 import DoctorHome from './DoctorHome';
-import SuperadminDashboard from '../Superadmin/SuperadminDashboard';
 import Admin from '../Admin/Admin';
 import LoadingScreen from '../Ui/LoadingScreen';
+import SuperAdminHome from './SuperAdminHome';
 
 
 const Home = () => {
@@ -24,7 +24,7 @@ const Home = () => {
               <Admin />
           ) : 
             role.includes("superadmin") ? (
-              <SuperadminDashboard />
+              <SuperAdminHome />
           ) : (
               <p>Please log in as a patient or doctor to view your dashboard.</p>
           )}

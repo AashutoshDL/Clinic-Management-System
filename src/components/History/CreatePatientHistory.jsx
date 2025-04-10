@@ -1,60 +1,74 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import MedicineInput from "../Meds-API/MedicineInput";
-import { baseURL } from "../service/baseURL";
 import DiseaseInput from "../Meds-API/DiseaseInput";
+import { baseURL } from "../service/baseURL";
+import PatientHistory from "./PatientHistory"; // Make sure path is correct
 
 const CreatePatientHistory = () => {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [histories, setHistories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
+
   const [currentEntry, setCurrentEntry] = useState({
     date: "",
     doctorName: "",
     hospitalName: "",
     medicines: [],
     diseases: [],
-    // image: null,
   });
 
-  useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const res = await axios.get(`${baseURL}/patient/getAllPatients`, {
-          withCredentials: true,
-        });
-        setPatients(res.data?.data || []);
-      } catch (error) {
-        console.error("Failed to fetch patients:", error);
-        setPatients([]);
-      }
-    };
-
-    fetchPatients();
+  const fetchPatients = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await axios.get(`${baseURL}/patient/getAllPatients`, {
+        withCredentials: true,
+      });
+      setPatients(res.data?.data || []);
+    } catch (error) {
+      console.error("Failed to fetch patients:", error);
+      setError("Failed to load patients. Please try again later.");
+      setPatients([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    fetchPatients();
+  }, [fetchPatients]);
+
   const handleChange = (e) => {
-    setCurrentEntry({ ...currentEntry, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setCurrentEntry((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
-    setCurrentEntry({ ...currentEntry, image: e.target.files[0] });
+  const validateEntry = () => {
+    const { date, doctorName, hospitalName } = currentEntry;
+    if (!date || !doctorName || !hospitalName) {
+      return "Please fill all required fields before adding.";
+    }
+    return null;
   };
 
   const handleAddEntry = () => {
-    if (!currentEntry.date || !currentEntry.doctorName || !currentEntry.hospitalName) {
-      alert("Please fill all fields before adding.");
+    const validationError = validateEntry();
+    if (validationError) {
+      alert(validationError);
       return;
     }
 
-    setHistories([...histories, currentEntry]);
+    setHistories((prev) => [...prev, currentEntry]);
     setCurrentEntry({
       date: "",
       doctorName: "",
       hospitalName: "",
       medicines: [],
       diseases: [],
-      // image: null,
     });
   };
 
@@ -66,74 +80,171 @@ const CreatePatientHistory = () => {
       return;
     }
 
-    console.log("Submitting all histories for patient:", selectedPatient.name);
-    console.log("Histories:", histories);
+    if (histories.length === 0) {
+      alert("Please add at least one history entry before submitting.");
+      return;
+    }
 
-    // API call will go here
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await axios.post(
+        `${baseURL}/history/saveHistory`,
+        {
+          patientId: selectedPatient._id || selectedPatient.id,
+          entries: histories,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      alert("Histories saved successfully!");
+      console.log(res.data);
+
+      // Reset form
+      setHistories([]);
+      setCurrentEntry({
+        date: "",
+        doctorName: "",
+        hospitalName: "",
+        medicines: [],
+        diseases: [],
+      });
+      setSelectedPatient(null);
+      setShowHistory(false);
+    } catch (error) {
+      console.error("Error saving histories:", error);
+      setError("Failed to save patient history. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveEntry = (index) => {
+    setHistories((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleUpdateMedicines = (medicines) => {
+    setCurrentEntry((prev) => ({ ...prev, medicines }));
+  };
+
+  const handleUpdateDiseases = (diseases) => {
+    setCurrentEntry((prev) => ({ ...prev, diseases }));
   };
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Create Patient History</h2>
 
-      {!selectedPatient ? (
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      {isLoading && !selectedPatient ? (
+        <div className="text-center py-4">Loading patients...</div>
+      ) : !selectedPatient ? (
         <div className="space-y-2">
-          {Array.isArray(patients) && patients.map((p) => (
-            <button
-              key={p._id || p.id}
-              onClick={() => setSelectedPatient(p)}
-              className="block w-full text-left bg-gray-100 hover:bg-gray-200 p-2 rounded"
-            >
-              {p.name}
-            </button>
-          ))}
+          <h3 className="font-semibold mb-2">Select a Patient</h3>
+          {Array.isArray(patients) && patients.length > 0 ? (
+            patients.map((patient) => (
+              <button
+                key={patient._id || patient.id}
+                onClick={() => setSelectedPatient(patient)}
+                className="block w-full text-left bg-gray-100 hover:bg-gray-200 p-2 rounded"
+              >
+                {patient.name}
+              </button>
+            ))
+          ) : (
+            <p className="text-gray-500">No patients available</p>
+          )}
         </div>
       ) : (
         <>
-          <div className="text-lg font-medium mb-4">
-            Selected Patient: {selectedPatient.name}
+          <div className="flex justify-between items-center mb-4">
+            <div className="text-lg font-medium">
+              Patient: <span className="font-bold">{selectedPatient.name}</span>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowHistory((prev) => !prev)}
+                className="text-green-600 hover:underline"
+              >
+                {showHistory ? "Hide History" : "View History"}
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedPatient(null);
+                  setShowHistory(false);
+                }}
+                className="text-blue-600 hover:underline"
+              >
+                Change Patient
+              </button>
+            </div>
           </div>
 
-          {/* Single Entry Form */}
+          {showHistory && (
+            <div className="mb-6">
+              <PatientHistory patientId={selectedPatient._id || selectedPatient.id} />
+            </div>
+          )}
+
           <div className="space-y-4 border p-4 rounded bg-gray-50 mb-4">
             <h3 className="font-semibold">Add History Entry</h3>
 
-            <input
-              type="date"
-              name="date"
-              value={currentEntry.date}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Date *</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={currentEntry.date}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+              </div>
 
-            <input
-              type="text"
-              name="doctorName"
-              placeholder="Doctor Name"
-              value={currentEntry.doctorName}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
-            />
+              <div>
+                <label className="block text-sm font-medium mb-1">Doctor Name *</label>
+                <input
+                  type="text"
+                  name="doctorName"
+                  placeholder="Doctor Name"
+                  value={currentEntry.doctorName}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+              </div>
+            </div>
 
-            <input
-              type="text"
-              name="hospitalName"
-              placeholder="Hospital Name"
-              value={currentEntry.hospitalName}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium mb-1">Hospital Name *</label>
+              <input
+                type="text"
+                name="hospitalName"
+                placeholder="Hospital Name"
+                value={currentEntry.hospitalName}
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+                required
+              />
+            </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">Diseases</label>
               <DiseaseInput
                 selectedDiseases={currentEntry.diseases}
-                setSelectedDiseases={(d) =>
-                  setCurrentEntry({ ...currentEntry, diseases: d })
-                }
+                setSelectedDiseases={handleUpdateDiseases}
               />
             </div>
 
@@ -141,45 +252,42 @@ const CreatePatientHistory = () => {
               <label className="block text-sm font-medium mb-1">Medicines</label>
               <MedicineInput
                 selectedMedicines={currentEntry.medicines}
-                setSelectedMedicines={(m) =>
-                  setCurrentEntry({ ...currentEntry, medicines: m })
-                }
+                setSelectedMedicines={handleUpdateMedicines}
               />
             </div>
-
-            {/* <div>
-              <label className="block text-sm font-medium">Upload Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full"
-              />
-            </div> */}
 
             <button
               type="button"
               onClick={handleAddEntry}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              disabled={isLoading}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
             >
-              Add Entry
+              {isLoading ? "Processing..." : "Add Entry"}
             </button>
           </div>
 
           {/* Preview added histories */}
           {histories.length > 0 && (
             <div className="mb-4">
-              <h3 className="font-semibold mb-2">Entries to Submit</h3>
+              <h3 className="font-semibold mb-2">Entries to Submit ({histories.length})</h3>
               {histories.map((entry, idx) => (
                 <div
                   key={idx}
                   className="border p-3 mb-2 rounded bg-white shadow-sm"
                 >
-                  <p><strong>Date:</strong> {entry.date}</p>
+                  <div className="flex justify-between">
+                    <h4 className="font-medium">{entry.date}</h4>
+                    <button
+                      onClick={() => handleRemoveEntry(idx)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  </div>
                   <p><strong>Doctor:</strong> {entry.doctorName}</p>
                   <p><strong>Hospital:</strong> {entry.hospitalName}</p>
-                  <p><strong>Medicines:</strong> {entry.medicines?.join(", ")}</p>
-                  <p><strong>Diseases:</strong> {entry.diseases?.join(", ")}</p>
+                  <p><strong>Medicines:</strong> {entry.medicines?.length ? entry.medicines.join(", ") : "None"}</p>
+                  <p><strong>Diseases:</strong> {entry.diseases?.length ? entry.diseases.join(", ") : "None"}</p>
                 </div>
               ))}
             </div>
@@ -187,9 +295,10 @@ const CreatePatientHistory = () => {
 
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+            disabled={isLoading || histories.length === 0}
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
           >
-            Submit All Histories
+            {isLoading ? "Submitting..." : "Submit All Histories"}
           </button>
         </>
       )}

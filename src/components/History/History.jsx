@@ -8,8 +8,6 @@ import LoadingScreen from '../Ui/LoadingScreen';
 const History = () => {
   const { role } = useAuth();
 
-//   console.log("User Roles:", role); // Debugging
-
   if (!role || role.length === 0) {
       return <LoadingScreen />;
   }
