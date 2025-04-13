@@ -6,17 +6,23 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const PdfViewer = ({ pdfUrl, fileName }) => {
-
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
-    <div className="pdf-container border border-gray-300 rounded" style={{ height: "500px" }}>
-      <Worker workerUrl="https:
+    <div
+      className="pdf-container border border-gray-300 rounded"
+      style={{ height: "500px" }}
+    >
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
         <Viewer
           fileUrl={pdfUrl}
           plugins={[defaultLayoutPluginInstance]}
           defaultScale={1}
-          errorMessage="Unable to load the PDF. Please try downloading it instead."
+          renderError={() => (
+            <div className="text-red-600 p-4">
+              Unable to load the PDF. Please try downloading it instead.
+            </div>
+          )}
         />
       </Worker>
     </div>

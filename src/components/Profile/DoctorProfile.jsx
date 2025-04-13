@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../Ui/LoadingScreen';
 import axiosInstance from '../service/axiosInterceptor';
+import { baseURL } from '../service/baseURL';
 
 const DoctorProfile = () => {
   const { userId, isLoggedIn, accessToken, logout } = useAuth();
@@ -72,7 +73,7 @@ const DoctorProfile = () => {
 
     try {
       const response = await axios.post(
-        `http:
+        `${baseURL}/doctor/editProfile/${userId}`,
         doctorData,
         {
           headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -148,7 +149,7 @@ const DoctorProfile = () => {
         {}
         <div className="p-6">
           <div className="flex items-center mb-4">
-            <svg className="w-5 h-5 text-blue-500 mr-2" xmlns="http:
+          <svg className="w-5 h-5 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
             <h2 className="text-xl font-semibold">Doctor Information</h2>
@@ -197,7 +198,6 @@ const DoctorProfile = () => {
         </div>
       </div>
       
-      {}
       {isEditing && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
