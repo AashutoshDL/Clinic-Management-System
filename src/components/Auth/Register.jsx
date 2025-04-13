@@ -59,7 +59,7 @@ const Register = () => {
           })}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              const response = await axios.post('http:
+              const response = await axios.post(`${baseURL}/auth/register`,{
                 headers: {
                   'Content-Type': 'application/json',
                 },

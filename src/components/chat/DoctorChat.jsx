@@ -36,7 +36,7 @@ const DoctorChat = () => {
 
   useEffect(() => {
     if (activeChat) {
-      const newSocket = io("http:
+      const newSocket = io(`${baseURL}`);
       console.log("WebSocket connection started");
 
       newSocket.emit("startChat", { userId });
