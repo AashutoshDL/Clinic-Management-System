@@ -21,7 +21,6 @@ const Admin = () => {
   const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
 
-  // If not logged in, show the login warning component
   if (!isLoggedIn) {
     return <LoginWarningPage />;
   }
@@ -61,7 +60,7 @@ const Admin = () => {
   const handleUserSubmit = () => {
     setAlertMessage('User added successfully');
     setTimeout(() => setAlertMessage(''), 5000);
-    fetchTableData(); // Refresh data
+    fetchTableData(); 
   };
 
   const cardData = [
@@ -115,7 +114,7 @@ const Admin = () => {
 
       <div className="mt-10">
         {loading ? (
-          <p>Loading table data...</p> // Could replace with a spinner here
+          <p>Loading table data...</p> 
         ) : activeTab === 'patients' ? (
           <AdminPatientTable tableData={patientData} setTableData={setPatientData} />
         ) : (

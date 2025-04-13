@@ -13,16 +13,14 @@ const PatientHome = () => {
   const [reminders, setReminders] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch appointments and reminders on load
   useEffect(() => {
     const fetchAppointmentsAndReminders = async () => {
       if (isLoggedIn && userId) {
         try {
-          // Fetch appointments
+
           const appointmentsResponse = await axiosInstance.get(`/appointments/getAppointmentsById/${userId}`);
           setAppointments(appointmentsResponse.data.appointments || []);
 
-          // Fetch reminders
           const remindersResponse = await axios.get(`${baseURL}/reminder/getReminderByPatientId/${userId}`);
           setReminders(remindersResponse.data || []);
         } catch (error) {
@@ -36,10 +34,9 @@ const PatientHome = () => {
 
   const handleSetReminder = async (appointmentId) => {
     try {
-      // Make the API call to set the reminder
+
       await axios.post(`${baseURL}/reminder/emailReminder/${appointmentId}`);
 
-      // Update the reminders state by fetching the updated reminders list
       const remindersResponse = await axios.get(`${baseURL}/reminder/getReminderByPatientId/${userId}`);
       setReminders(remindersResponse.data || []);
     } catch (error) {
@@ -47,7 +44,6 @@ const PatientHome = () => {
     }
   };
 
-  // Check if a reminder exists for a specific appointment
   const hasReminder = (appointmentId) => {
     return reminders.some(reminder => 
       reminder.appointmentId === appointmentId || 
@@ -93,7 +89,7 @@ const PatientHome = () => {
                           <p className="text-gray-600 mb-1">
                             <span className="font-medium">Time:</span> {appointment.time || "Placeholder time"}
                           </p>
-                          {/* Display status if appointment is pending */}
+                          {}
                           {appointment.status === "Pending" && (
                             <p className="text-yellow-500 font-medium">Appointment is Pending</p>
                           )}

@@ -72,7 +72,7 @@ const DoctorProfile = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3001/doctor/editProfile/${userId}`,
+        `http:
         doctorData,
         {
           headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -119,7 +119,7 @@ const DoctorProfile = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        {/* Header Section with Gradient Background */}
+        {}
         <div className="bg-gradient-to-r from-orange-300 via-pink-400 to-blue-500 p-8">
           <div className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 text-4xl font-bold mb-4">
@@ -145,10 +145,10 @@ const DoctorProfile = () => {
           </div>
         </div>
         
-        {/* Doctor Information Section */}
+        {}
         <div className="p-6">
           <div className="flex items-center mb-4">
-            <svg className="w-5 h-5 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="w-5 h-5 text-blue-500 mr-2" xmlns="http:
               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
             <h2 className="text-xl font-semibold">Doctor Information</h2>
@@ -197,7 +197,7 @@ const DoctorProfile = () => {
         </div>
       </div>
       
-      {/* Edit Profile Modal */}
+      {}
       {isEditing && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">

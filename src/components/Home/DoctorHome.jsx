@@ -25,7 +25,7 @@ const DoctorHome = () => {
 
   return (
     <div className="bg-buttonGray min-h-screen flex flex-col">
-      {/* Header */}
+      {}
       <header className="bg-white p-4 shadow-md">
         <h1 className="text-xl font-bold">Doctor Dashboard</h1>
       </header>
@@ -34,10 +34,10 @@ const DoctorHome = () => {
         <DoctorProfile />
       </div>
 
-      {/* Main Content */}
+      {}
       <div className="flex-grow p-6">
         <div className="flex flex-col gap-6">
-          {/* Appointments Section */}
+          {}
           <div className="w-full">
             {isLoggedIn ? (
               <>

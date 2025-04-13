@@ -143,7 +143,7 @@ const AdminPatientTable = ({ tableData, setTableData }) => {
                 <td className="px-6 py-4 text-center border-t border-gray-200">
                   <button
                     className="text-blue-600 hover:text-blue-800"
-                    onClick={() => handleEditClick(data)} // Open the modal with user data
+                    onClick={() => handleEditClick(data)} 
                   >
                     <Edit className="w-5 h-5" />
                   </button>
@@ -151,7 +151,7 @@ const AdminPatientTable = ({ tableData, setTableData }) => {
                 <td className="px-6 py-4 text-center border-t border-gray-200">
                   <button
                     className="text-red-600 hover:text-red-800"
-                    onClick={() => handleDelete(data.id)} // Call handleDelete with user ID
+                    onClick={() => handleDelete(data.id)} 
                   >
                     <Trash className="w-5 h-5" />
                   </button>

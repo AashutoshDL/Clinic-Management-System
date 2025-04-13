@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import MedicineInput from "../Meds-API/MedicineInput";
 import DiseaseInput from "../Meds-API/DiseaseInput";
+import PatientHistory from "./PatientHistory";
+import PdfViewer from "../service/PdfViewer"; 
 import { baseURL } from "../service/baseURL";
-import PatientHistory from "./PatientHistory"; // Make sure path is correct
 
 const CreatePatientHistory = () => {
   const [patients, setPatients] = useState([]);
@@ -12,6 +13,7 @@ const CreatePatientHistory = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [pdfReports, setPdfReports] = useState([]);
 
   const [currentEntry, setCurrentEntry] = useState({
     date: "",
@@ -32,7 +34,6 @@ const CreatePatientHistory = () => {
     } catch (error) {
       console.error("Failed to fetch patients:", error);
       setError("Failed to load patients. Please try again later.");
-      setPatients([]);
     } finally {
       setIsLoading(false);
     }
@@ -41,6 +42,25 @@ const CreatePatientHistory = () => {
   useEffect(() => {
     fetchPatients();
   }, [fetchPatients]);
+
+  const fetchPdfReports = useCallback(async (patientId) => {
+    try {
+      const response = await axios.get(`${baseURL}/uploads/getPDFByPatientId/${patientId}`, {
+        withCredentials: true,
+      });
+      if (response.data?.reports) {
+        setPdfReports(response.data.reports);
+      }
+    } catch (err) {
+      console.error("Failed to fetch PDF reports:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedPatient?._id || selectedPatient?.id) {
+      fetchPdfReports(selectedPatient._id || selectedPatient.id);
+    }
+  }, [selectedPatient, fetchPdfReports]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -104,9 +124,6 @@ const CreatePatientHistory = () => {
       );
 
       alert("Histories saved successfully!");
-      console.log(res.data);
-
-      // Reset form
       setHistories([]);
       setCurrentEntry({
         date: "",
@@ -117,6 +134,7 @@ const CreatePatientHistory = () => {
       });
       setSelectedPatient(null);
       setShowHistory(false);
+      setPdfReports([]);
     } catch (error) {
       console.error("Error saving histories:", error);
       setError("Failed to save patient history. Please try again.");
@@ -138,7 +156,7 @@ const CreatePatientHistory = () => {
   };
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="p-4 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Create Patient History</h2>
 
       {error && (
@@ -197,6 +215,18 @@ const CreatePatientHistory = () => {
             </div>
           )}
 
+          {pdfReports.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">Uploaded PDF Reports</h3>
+              {pdfReports.map((report) => (
+                <div key={report._id} className="mb-4">
+                  <p className="font-medium mb-1">{report.fileName}</p>
+                  <PdfViewer pdfUrl={report.url} fileName={report.fileName} />
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="space-y-4 border p-4 rounded bg-gray-50 mb-4">
             <h3 className="font-semibold">Add History Entry</h3>
 
@@ -218,9 +248,9 @@ const CreatePatientHistory = () => {
                 <input
                   type="text"
                   name="doctorName"
-                  placeholder="Doctor Name"
                   value={currentEntry.doctorName}
                   onChange={handleChange}
+                  placeholder="Doctor Name"
                   className="w-full border p-2 rounded"
                   required
                 />
@@ -232,9 +262,9 @@ const CreatePatientHistory = () => {
               <input
                 type="text"
                 name="hospitalName"
-                placeholder="Hospital Name"
                 value={currentEntry.hospitalName}
                 onChange={handleChange}
+                placeholder="Hospital Name"
                 className="w-full border p-2 rounded"
                 required
               />
@@ -266,7 +296,6 @@ const CreatePatientHistory = () => {
             </button>
           </div>
 
-          {/* Preview added histories */}
           {histories.length > 0 && (
             <div className="mb-4">
               <h3 className="font-semibold mb-2">Entries to Submit ({histories.length})</h3>
@@ -286,8 +315,8 @@ const CreatePatientHistory = () => {
                   </div>
                   <p><strong>Doctor:</strong> {entry.doctorName}</p>
                   <p><strong>Hospital:</strong> {entry.hospitalName}</p>
-                  <p><strong>Medicines:</strong> {entry.medicines?.length ? entry.medicines.join(", ") : "None"}</p>
-                  <p><strong>Diseases:</strong> {entry.diseases?.length ? entry.diseases.join(", ") : "None"}</p>
+                  <p><strong>Medicines:</strong> {entry.medicines?.join(", ") || "None"}</p>
+                  <p><strong>Diseases:</strong> {entry.diseases?.join(", ") || "None"}</p>
                 </div>
               ))}
             </div>

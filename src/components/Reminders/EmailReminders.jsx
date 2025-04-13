@@ -16,7 +16,7 @@ const EmailReminders = () => {
 
   const fetchReminders = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/reminder/getAllReminders/${userId}`);
+      const response = await axios.get(`http:
       setReminders(response.data);
     } catch (error) {
       console.error("Error fetching reminders:", error.response?.data?.message || error.message);
@@ -34,7 +34,7 @@ const EmailReminders = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3001/reminder/emailReminder/${userId}`,
+        `http:
         { reminderTime, reminderMessage, role: [role] },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -55,7 +55,7 @@ const EmailReminders = () => {
 
   const cancelReminder = async (reminderTime, reminderMessage) => {
     try {
-      const response = await axios.post(`http://localhost:3001/reminder/cancelReminder/${userId}`, {
+      const response = await axios.post(`http:
         reminderTime,
         reminderMessage,
       });

@@ -4,13 +4,13 @@ import { Loader2 } from 'lucide-react';
 const LoadingScreen = () => {
   return (
     <div className="fixed inset-0 z-50">
-      {/* Blurred overlay background */}
+      {}
       <div 
         className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         style={{ pointerEvents: 'none' }}
       />
       
-      {/* Content */}
+      {}
       <div className="relative h-full flex items-center justify-center px-4 pointer-events-none">
         <div 
           className="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 text-center

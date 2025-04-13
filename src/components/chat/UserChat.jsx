@@ -15,8 +15,7 @@ const UserChat = () => {
   const [socket, setSocket] = useState(null);
   const {userId} = useAuth();
   const {doctorId} = useParams();
-  
-  // Fetch doctors from backend
+
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
@@ -25,8 +24,7 @@ const UserChat = () => {
         if (response.data.doctor) {
           const doctor = response.data.doctor;
           setDoctors([doctor]);
-          
-          // If doctorId param exists, automatically set active chat
+
           if (doctorId && doctor) {
             setActiveChat(doctor);
           }
@@ -42,17 +40,16 @@ const UserChat = () => {
     
     fetchDoctor();
   }, [doctorId]);
-  
-  // Handle socket connection and fetch chat history
+
   useEffect(() => {
     if (activeChat) {
-      const newSocket = io("http://localhost:3001");
+      const newSocket = io("http:
       console.log("WebSocket connection started");
 
       newSocket.emit("startChat", { userId: userId });
 
       newSocket.on("receiveMessage", (message) => {
-        // Format incoming messages to match the UI format
+
         const formattedMessage = {
           text: message.message || message.text,
           sender: message.senderId === userId ? "user" : "doctor",
@@ -68,8 +65,7 @@ const UserChat = () => {
         try {
           const chatId = activeChat._id || activeChat.id;
           const response = await axios.get(`${baseURL}/chat/history/${userId}/${chatId}`);
-          
-          // Format the chat history to match UI format
+
           const formattedHistory = response.data.map(msg => ({
             text: msg.message || msg.text,
             sender: msg.senderId === userId ? "user" : "doctor",
@@ -89,7 +85,6 @@ const UserChat = () => {
     }
   }, [activeChat, userId]);
 
-  // Send message function
   const sendMessage = () => {
     if (!input.trim() || !activeChat || !socket) return;
 
@@ -115,7 +110,7 @@ const UserChat = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 p-4 max-w-6xl mx-auto shadow-lg rounded-lg overflow-hidden">
-      {/* Doctor List Sidebar */}
+      {}
       <div className="w-1/3 bg-white shadow-md rounded-lg overflow-hidden mr-4 flex flex-col">
         <div className="p-4 border-b">
           <div className="relative">
@@ -130,7 +125,7 @@ const UserChat = () => {
           </div>
         </div>
 
-        {/* Doctor List */}
+        {}
         <div className="overflow-y-auto flex-grow p-3">
           <h2 className="text-sm font-semibold mb-3 text-gray-500 px-2">DOCTORS</h2>
           <ul className="space-y-2">
@@ -161,7 +156,7 @@ const UserChat = () => {
         </div>
       </div>
 
-      {/* Chat Section */}
+      {}
       <div className="flex flex-col flex-grow rounded-lg overflow-hidden bg-white shadow-md">
         <div className="bg-blue-600 text-white p-3 flex items-center shadow-sm">
           {activeChat ? (
@@ -171,7 +166,7 @@ const UserChat = () => {
           )}
         </div>
 
-        {/* Messages Area */}
+        {}
         <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-gray-50">
           {messages.map((msg, index) => (
             <div key={index} className={`flex items-end ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
@@ -188,7 +183,7 @@ const UserChat = () => {
           ))}
         </div>
 
-        {/* Message Input */}
+        {}
         <div className="p-3 bg-white border-t">
           <div className="flex items-center">
             <input

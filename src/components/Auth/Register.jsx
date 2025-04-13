@@ -24,7 +24,7 @@ const Register = () => {
             password: '',
             confirmPassword: '',
             acceptedTerms: false,
-            role: '', // Add the role field here
+            role: '', 
           }}
           validationSchema={Yup.object({
             name: Yup.string()
@@ -54,12 +54,12 @@ const Register = () => {
             acceptedTerms: Yup.boolean()
               .required('Required')
               .oneOf([true], 'Please accept the terms and conditions before continuing.'),
-            role: Yup.string() // Add role validation
+            role: Yup.string() 
               .required('Please select a role'),
           })}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              const response = await axios.post('http://localhost:3001/auth/register', values, {
+              const response = await axios.post('http:
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -81,12 +81,12 @@ const Register = () => {
         >
           {({ isSubmitting }) => (
             <Form className="flex space-x-8">
-              {/* Left Side: Personal Information */}
+              {}
               <div className="w-1/2 space-y-4">
                 <TextInput label="Name" name="name" type="text" placeholder="Your Name" />
                 <TextInput label="User Name" name="userName" type="text" placeholder="Choose a username" />
                 <TextInput label="Email Address" name="email" type="email" placeholder="youremail@email.com" />
-                {/* Add the Role Selection Here */}
+                {}
                 <MySelect label="Role" name="role">
                   <option value="">Select a Role</option>
                   <option value="patient">Patient</option>
@@ -95,7 +95,7 @@ const Register = () => {
                   <option value="superadmin">Superadmin</option>
                 </MySelect>
               </div>
-              {/* Right Side: Password and Terms */}
+              {}
               <div className="w-1/2 space-y-4">
                 <PasswordInput
                   label="Password"

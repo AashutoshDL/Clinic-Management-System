@@ -4,17 +4,16 @@ import LoadingScreen from '../Ui/LoadingScreen';
 import { baseURL } from '../service/baseURL';
 
 const ManageAppointments = () => {
-  const [appointments, setAppointments] = useState([]);  // Initialize as an empty array
-  const [expanded, setExpanded] = useState(null);  // Track which appointment is expanded
-  const [loading, setLoading] = useState(true);  // Track loading state
-  const [error, setError] = useState(null);  // Track error state
+  const [appointments, setAppointments] = useState([]);  
+  const [expanded, setExpanded] = useState(null);  
+  const [loading, setLoading] = useState(true);  
+  const [error, setError] = useState(null);  
 
-  // Fetch appointments data from API
   const fetchAppointments = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${baseURL}/appointments/getAllAppointments`);
-      setAppointments(response.data.appointments || []);  // Ensure appointments is an array
+      setAppointments(response.data.appointments || []);  
     } catch (error) {
       setError('Failed to fetch appointments');
       console.error('Error fetching appointments:', error);
@@ -23,11 +22,10 @@ const ManageAppointments = () => {
     }
   };
 
-  // Cancel appointment API call
   const cancelAppointment = async (id) => {
     try {
       await axios.delete(`${baseURL}/appointments/cancelAppointmentById/${id}`);
-      setAppointments(appointments.filter(appointment => appointment._id !== id));  // Remove canceled appointment from state
+      setAppointments(appointments.filter(appointment => appointment._id !== id));  
       alert('Appointment canceled successfully');
     } catch (error) {
       setError('Failed to cancel appointment');
@@ -40,15 +38,15 @@ const ManageAppointments = () => {
   }, []);
 
   const handleToggleExpand = (id) => {
-    setExpanded(expanded === id ? null : id);  // Toggle the expanded state
+    setExpanded(expanded === id ? null : id);  
   };
 
   if (loading) {
-    return <LoadingScreen />;  // Display loading state
+    return <LoadingScreen />;  
   }
 
   if (error) {
-    return <div>{error}</div>;  // Display error message if there is an issue
+    return <div>{error}</div>;  
   }
 
   return (
@@ -72,10 +70,10 @@ const ManageAppointments = () => {
               <p className="text-gray-500">Time: {appointment.time}</p>
               <p className="text-gray-500">Status: <span className={appointment.status === 'Confirmed' ? 'text-green-600' : 'text-yellow-600'}>{appointment.status}</span></p>
 
-              {/* Cancel Button */}
+              {}
               <button
                 onClick={(e) => {
-                  e.stopPropagation();  // Prevent expanding the appointment on button click
+                  e.stopPropagation();  
                   cancelAppointment(appointment._id);
                 }}
                 className="mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
@@ -83,7 +81,7 @@ const ManageAppointments = () => {
                 Cancel Appointment
               </button>
 
-              {/* Expandable details */}
+              {}
               {expanded === appointment._id && (
                 <div className="mt-4 bg-gray-100 p-4 rounded-lg">
                   <p><strong>Patient ID:</strong> {appointment.patientId}</p>
@@ -94,7 +92,7 @@ const ManageAppointments = () => {
             </div>
           ))
         ) : (
-          <div>No appointments available</div>  // Fallback message if no appointments
+          <div>No appointments available</div>  
         )}
       </div>
     </div>
