@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { baseURL } from "../service/baseURL"; // Make sure this points to your backend
+import { baseURL } from "../service/baseURL"; 
 
 const DiseaseInput = ({ selectedDiseases, setSelectedDiseases }) => {
   const [query, setQuery] = useState("");

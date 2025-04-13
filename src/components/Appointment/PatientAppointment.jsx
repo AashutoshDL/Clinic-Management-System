@@ -20,9 +20,8 @@ const PatientAppointment = () => {
   const [patientData, setPatientData] = useState({})
   const navigate = useNavigate()
 
-  // Set minimum date to today
   const today = new Date()
-  const minDate = today.toISOString().split('T')[0] // Format: YYYY-MM-DD
+  const minDate = today.toISOString().split('T')[0] 
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -40,7 +39,6 @@ const PatientAppointment = () => {
           if (data.message === "Doctors fetched successfully" && data.doctors) {
             setDoctors(data.doctors)
 
-            // Process available times
             const allAvailableTimes = {}
             data.doctors.forEach((doctor) => {
               const times = doctor.availableTimes
@@ -77,7 +75,7 @@ const PatientAppointment = () => {
   const handleDoctorClick = (doctorId) => {
     setSelectedDoctor(doctorId)
     setSelectedTime(null)
-    // Reset booking status when selecting a new doctor
+
     setBookingStatus({ status: "", message: "" })
   }
 
@@ -104,7 +102,6 @@ const PatientAppointment = () => {
       setIsBooking(true)
       setBookingStatus({ status: "loading", message: "Booking your appointment..." })
 
-      // Get patient details
       const patientResponse = await axios.get(`${baseURL}/patient/getPatientById/${userId}`)
 
       if (patientResponse.status === 200 && patientResponse.data.data) {
@@ -147,7 +144,6 @@ const PatientAppointment = () => {
             specialization: selectedDoctorData.specialization || "General",
           })
 
-          // Reset selection after successful booking
           setTimeout(() => {
             setSelectedDoctor(null)
             setSelectedTime(null)
@@ -188,7 +184,6 @@ const PatientAppointment = () => {
       (doctor.specialization && doctor.specialization.toLowerCase().includes(searchQuery.toLowerCase())),
   )
 
-  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -200,7 +195,6 @@ const PatientAppointment = () => {
     });
   };
 
-  // Render loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -212,7 +206,6 @@ const PatientAppointment = () => {
     )
   }
 
-  // Render error state
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -234,7 +227,7 @@ const PatientAppointment = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {}
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-2">Book an Appointment</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -242,7 +235,7 @@ const PatientAppointment = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
+        {}
         <div className="mb-10 flex justify-center">
           <div className="relative w-full max-w-md">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -357,7 +350,7 @@ const PatientAppointment = () => {
             )}
           </div>
         ) : (
-          /* Time Selection View */
+          
           <div className="bg-white rounded-xl shadow-md p-6">
             <button
               onClick={handleBackToDoctors}
@@ -367,7 +360,7 @@ const PatientAppointment = () => {
               Back to Doctors
             </button>
 
-            {/* Selected Doctor Info */}
+            {}
             <div className="flex items-center mb-8">
               <img
                 src={
@@ -391,7 +384,7 @@ const PatientAppointment = () => {
               </div>
             </div>
 
-            {/* Date Selection */}
+            {}
             <div className="mb-8">
               <h3 className="text-xl font-medium text-gray-700 mb-4 flex items-center">
                 <Calendar className="w-5 h-5 mr-2 text-blue-500" />
@@ -451,7 +444,7 @@ const PatientAppointment = () => {
               </div>
             )}
 
-            {/* Booking Section */}
+            {}
             <div className="border-t border-gray-200 pt-6">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="mb-4 sm:mb-0">
@@ -495,7 +488,7 @@ const PatientAppointment = () => {
           </div>
         )}
 
-        {/* Appointment Confirmation */}
+        {}
         {patientData.doctorName && bookingStatus.status === "success" && (
           <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-start">

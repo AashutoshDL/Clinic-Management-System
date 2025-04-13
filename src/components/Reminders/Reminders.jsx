@@ -30,7 +30,6 @@ const Reminders = () => {
     return reminderDate.getTime() - now.getTime();
   };
 
-  // Function to add a reminder
   const addReminder = () => {
     const timeDifference = calculateTimeDifference(reminderTime);
 
@@ -52,13 +51,11 @@ const Reminders = () => {
     }
   };
 
-  // Function to remove a reminder
   const removeReminder = (index) => {
     const updatedReminders = reminders.filter((_, i) => i !== index);
     setReminders(updatedReminders);
   };
 
-  // Function to edit a reminder
   const editReminder = (index) => {
     const reminder = reminders[index];
     setReminderTime(reminder.time);
@@ -66,7 +63,6 @@ const Reminders = () => {
     setEditingIndex(index);
   };
 
-  // Function to save the edited reminder
   const saveEditedReminder = () => {
     const updatedReminders = reminders.map((reminder, index) =>
       index === editingIndex
@@ -74,8 +70,8 @@ const Reminders = () => {
         : reminder
     );
     setReminders(updatedReminders);
-    setEditingIndex(null); // Reset editing index
-    setReminderMessage(''); // Clear the message field after saving
+    setEditingIndex(null); 
+    setReminderMessage(''); 
   };
 
   return (
@@ -83,7 +79,7 @@ const Reminders = () => {
       <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold mb-4">Set Multiple Reminders</h2>
 
-        {/* Time input field */}
+        {}
         <input
           type="time"
           value={reminderTime}
@@ -91,7 +87,7 @@ const Reminders = () => {
           className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded-lg p-2 shadow-md hover:border-blue-500 hover:shadow-lg transition-all text-lg font-semibold text-gray-700"
         />
 
-        {/* Text input for custom reminder message */}
+        {}
         <textarea
           value={reminderMessage}
           onChange={(e) => setReminderMessage(e.target.value)}
@@ -99,7 +95,7 @@ const Reminders = () => {
           className="mt-4 w-full p-2 border border-gray-300 rounded-lg text-gray-700"
         />
 
-        {/* Button to add reminder or save edited reminder */}
+        {}
         <button
           onClick={editingIndex !== null ? saveEditedReminder : addReminder}
           className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-all"
@@ -107,7 +103,7 @@ const Reminders = () => {
           {editingIndex !== null ? 'Save Edit' : 'Set Reminder'}
         </button>
 
-        {/* Display list of reminders */}
+        {}
         <div className="mt-6">
           {reminders.length > 0 && (
             <div>

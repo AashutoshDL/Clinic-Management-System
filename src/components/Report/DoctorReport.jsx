@@ -119,7 +119,7 @@ const DoctorReport = () => {
     <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Doctor Report Generation</h1>
 
-      {/* Patient Selection */}
+      {}
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Select Patient</h2>
         <div className="grid grid-cols-3 gap-4">
@@ -139,7 +139,7 @@ const DoctorReport = () => {
         </div>
       </div>
 
-      {/* Selected Patient Info */}
+      {}
       {selectedPatient && (
         <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
           <h2 className="text-lg font-bold">Patient Details:</h2>
@@ -155,12 +155,12 @@ const DoctorReport = () => {
         </div>
       )}
 
-      {/* Health Chart */}
+      {}
       {viewStats && selectedPatient && (
         <HealthMetricsChart data={[selectedPatient]} loading={false} />
       )}
 
-      {/* Report Templates */}
+      {}
       {selectedPatient && (
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-2">Select Report Template</h2>
@@ -180,7 +180,7 @@ const DoctorReport = () => {
         </div>
       )}
 
-      {/* Report Form */}
+      {}
       {selectedTemplate && (
         <div className="p-4 bg-white rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Fill Out Report</h2>

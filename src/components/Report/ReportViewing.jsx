@@ -20,7 +20,7 @@ const ReportViewing = () => {
       try {
         const res = await axios.get(`${baseURL}/patient/patientReportById/${userId}`);
         if (res.data.success && res.data.data.length > 0) {
-          setReports(res.data.data); // Store all reports
+          setReports(res.data.data); 
         } else {
           console.error('No report data found');
         }
@@ -37,7 +37,6 @@ const ReportViewing = () => {
 
     const doc = new jsPDF();
 
-    // Title and basic patient info
     doc.setFontSize(18);
     doc.text(`Report for ${report.patientName}`, 20, 20);
     doc.setFontSize(14);
@@ -45,7 +44,6 @@ const ReportViewing = () => {
 
     let y = 40;
 
-    // Loop through the fields and add them to the PDF
     report.fields.forEach((field, index) => {
       if (field.label && field.value) {
         doc.setFontSize(12);
@@ -54,7 +52,6 @@ const ReportViewing = () => {
       }
     });
 
-    // Generate and download the PDF
     doc.save(`${report.patientName}_report.pdf`);
   };
 

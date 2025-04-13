@@ -105,7 +105,7 @@ const SetupProfile = () => {
           {({ values, setFieldValue, isSubmitting }) => (
             <Form>
               <div className="p-6">
-                {/* Profile Section */}
+                {}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-3">Personal Information</h3>
                   <hr className="my-3 border-t border-gray-100" />
@@ -136,7 +136,7 @@ const SetupProfile = () => {
                   </div>
                 </div>
 
-                {/* Medical Information Section */}
+                {}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-3">Medical Details</h3>
                   <hr className="my-3 border-t border-gray-100" />
@@ -206,7 +206,7 @@ const SetupProfile = () => {
                   </div>
                 </div>
 
-                {/* Vital Signs Section */}
+                {}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-3">Vital Signs</h3>
                   <hr className="my-3 border-t border-gray-100" />
@@ -262,7 +262,7 @@ const SetupProfile = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
+                {}
                 <div className="flex justify-end">
                   <button
                     type="button"

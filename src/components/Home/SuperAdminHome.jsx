@@ -28,7 +28,7 @@ const SuperAdminHome = () => {
   };
 
   useEffect(() => {
-    // Fetch patients data from the API
+
     const fetchPatientsData = async () => {
       setLoading(true);
       try {
@@ -46,7 +46,6 @@ const SuperAdminHome = () => {
     fetchPatientsData();
   }, []);
 
-  // Process patient data to include health metrics
   const processPatientData = (patient) => {
     return {
       name: patient.name ? patient.name.split(' ')[0] : 'Unknown',
@@ -82,7 +81,7 @@ const SuperAdminHome = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Dashboard Header */}
+        {}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-800 flex items-center">
@@ -115,7 +114,7 @@ const SuperAdminHome = () => {
           </p>
         </div>
 
-        {/* Stats Cards */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center">
@@ -178,7 +177,7 @@ const SuperAdminHome = () => {
           </div>
         </div>
 
-        {/* Chart */}
+        {}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
             <UserCircle className="mr-2 text-blue-600" />

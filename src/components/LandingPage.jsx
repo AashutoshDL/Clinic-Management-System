@@ -96,7 +96,6 @@ const Landing = () => {
     }
   };
 
-  // Function to render stars based on rating
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
@@ -116,7 +115,7 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white overflow-hidden">
-      {/* Navigation Bar */}
+      {}
       <nav className="flex justify-between items-center p-4 lg:px-8 bg-white shadow-sm fixed w-full z-20 top-0">
         <div className="text-2xl font-bold text-blue-600">Medisys</div>
         <div className="hidden md:flex gap-6">
@@ -149,7 +148,7 @@ const Landing = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {}
       <div className="flex flex-col lg:flex-row min-h-screen pt-16" id="home">
         <div className="flex-1 p-8 lg:p-16 flex flex-col justify-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 leading-tight">
@@ -172,7 +171,7 @@ const Landing = () => {
 
         <div className="flex-1 flex justify-center items-center p-8 lg:p-0">
           <div className="relative w-full max-w-lg">
-            {/* Main image */}
+            {}
             <div className="relative z-10 rounded-lg overflow-hidden shadow-xl">
               <img
                 src="/images/doctor-with-patient.jpg"
@@ -184,11 +183,11 @@ const Landing = () => {
               />
             </div>
 
-            {/* Decorative elements */}
+            {}
             <div className="absolute top-1/4 -left-6 w-24 h-24 bg-blue-200 rounded-full z-0 opacity-70"></div>
             <div className="absolute bottom-1/4 -right-6 w-32 h-32 bg-blue-100 rounded-full z-0 opacity-70"></div>
 
-            {/* Stats card */}
+            {}
             <div className="absolute -bottom-10 -left-10 bg-white p-6 rounded-lg shadow-lg z-20">
               <div className="flex flex-col">
                 <span className="text-3xl font-bold text-blue-600">98%</span>
@@ -199,7 +198,7 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Features Section */}
+      {}
       <div className="py-16 bg-white" id="features">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
@@ -222,7 +221,7 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Solutions Tabs Section */}
+      {}
       <div className="py-16 bg-gray-50" id="solutions">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
@@ -292,7 +291,7 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Reviews Section */}
+      {}
       <div className="py-16 bg-white" id="reviews">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
@@ -332,7 +331,7 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
       <footer className="bg-gray-900 text-white pt-16 pb-8" id="contact">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">

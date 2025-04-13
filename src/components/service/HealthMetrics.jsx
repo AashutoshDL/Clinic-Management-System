@@ -3,9 +3,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { UserCircle } from 'lucide-react';
 
 const HealthMetrics = ({ data, loading, title = "Patient Health Metrics" }) => {
-  // Process patient data to include health metrics and only first name for display
+
   const processedData = data.map(patient => ({
-    name: patient.name ? patient.name.split(' ')[0] : 'Unknown', // Only first name for better display
+    name: patient.name ? patient.name.split(' ')[0] : 'Unknown', 
     fullName: patient.name || 'Unknown',
     bloodGlucose: patient.bloodGlucose || 0,
     diastolicBP: patient.diastolicBP || 0,

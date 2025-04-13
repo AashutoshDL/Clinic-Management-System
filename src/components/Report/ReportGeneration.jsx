@@ -57,7 +57,7 @@ const ReportGeneration = () => {
       });
 
       setTemplateCreated(true);
-      fetchReportTemplates(); // Refresh the list of reports
+      fetchReportTemplates(); 
     } catch (error) {
       console.error("Error creating template:", error.response?.data || error.message);
     }

@@ -56,10 +56,10 @@ const AdminDoctorTable = ({ tableData, setTableData }) => {
 
   return (
     <div>
-      {/* Title */}
+      {}
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Doctor List</h2>
 
-      {/* Modal for Editing */}
+      {}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
@@ -113,7 +113,7 @@ const AdminDoctorTable = ({ tableData, setTableData }) => {
         </div>
       )}
 
-      {/* Table */}
+      {}
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full table-auto border-collapse border border-gray-300">
           <thead>
