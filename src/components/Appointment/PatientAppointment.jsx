@@ -32,7 +32,7 @@ const PatientAppointment = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         })
-
+        console.log(response)
         if (response.status === 200) {
           const data = response.data
 
@@ -42,17 +42,18 @@ const PatientAppointment = () => {
             const allAvailableTimes = {}
             data.doctors.forEach((doctor) => {
               const times = doctor.availableTimes
-                .map((timeSlot) => {
-                  if (typeof timeSlot === "object" && timeSlot.from && timeSlot.to) {
-                    return `${timeSlot.from} - ${timeSlot.to}`
-                  } else if (typeof timeSlot === "object" && timeSlot._id) {
-                    return "Time Slot"
-                  } else if (typeof timeSlot === "string") {
-                    return timeSlot
-                  }
-                  return null
-                })
-                .filter((time) => time !== null)
+              .map((timeSlot) => {
+                if (typeof timeSlot === "object" && timeSlot.from && timeSlot.to) {
+                  return `${timeSlot.from} - ${timeSlot.to}`
+                } else if (typeof timeSlot === "object" && timeSlot._id) {
+                  return "Time Slot"
+                } else if (typeof timeSlot === "string") {
+                  return timeSlot
+                }
+                return null
+              })
+              .filter((time) => time !== null)
+              console.log(times)
 
               allAvailableTimes[doctor.id] = times
             })
@@ -304,7 +305,7 @@ const PatientAppointment = () => {
                       <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                         <div className="w-24 h-24 rounded-full bg-white p-1">
                           <img
-                            src={doctor.image || "Image"}
+                            src={doctor.image || "/images/doctor.png"}
                             alt={doctor.name}
                             className="w-full h-full object-cover rounded-full"
                             onError={(e) => {
@@ -365,7 +366,7 @@ const PatientAppointment = () => {
               <img
                 src={
                   doctors.find((doc) => doc.id === selectedDoctor)?.image ||
-                  "Image"
+                  "/images/doctor.png"
                 }
                 alt="Doctor"
                 className="w-16 h-16 rounded-full object-cover mr-4"

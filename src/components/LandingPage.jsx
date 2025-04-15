@@ -30,21 +30,21 @@ const Landing = () => {
     {
       name: "Sarah Johnson",
       role: "Patient",
-      image: "/images/patient1.jpg",
+      image: "/images/patient.png",
       content: "The clinic management system has made scheduling appointments so much easier. I love the reminders and the ability to see my entire medical history in one place.",
       rating: 5,
     },
     {
       name: "Dr. Michael Chen",
       role: "Cardiologist",
-      image: "/images/doctor1.jpg",
+      image: "/images/doctor.png",
       content: "As a physician, this system has streamlined my workflow and reduced administrative burden. Patient records are well-organized and accessible when I need them.",
       rating: 4,
     },
     {
       name: "Emma Thompson",
       role: "Healthcare Administrator",
-      image: "/images/admin1.jpg",
+      image: "/images/clinicPic.png",
       content: "Managing our clinic operations has never been more efficient. The reporting tools give us valuable insights to improve patient care and operational efficiency.",
       rating: 5,
     },
@@ -171,14 +171,13 @@ const Landing = () => {
 
         <div className="flex-1 flex justify-center items-center p-8 lg:p-0">
           <div className="relative w-full max-w-lg">
-            {}
             <div className="relative z-10 rounded-lg overflow-hidden shadow-xl">
               <img
-                src="/images/doctor-with-patient.jpg"
+                src="/images/clinicPic.png"
                 alt="Healthcare professional with patient"
                 className="w-full h-auto object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = "../../public/images/clinicPic.png";
+                  e.currentTarget.src = "/images/clinicPic.png";
                 }}
               />
             </div>
@@ -221,7 +220,6 @@ const Landing = () => {
         </div>
       </div>
 
-      {}
       <div className="py-16 bg-gray-50" id="solutions">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
@@ -278,11 +276,11 @@ const Landing = () => {
               
               <div className="flex-1 flex items-center justify-center">
                 <img 
-                  src={`/images/${activeTab}-illustration.png`} 
+                  src={`/images/${activeTab}-clinicPic.png`} 
                   alt={tabContent[activeTab].title}
                   className="max-w-full h-auto rounded-lg"
                   onError={(e) => {
-                    e.currentTarget.src = "/api/placeholder/500/350";
+                    e.currentTarget.src = "/images/clinicPic.png";
                   }}
                 />
               </div>
@@ -312,7 +310,7 @@ const Landing = () => {
                       alt={review.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = "/api/placeholder/48/48";
+                        e.currentTarget.src = "/images/clinicPic.jpg";
                       }}
                     />
                   </div>
@@ -384,20 +382,20 @@ const Landing = () => {
               <ul className="space-y-2">
                 <li className="flex items-start gap-3">
                   <PhoneCall className="w-5 h-5 text-gray-400 mt-1" />
-                  <span className="text-gray-400">+1 (800) 123-4567</span>
+                  <span className="text-gray-400">+977 9803133855</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-gray-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-gray-400">support@healthconnect.com</span>
+                  <span className="text-gray-400">support@medysis.com</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-gray-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span className="text-gray-400">123 Health Street<br />San Francisco, CA 94158</span>
+                  <span className="text-gray-400">Changathali<br />Lalitpur, Nepal</span>
                 </li>
               </ul>
             </div>
