@@ -10,6 +10,8 @@ import axios from "axios";
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   username: Yup.string().required("Username is required"),
+  age: Yup.number().required("Age is required"),
+  gender: Yup.string().required("Gender is required"),
   bloodType: Yup.string().required("Blood type is required"),
   height: Yup.number().required("Height is required"),
   weight: Yup.number().required("Weight is required"),
@@ -27,6 +29,8 @@ const SetupProfile = () => {
     name: "",
     userName: "",
     bloodType: "",
+    age: "",
+    gender: "",
     height: "",
     heightUnit: "cm",
     weight: "",
@@ -51,6 +55,8 @@ const SetupProfile = () => {
           ...prev,
           ...apiData,
           height: apiData.height || "",
+          age: apiData.age || "",
+          gender: apiData.gender || "",
           weight: apiData.weight || "",
           systolicBP: apiData.systolicBP || "",
           diastolicBP: apiData.diastolicBP || "",
@@ -123,13 +129,24 @@ const SetupProfile = () => {
                     </div>
 
                     <div className="mb-4">
-                      <label htmlFor="userName" className="block mb-2 font-medium">
-                        Username
+                      <label htmlFor="age" className="block mb-2 font-medium">
+                        Age
                       </label>
                       <Field
-                        name="userName"
+                        name="age"
+                        type="number"
+                        placeholder="your age"
+                        className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label htmlFor="gender" className="block mb-2 font-medium">
+                        Gender
+                      </label>
+                      <Field
+                        name="gender"
                         type="text"
-                        placeholder="your username"
+                        placeholder="your gender"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>

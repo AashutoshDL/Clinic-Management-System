@@ -49,7 +49,22 @@ const DoctorReport = () => {
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
-    setFormValues({});
+
+    const preFilledValues = {};
+    template.customFields.forEach((field, index) => {
+      const label = field.label.toLowerCase();
+      if (label.includes('name')) {
+        preFilledValues[index] = selectedPatient.name;
+      } else if (label.includes('age')) {
+        preFilledValues[index] = selectedPatient.age;
+      } else if (label.includes('gender')) {
+        preFilledValues[index] = selectedPatient.gender;
+      } else {
+        preFilledValues[index] = '';
+      }
+    });
+
+    setFormValues(preFilledValues);
   };
 
   const handleFormValueChange = (index, e) => {
@@ -59,17 +74,30 @@ const DoctorReport = () => {
   };
 
   const saveMedicalReport = async () => {
+    const transformedFields = selectedTemplate.customFields.map((field, index) => {
+      if (field.label === "Medicine" && Array.isArray(formValues[index])) {
+        // Convert the medicine array into a string, separating values with commas
+        return {
+          label: field.label,
+          value: formValues[index].join(", "), // join array values into a comma-separated string
+        };
+      } else {
+        return {
+          label: field.label,
+          value: formValues[index] || '',
+        };
+      }
+    });
+  
     const reportData = {
       patientId: selectedPatient._id,
       patientName: selectedPatient.name,
       templateTitle: selectedTemplate.title,
-      fields: selectedTemplate.customFields.map((field, index) => ({
-        label: field.label,
-        value: formValues[index] || '',
-      })),
+      fields: transformedFields,
     };
-
+  
     try {
+      console.log(reportData);
       const response = await axios.post(`${baseURL}/patient/createPatientReport`, { reportData });
       if (response.data.success) {
         console.log('Report saved successfully');
@@ -86,6 +114,7 @@ const DoctorReport = () => {
       setFormValues({});
     }
   };
+  
 
   const generateReportPDF = async () => {
     if (!selectedTemplate || !selectedPatient) return;
@@ -119,7 +148,6 @@ const DoctorReport = () => {
     <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Doctor Report Generation</h1>
 
-      {}
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Select Patient</h2>
         <div className="grid grid-cols-3 gap-4">
@@ -139,7 +167,6 @@ const DoctorReport = () => {
         </div>
       </div>
 
-      {}
       {selectedPatient && (
         <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
           <h2 className="text-lg font-bold">Patient Details:</h2>
@@ -155,12 +182,10 @@ const DoctorReport = () => {
         </div>
       )}
 
-      {}
       {viewStats && selectedPatient && (
         <HealthMetricsChart data={[selectedPatient]} loading={false} />
       )}
 
-      {}
       {selectedPatient && (
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-2">Select Report Template</h2>
@@ -180,14 +205,14 @@ const DoctorReport = () => {
         </div>
       )}
 
-      {}
       {selectedTemplate && (
         <div className="p-4 bg-white rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Fill Out Report</h2>
           {selectedTemplate.customFields.map((field, index) => (
             <div key={index} className="mb-4">
               <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-              {field.label.toLowerCase().includes("medicine","medication") ? (
+              {field.label.toLowerCase().includes("medicine") ||
+              field.label.toLowerCase().includes("medication") ? (
                 <MedicineInput
                   selectedMedicines={formValues[index] || []}
                   setSelectedMedicines={(meds) =>
