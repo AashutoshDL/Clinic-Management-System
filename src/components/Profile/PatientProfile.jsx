@@ -48,7 +48,7 @@ const PatientProfile = () => {
     return <div className="min-h-screen flex items-center justify-center">Error loading profile.</div>
   }
 
-  const skills = ["Medical History", "Appointments", "Prescriptions", "Lab Results", "Insurance"]
+  // const skills = ["Medical History", "Appointments", "Prescriptions", "Lab Results", "Insurance"]
 
   return (
       <div className="max-w-4xl mx-auto">
@@ -110,15 +110,21 @@ const PatientProfile = () => {
             </div>
           </div>
 
-          {}
           <div className="mt-8 border-t border-gray-200 pt-6 px-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Star className="w-5 h-5 mr-2 text-blue-500" />
               Medical Information
             </h2>
 
-            {}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Age</h3>
+                <p className="text-lg font-semibold">{profileData.age}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Gender</h3>
+                <p className="text-lg font-semibold">{profileData.gender}</p>
+              </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Blood Type</h3>
                 <p className="text-lg font-semibold">{profileData.bloodType}</p>

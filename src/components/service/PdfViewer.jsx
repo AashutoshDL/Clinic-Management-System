@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import axios from 'axios';
+import { baseURL } from './baseURL';
 
 const PdfViewer = ({ pdfUrl }) => {
   const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
+  const [summary, setSummary] = useState('');
+  const [isSummarizing, setIsSummarizing] = useState(false);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   useEffect(() => {
@@ -23,7 +25,6 @@ const PdfViewer = ({ pdfUrl }) => {
         console.error("Failed to load PDF", err);
       });
 
-    // Cleanup object URL when component unmounts or pdfUrl changes
     return () => {
       if (pdfBlobUrl) {
         URL.revokeObjectURL(pdfBlobUrl);
@@ -31,8 +32,26 @@ const PdfViewer = ({ pdfUrl }) => {
     };
   }, [pdfUrl]);
 
+  const handleSummarize = async () => {
+    try {
+      setIsSummarizing(true);
+      console.log(pdfUrl)
+      const response = await axios.post(`${baseURL}/uploads/summarizePdf`, { pdfUrl });
+      if (response.data && response.data.summary) {
+        setSummary(response.data.summary);
+      } else {
+        setSummary('No summary available.');
+      }
+    } catch (error) {
+      console.error("Failed to fetch summary", error);
+      setSummary('Error summarizing PDF.');
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
   return (
-    <div className="pdf-container border border-gray-300 rounded" style={{ height: '500px' }}>
+    <div className="pdf-container border border-gray-300 rounded p-4" style={{ height: 'auto' }}>
       {pdfBlobUrl ? (
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <Viewer
@@ -48,6 +67,23 @@ const PdfViewer = ({ pdfUrl }) => {
         </Worker>
       ) : (
         <div className="p-4">Loading PDF...</div>
+      )}
+
+      <div className="mt-4 flex gap-3">
+        <button
+          onClick={handleSummarize}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          disabled={isSummarizing}
+        >
+          {isSummarizing ? 'Summarizing...' : 'Summarize PDF'}
+        </button>
+      </div>
+
+      {summary && (
+        <div className="mt-4 p-3 bg-gray-100 border rounded">
+          <h3 className="text-lg font-semibold mb-2">Summary:</h3>
+          <p className="text-gray-800">{summary}</p>
+        </div>
       )}
     </div>
   );
