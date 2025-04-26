@@ -6,7 +6,7 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import axios from 'axios';
 import { baseURL } from './baseURL';
 
-const PdfViewer = ({ pdfUrl }) => {
+const PdfViewer = ({ pdfUrl, summary: summaryProp }) => {
   const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
   const [summary, setSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
@@ -35,7 +35,6 @@ const PdfViewer = ({ pdfUrl }) => {
   const handleSummarize = async () => {
     try {
       setIsSummarizing(true);
-      console.log(pdfUrl)
       const response = await axios.post(`${baseURL}/uploads/summarizePdf`, { pdfUrl });
       if (response.data && response.data.summary) {
         setSummary(response.data.summary);
@@ -53,7 +52,7 @@ const PdfViewer = ({ pdfUrl }) => {
   return (
     <div className="pdf-container border border-gray-300 rounded p-4" style={{ height: 'auto' }}>
       {pdfBlobUrl ? (
-        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
           <Viewer
             fileUrl={pdfBlobUrl}
             plugins={[defaultLayoutPluginInstance]}
@@ -69,20 +68,24 @@ const PdfViewer = ({ pdfUrl }) => {
         <div className="p-4">Loading PDF...</div>
       )}
 
-      <div className="mt-4 flex gap-3">
-        <button
-          onClick={handleSummarize}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          disabled={isSummarizing}
-        >
-          {isSummarizing ? 'Summarizing...' : 'Summarize PDF'}
-        </button>
-      </div>
+      {/* Show Summarize Button if no summary is passed via props */}
+      {!summaryProp && (
+        <div className="mt-4 flex gap-3">
+          <button
+            onClick={handleSummarize}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            disabled={isSummarizing}
+          >
+            {isSummarizing ? 'Summarizing...' : 'Summarize PDF'}
+          </button>
+        </div>
+      )}
 
-      {summary && (
+      {/* Display summary from prop or from state */}
+      {(summaryProp || summary) && (
         <div className="mt-4 p-3 bg-gray-100 border rounded">
           <h3 className="text-lg font-semibold mb-2">Summary:</h3>
-          <p className="text-gray-800">{summary}</p>
+          <p className="text-gray-800">{summaryProp || summary}</p>
         </div>
       )}
     </div>

@@ -48,7 +48,6 @@ const PatientProfile = () => {
     return <div className="min-h-screen flex items-center justify-center">Error loading profile.</div>
   }
 
-  // const skills = ["Medical History", "Appointments", "Prescriptions", "Lab Results", "Insurance"]
 
   return (
       <div className="max-w-4xl mx-auto">
