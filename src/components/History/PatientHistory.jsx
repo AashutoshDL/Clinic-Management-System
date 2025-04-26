@@ -187,7 +187,7 @@ const PatientHistory = ({ patientId }) => {
               </div>
               
               {}
-              <PdfViewer pdfUrl={report.url} fileName={report.fileName} />
+              <PdfViewer pdfUrl={report.url} fileName={report.fileName} summary={report.summary} />
               
               <p className="text-xs text-gray-500 mt-2">
                 Uploaded on: {new Date(report.createdAt || Date.now()).toLocaleDateString()}

@@ -1,15 +1,15 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { MySelect } from "../Auth/FormElements";
-import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../service/baseURL";
 import axios from "axios";
 
+// Updated validation schema without username
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
-  username: Yup.string().required("Username is required"),
   age: Yup.number().required("Age is required"),
   gender: Yup.string().required("Gender is required"),
   bloodType: Yup.string().required("Blood type is required"),
@@ -20,14 +20,23 @@ const validationSchema = Yup.object({
   heartRate: Yup.number().required("Heart rate is required"),
   temperature: Yup.number(),
   bloodGlucose: Yup.number().required("Blood glucose is required"),
+  profileImage: Yup.mixed()
+    .test("fileFormat", "Unsupported file format. Only jpg, png, and jpeg are allowed.", 
+      value => {
+        if (!value) return true;
+        const supportedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+        return value && supportedFormats.includes(value.type);
+      }
+    )
 });
 
 const SetupProfile = () => {
   const { userId } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
   const [initialValues, setInitialValues] = useState({
     name: "",
-    userName: "",
     bloodType: "",
     age: "",
     gender: "",
@@ -41,6 +50,7 @@ const SetupProfile = () => {
     temperature: "",
     temperatureUnit: "celsius",
     bloodGlucose: "",
+    profileImage: null,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,6 +60,11 @@ const SetupProfile = () => {
       try {
         const response = await axios.get(`${baseURL}/patient/getPatientById/${userId}`);
         const apiData = response.data.data;
+
+        // Set profile image preview if available
+        if (apiData.profileImage) {
+          setProfileImagePreview(`${apiData.profileImage}`);
+        }
 
         setInitialValues(prev => ({
           ...prev,
@@ -74,19 +89,51 @@ const SetupProfile = () => {
     if (userId) fetchUserData();
   }, [userId]);
 
-  const handleSubmit = async (values, setSubmitting) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await axios.patch(
+      const profileData = new FormData();
+      
+      // Append all form values including profile image to a single FormData object
+      Object.keys(values).forEach((key) => {
+        if (key === "profileImage" && values[key]) {
+          profileData.append("profileImage", values[key]);
+        } else {
+          profileData.append(key, values[key]);
+        }
+      });
+
+      console.log([...profileData.entries()]);
+
+      await axios.patch(
         `${baseURL}/patient/setupProfileById/${userId}`,
-        values,
-        { headers: { "Content-Type": "application/json" } }
+        profileData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       navigate("/home");
     } catch (error) {
       console.error("Update failed:", error.response?.data || error.message);
       setError("An error occurred while updating your profile.");
     } finally {
       setSubmitting(false);
+    }
+  };  
+
+  const handleImageChange = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0];
+    if (file) {
+      setFieldValue("profileImage", file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -108,10 +155,56 @@ const SetupProfile = () => {
           enableReinitialize={true}
           onSubmit={handleSubmit}
         >
-          {({ values, setFieldValue, isSubmitting }) => (
+          {({ values, setFieldValue, isSubmitting, errors, touched }) => (
             <Form>
               <div className="p-6">
-                {}
+                {/* Profile Image Section */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-medium mb-3">Profile Picture</h3>
+                  <hr className="my-3 border-t border-gray-100" />
+                  
+                  <div className="flex flex-col items-center mb-4">
+                    <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 border mb-4">
+                      {profileImagePreview ? (
+                        <img 
+                          src={profileImagePreview}
+                          alt="Profile Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          No image
+                        </div>
+                      )}
+                    </div>
+                    
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept=".jpg,.jpeg,.png"
+                      onChange={(event) => handleImageChange(event, setFieldValue)}
+                    />
+                    
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                      onClick={() => fileInputRef.current.click()}
+                    >
+                      Upload Photo
+                    </button>
+                    
+                    <div className="text-xs text-gray-500 mt-2">
+                      Allowed formats: JPG, JPEG, PNG
+                    </div>
+                    
+                    {errors.profileImage && touched.profileImage && (
+                      <div className="text-red-500 text-sm mt-1">{errors.profileImage}</div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Personal Information Section */}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-3">Personal Information</h3>
                   <hr className="my-3 border-t border-gray-100" />
@@ -126,6 +219,9 @@ const SetupProfile = () => {
                         placeholder="John Doe"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.name && touched.name && (
+                        <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+                      )}
                     </div>
 
                     <div className="mb-4">
@@ -138,7 +234,11 @@ const SetupProfile = () => {
                         placeholder="your age"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.age && touched.age && (
+                        <div className="text-red-500 text-sm mt-1">{errors.age}</div>
+                      )}
                     </div>
+
                     <div className="mb-4">
                       <label htmlFor="gender" className="block mb-2 font-medium">
                         Gender
@@ -149,11 +249,14 @@ const SetupProfile = () => {
                         placeholder="your gender"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.gender && touched.gender && (
+                        <div className="text-red-500 text-sm mt-1">{errors.gender}</div>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {}
+                {/* Medical Details Section */}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-3">Medical Details</h3>
                   <hr className="my-3 border-t border-gray-100" />
@@ -175,6 +278,9 @@ const SetupProfile = () => {
                         <option value="O+">O+</option>
                         <option value="O-">O-</option>
                       </MySelect>
+                      {errors.bloodType && touched.bloodType && (
+                        <div className="text-red-500 text-sm mt-1">{errors.bloodType}</div>
+                      )}
                     </div>
 
                     <div className="mb-4">
@@ -197,6 +303,9 @@ const SetupProfile = () => {
                           <option value="ft">feet</option>
                         </Field>
                       </div>
+                      {errors.height && touched.height && (
+                        <div className="text-red-500 text-sm mt-1">{errors.height}</div>
+                      )}
                     </div>
 
                     <div className="mb-4">
@@ -219,11 +328,14 @@ const SetupProfile = () => {
                           <option value="lbs">lbs</option>
                         </Field>
                       </div>
+                      {errors.weight && touched.weight && (
+                        <div className="text-red-500 text-sm mt-1">{errors.weight}</div>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {}
+                {/* Vital Signs Section */}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-3">Vital Signs</h3>
                   <hr className="my-3 border-t border-gray-100" />
@@ -239,6 +351,9 @@ const SetupProfile = () => {
                         placeholder="120"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.systolicBP && touched.systolicBP && (
+                        <div className="text-red-500 text-sm mt-1">{errors.systolicBP}</div>
+                      )}
                     </div>
 
                     <div className="mb-4">
@@ -251,6 +366,9 @@ const SetupProfile = () => {
                         placeholder="80"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.diastolicBP && touched.diastolicBP && (
+                        <div className="text-red-500 text-sm mt-1">{errors.diastolicBP}</div>
+                      )}
                     </div>
 
                     <div className="mb-4">
@@ -263,6 +381,9 @@ const SetupProfile = () => {
                         placeholder="72"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.heartRate && touched.heartRate && (
+                        <div className="text-red-500 text-sm mt-1">{errors.heartRate}</div>
+                      )}
                     </div>
 
                     <div className="mb-4">
@@ -275,17 +396,19 @@ const SetupProfile = () => {
                         placeholder="100"
                         className="w-full p-2.5 rounded-md border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      {errors.bloodGlucose && touched.bloodGlucose && (
+                        <div className="text-red-500 text-sm mt-1">{errors.bloodGlucose}</div>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {}
+                {/* Submit Button */}
                 <div className="flex justify-end">
                   <button
-                    type="button"
-                    onClick={() => handleSubmit(values)}
+                    type="submit"
                     disabled={isSubmitting}
-                    className="bg-blue-600 text-white px-6 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="bg-blue-600 text-white px-6 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-blue-400"
                   >
                     {isSubmitting ? "Saving..." : "Save Profile"}
                   </button>
