@@ -117,7 +117,6 @@ const AdminPatientTable = ({ tableData, setTableData }) => {
           <thead>
             <tr className="bg-blue-100">
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Username</th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Role</th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Date Created</th>
@@ -130,13 +129,16 @@ const AdminPatientTable = ({ tableData, setTableData }) => {
               <tr key={index} className="hover:bg-gray-50 transition duration-300">
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white">
-                      {data.userName ? data.userName.charAt(0).toUpperCase() : 'N/A'}
-                    </div>
+                  <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white overflow-hidden">
+                    {data.profileImage ? (
+                      <img src={data.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      data.name && data.name.charAt(0).toUpperCase()
+                    )}
+                  </div>
                     {data.name}
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.userName || 'N/A'}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.role || 'N/A'}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.email || 'N/A'}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-700 border-t border-gray-200">{data.accountCreated || 'N/A'}</td>
