@@ -77,9 +77,9 @@ const Navbar = () => {
           <NavItem to="/reports" icon={ClipboardPlus}>
             Reports
           </NavItem>
-          <NavItem to="/appointment" icon={Calendar}>
+          {/* <NavItem to="/appointment" icon={Calendar}>
             Appointment
-          </NavItem>
+          </NavItem> */}
           <NavItem to="/history" icon={Clock}>
             History
           </NavItem>

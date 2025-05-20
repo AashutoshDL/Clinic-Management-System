@@ -99,6 +99,20 @@ const PatientAppointment = () => {
       return
     }
 
+    //add payment here send the data like 
+    /*
+    {
+      "return_url": "http://localhost:5173/payment/successful",
+      "amount": 12000,
+      "purchase_order_id": "ORDER-123456",
+      "product_name": "IPHONE 16 PRO",
+      "customer_name": "John Doe",
+      "customer_email": "john.doe@example.com",
+      "customer_phone": "9812345678"
+    } 
+    */
+   //to the <AppointmentPayment /> and handle the response
+
     try {
       setIsBooking(true)
       setBookingStatus({ status: "loading", message: "Booking your appointment..." })
