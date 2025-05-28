@@ -289,7 +289,6 @@ const Landing = () => {
         </div>
       </div>
 
-      {}
       <div className="py-16 bg-white" id="reviews">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
