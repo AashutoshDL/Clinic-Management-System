@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext"
 import { Calendar, Clock, Search, ArrowLeft, CheckCircle, X, User, Briefcase, MapPin } from "lucide-react"
 import axios from "axios"
 import { baseURL } from "../service/baseURL"
+import AppointmentPayment from "./PaymentComponent"
 
 const PatientAppointment = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null)
@@ -18,6 +19,8 @@ const PatientAppointment = () => {
   const [isBooking, setIsBooking] = useState(false)
   const { userId, accessToken } = useAuth()
   const [patientData, setPatientData] = useState({})
+  const [showPayment, setShowPayment] = useState(false)
+  const [appointmentData, setAppointmentData] = useState(null)
   const navigate = useNavigate()
 
   const today = new Date()
@@ -76,7 +79,6 @@ const PatientAppointment = () => {
   const handleDoctorClick = (doctorId) => {
     setSelectedDoctor(doctorId)
     setSelectedTime(null)
-
     setBookingStatus({ status: "", message: "" })
   }
 
@@ -87,6 +89,61 @@ const PatientAppointment = () => {
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value)
   }
+
+  const handlePaymentSuccess = async () => {
+    if (!appointmentData) return;
+    
+    try {
+      setIsBooking(true);
+      setBookingStatus({ status: "loading", message: "Finalizing your appointment..." });
+      
+      const response = await axios.post(
+        `${baseURL}/appointments/createAppointment/${userId}`, 
+        appointmentData
+      );
+
+      if (response.status === 201) {
+        setBookingStatus({
+          status: "success",
+          message: `Appointment booked successfully with Dr. ${appointmentData.doctorName}`,
+        });
+
+        setPatientData({
+          doctorName: appointmentData.doctorName,
+          time: appointmentData.time,
+          date: appointmentData.date,
+          patientName: appointmentData.patientName,
+          specialization: appointmentData.specialization,
+        });
+
+        setTimeout(() => {
+          setSelectedDoctor(null);
+          setSelectedTime(null);
+          setSelectedDate("");
+          setShowPayment(false);
+        }, 3000);
+      } else {
+        setBookingStatus({
+          status: "error",
+          message: response.data.message || "Failed to book the appointment. Please try again later.",
+        });
+      }
+    } catch (error) {
+      setBookingStatus({
+        status: "error",
+        message: error.response?.data?.message || "Error booking appointment. Please try again.",
+      });
+      console.error("Error:", error);
+    } finally {
+      setIsBooking(false);
+      setShowPayment(false);
+    }
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPayment(false);
+    setBookingStatus({ status: "", message: "" });
+  };
 
   const handleBookAppointment = async () => {
     if (!selectedTime || !selectedDoctor || !selectedDate) {
@@ -99,23 +156,9 @@ const PatientAppointment = () => {
       return
     }
 
-    //add payment here send the data like 
-    /*
-    {
-      "return_url": "http://localhost:5173/payment/successful",
-      "amount": 12000,
-      "purchase_order_id": "ORDER-123456",
-      "product_name": "IPHONE 16 PRO",
-      "customer_name": "John Doe",
-      "customer_email": "john.doe@example.com",
-      "customer_phone": "9812345678"
-    } 
-    */
-   //to the <AppointmentPayment /> and handle the response
-
     try {
       setIsBooking(true)
-      setBookingStatus({ status: "loading", message: "Booking your appointment..." })
+      setBookingStatus({ status: "loading", message: "Preparing your appointment..." })
 
       const patientResponse = await axios.get(`${baseURL}/patient/getPatientById/${userId}`)
 
@@ -131,7 +174,7 @@ const PatientAppointment = () => {
           return
         }
         
-        const appointmentData = {
+        const newAppointmentData = {
           doctorId: selectedDoctorData.id,
           doctorName: selectedDoctorData.name,
           patientId: patient._id,
@@ -141,49 +184,28 @@ const PatientAppointment = () => {
           specialization: selectedDoctorData.specialization || "General",
         }
 
-        console.log(appointmentData);
+        console.log(newAppointmentData);
+        setAppointmentData(newAppointmentData);
         
-        const response = await axios.post(`${baseURL}/appointments/createAppointment/${userId}`, appointmentData)
-
-        if (response.status === 201) {
-          setBookingStatus({
-            status: "success",
-            message: `Appointment booked successfully with Dr. ${selectedDoctorData.name}`,
-          })
-
-          setPatientData({
-            doctorName: selectedDoctorData.name,
-            time: selectedTime,
-            date: selectedDate,
-            patientName: patient.name,
-            specialization: selectedDoctorData.specialization || "General",
-          })
-
-          setTimeout(() => {
-            setSelectedDoctor(null)
-            setSelectedTime(null)
-            setSelectedDate("")
-          }, 3000)
-        } else {
-          setBookingStatus({
-            status: "error",
-            message: response.data.message || "Failed to book the appointment. Please try again later.",
-          })
-        }
+        // Show payment component before creating appointment
+        setShowPayment(true);
+        setIsBooking(false);
+        setBookingStatus({ status: "", message: "" });
+        
       } else {
         setBookingStatus({
           status: "error",
           message: "Error fetching patient details. Please try again.",
         })
+        setIsBooking(false);
       }
     } catch (error) {
       setBookingStatus({
         status: "error",
         message: error.response?.data?.message || "Error booking appointment. Please try again.",
       })
-      console.error("Error:", error)
-    } finally {
-      setIsBooking(false)
+      console.error("Error:", error);
+      setIsBooking(false);
     }
   }
 
@@ -239,10 +261,24 @@ const PatientAppointment = () => {
     )
   }
 
+  // If showing payment modal
+  if (showPayment) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <AppointmentPayment 
+            appointmentData={appointmentData}
+            onSuccess={handlePaymentSuccess}
+            onCancel={handlePaymentCancel}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {}
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-2">Book an Appointment</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -250,7 +286,6 @@ const PatientAppointment = () => {
           </p>
         </div>
 
-        {}
         <div className="mb-10 flex justify-center">
           <div className="relative w-full max-w-md">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -375,7 +410,6 @@ const PatientAppointment = () => {
               Back to Doctors
             </button>
 
-            {}
             <div className="flex items-center mb-8">
               <img
                 src={
@@ -399,7 +433,6 @@ const PatientAppointment = () => {
               </div>
             </div>
 
-            {}
             <div className="mb-8">
               <h3 className="text-xl font-medium text-gray-700 mb-4 flex items-center">
                 <Calendar className="w-5 h-5 mr-2 text-blue-500" />
@@ -459,7 +492,6 @@ const PatientAppointment = () => {
               </div>
             )}
 
-            {}
             <div className="border-t border-gray-200 pt-6">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="mb-4 sm:mb-0">
@@ -492,10 +524,10 @@ const PatientAppointment = () => {
                   {isBooking ? (
                     <>
                       <span className="inline-block w-4 h-4 border-2 border-t-white border-white/20 rounded-full animate-spin mr-2 align-middle"></span>
-                      Booking...
+                      Processing...
                     </>
                   ) : (
-                    "Book Appointment"
+                    "Continue to Payment"
                   )}
                 </button>
               </div>
@@ -503,7 +535,6 @@ const PatientAppointment = () => {
           </div>
         )}
 
-        {}
         {patientData.doctorName && bookingStatus.status === "success" && (
           <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-start">
