@@ -153,7 +153,7 @@ const AdminPatientTable = ({ tableData, setTableData }) => {
                 <td className="px-6 py-4 text-center border-t border-gray-200">
                   <button
                     className="text-red-600 hover:text-red-800"
-                    onClick={() => handleDelete(data.id)} 
+                    onClick={() => handleDelete(data._id)} 
                   >
                     <Trash className="w-5 h-5" />
                   </button>
