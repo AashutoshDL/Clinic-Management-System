@@ -54,7 +54,7 @@ const PatientHistory = ({ patientId }) => {
     formData.append("report", selectedPdf);
 
     try {
-      const res = await axios.post(`${baseURL}/uploads/uploadReportByPatientId/${actualpatientId}`, formData, {
+      const res = await axios.post(`${baseURL}/uploads/uploadPDFByPatientId/${actualpatientId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -187,7 +187,7 @@ const PatientHistory = ({ patientId }) => {
               </div>
               
               {}
-              <PdfViewer pdfUrl={report.url} fileName={report.fileName} summary={report.summary} />
+              <PdfViewer pdfUrl={report.url} pdfId={report._id} fileName={report.fileName} summary={report.summary} />
               
               <p className="text-xs text-gray-500 mt-2">
                 Uploaded on: {new Date(report.createdAt || Date.now()).toLocaleDateString()}

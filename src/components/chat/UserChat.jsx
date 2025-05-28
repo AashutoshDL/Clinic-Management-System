@@ -166,7 +166,6 @@ const UserChat = () => {
           )}
         </div>
 
-        {}
         <div className="flex-grow overflow-y-auto p-4 space-y-3 bg-gray-50">
           {messages.map((msg, index) => (
             <div key={index} className={`flex items-end ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>

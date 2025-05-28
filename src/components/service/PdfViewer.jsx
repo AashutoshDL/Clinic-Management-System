@@ -6,20 +6,20 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import axios from 'axios';
 import { baseURL } from './baseURL';
 
-const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp }) => {
+const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp, pdfId }) => {
   const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
   const [summary, setSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [error, setError] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-  
+
   useEffect(() => {
     if (!pdfUrl) return;
-    
+
     setError(null);
-    
+
     axios
       .get(pdfUrl, { responseType: 'blob' })
       .then((res) => {
@@ -30,18 +30,20 @@ const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp }) => {
         console.error("Failed to load PDF", err);
         setError("Failed to load PDF. Please try again later.");
       });
-    
+
     return () => {
       if (pdfBlobUrl) {
         URL.revokeObjectURL(pdfBlobUrl);
       }
     };
   }, [pdfUrl]);
-  
+
   const handleSummarize = async () => {
     try {
       setIsSummarizing(true);
-      const response = await axios.post(`${baseURL}/uploads/summarizePdf`, { pdfUrl });
+      const response = await axios.post(`${baseURL}/uploads/summarizePdf/${pdfId}`, {
+        pdfUrl,
+      });
       if (response.data && response.data.summary) {
         setSummary(response.data.summary);
       } else {
@@ -54,11 +56,11 @@ const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp }) => {
       setIsSummarizing(false);
     }
   };
-  
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-  
+
   return (
     <div className="pdf-container border border-gray-200 rounded-lg shadow-sm overflow-hidden bg-white">
       <div className="flex justify-between items-center bg-gray-50 px-4 py-3 border-b">
@@ -78,8 +80,7 @@ const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp }) => {
           </svg>
         </button>
       </div>
-      
-      {/* PDF Viewer with fixed height and scrolling */}
+
       <div 
         className={`transition-all duration-300 ease-in-out overflow-hidden ${
           isExpanded ? 'h-screen max-h-screen' : 'h-96'
@@ -125,10 +126,8 @@ const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp }) => {
           </div>
         )}
       </div>
-      
-      {/* Actions and Summary section */}
+
       <div className="p-4 bg-gray-50 border-t">
-        {/* Show Summarize Button if no summary is passed via props */}
         {!summaryProp && !summary && (
           <div className="mb-4">
             <button
@@ -152,8 +151,7 @@ const PdfViewer = ({ pdfUrl, fileName, summary: summaryProp }) => {
             </button>
           </div>
         )}
-        
-        {/* Display summary from prop or from state */}
+
         {(summaryProp || summary) && (
           <div className="bg-white border rounded-md p-4 shadow-sm">
             <h3 className="text-lg font-semibold mb-2 text-gray-800 flex items-center">

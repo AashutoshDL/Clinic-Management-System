@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox, PasswordInput, TextInput, MySelect } from './FormElements';
 import axios from 'axios';
+import { baseURL } from '../service/baseURL';
 
 const Register = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -57,27 +58,31 @@ const Register = () => {
             role: Yup.string() 
               .required('Please select a role'),
           })}
-          onSubmit={async (values, { setSubmitting }) => {
-            try {
-              const response = await axios.post(`${baseURL}/auth/register`,{
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-              });
-              const data = response.data;
-              alert(`Registration Completed. Please Verify your Email`);
-              sessionStorage.setItem('email', values.email);
-              navigate('/verifyEmail');
-            } catch (error) {
-              console.error('Error during signup', error);
-              if (error.response) {
-                console.log('Response error data:', error.response.data);
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                const response = await axios.post(
+                  `${baseURL}/auth/register`,
+                  values,
+                  {
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                  }
+                );
+                const data = response.data;
+                alert(`Registration Completed. Please Verify your Email`);
+                sessionStorage.setItem('email', values.email);
+                navigate('/verifyEmail');
+              } catch (error) {
+                console.error('Error during signup', error);
+                if (error.response) {
+                  console.log('Response error data:', error.response.data);
+                }
+              } finally {
+                setSubmitting(false);
               }
-            } finally {
-              setSubmitting(false);
-            }
-          }}
+            }}
         >
           {({ isSubmitting }) => (
             <Form className="flex space-x-8">

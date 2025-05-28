@@ -121,24 +121,34 @@ const DoctorChat = () => {
           <h2 className="text-sm font-semibold mb-3 text-gray-500 px-2">PATIENTS</h2>
           <ul className="space-y-2">
             {filteredPatients.map((patient, index) => (
-              <li
-                key={patient._id || index}
-                className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                  activeChat?._id === patient._id ? "bg-blue-100" : "hover:bg-gray-100"
-                }`}
-                onClick={() => setActiveChat(patient)}
-              >
-                <div className="relative">
-                  <div className="w-10 h-10 bg-green-500 text-white flex items-center justify-center rounded-full mr-3">
-                    {patient.name && patient.name.charAt(0).toUpperCase()}
+            <li
+              key={patient._id || index}
+              className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                activeChat?._id === patient._id
+                  ? "bg-blue-100"
+                  : "hover:bg-gray-100"
+              }`}
+              onClick={() => setActiveChat(patient)}
+            >
+              <div className="relative">
+                {patient.profileImage ? (
+                  <img
+                    src={patient.profileImage}
+                    alt={`${patient.name}'s avatar`}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full text-sm font-semibold">
+                    {patient.name?.charAt(0).toUpperCase()}
                   </div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-medium">{patient.name}</span>
-                  <span className="text-xs text-gray-500">Online</span>
-                </div>
-              </li>
-            ))}
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium text-sm">{patient.name}</span>
+                <span className="text-xs text-gray-500">ID: {patient._id}</span>
+              </div>
+            </li>
+          ))}
           </ul>
         </div>
       </div>

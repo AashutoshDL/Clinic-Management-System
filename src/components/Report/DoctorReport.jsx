@@ -189,27 +189,38 @@ const DoctorReport = () => {
     <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Doctor Report Generation</h1>
 
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Select Patient</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {patients?.map((patient) => (
-            <div
-              key={patient._id}
-              onClick={() => handlePatientSelect(patient)}
-              className={`p-4 border rounded-lg cursor-pointer ${
-                selectedPatient?.id === patient.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-white hover:bg-gray-200"
-              }`}
-            >
-              <h3 className="font-semibold text-lg">{patient.name}</h3>
-              <h3 className="font-semibold text-lg">{patient._id}</h3>
-              <p>Age: {patient.age}</p>
-              <p>Gender: {patient.gender}</p>
-            </div>
-          ))}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Select Patient</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {patients?.map((patient) => (
+              <div
+                key={patient._id}
+                onClick={() => handlePatientSelect(patient)}
+                className={`p-5 rounded-2xl cursor-pointer transition-all duration-300 shadow-md border ${
+                  selectedPatient?.id === patient.id
+                    ? "bg-blue-600 text-white"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={patient.profileImage}
+                    alt={`${patient.name}'s profile`}
+                    className="w-16 h-16 rounded-full object-cover border"
+                  />
+                  <div>
+                    <h3 className="font-bold text-lg">{patient.name}</h3>
+                    <p className="text-sm opacity-80">ID: {patient._id}</p>
+                  </div>
+                </div>
+                <div className="pl-20">
+                  <p>Age: {patient.age}</p>
+                  <p>Gender: {patient.gender}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
       {selectedPatient && (
         <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
